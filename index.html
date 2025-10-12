@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" src="./src/css/general.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="./src/css/general.css" />
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <script type="module" src="src/js/controller.js"></script>
     <title>Budget Buddy</title>
 </head>
+
 <body>
     <aside class="sidebar">
         <header class="sidebar-header">
+            <div class="sb-header">
+                <img class="sb-logo" src="./src/img/logos/logo.png" alt="Budget Buddy" />
+                <a href="#" class="sb-link">Budget-Prep</a>
+            </div>
+            <!-- <button class="btn btn-menu"><i data-lucide="menu"></i></button> -->
         </header>
+        <nav class="sb-nav">
+            <ul class="nav-lists">
+                <li class="nav-list"><a href="#" class="nav-link nav-link-active"><i data-lucide="house"></i><span class="nav-link-text">Dashboard</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="sticky-note"></i><span class="nav-link-text">Transactions</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="chart-no-axes-combined"></i><span class="nav-link-text">Analytics</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="settings"></i><span class="nav-link-text">Settings</span></a></li>
+            </ul>
+        </nav>
     </aside>
+    <main>
+        <p>Hello</p>
+    </main>
 </body>
+
 </html>

@@ -1,1 +1,11 @@
 node_modules/
+package-lock.json
+dist/
+.parcel-cache/4f1006209c32bb6f-AssetGraph
+.parcel-cache/7e1d0566a1e1c13f
+.parcel-cache/9d19ff9720e9e240-RequestGraph
+.parcel-cache/c64e98238cc71d74-BundleGraph
+.parcel-cache/data.mdb
+.parcel-cache/e493bf6fcaa3f45b
+.parcel-cache/lock.mdb
+.parcel-cache/snapshot-9d19ff9720e9e240.txt

@@ -1,0 +1,65 @@
+.sidebar {
+  height: 100vh;
+  padding: 2.4rem 1.6rem;
+}
+
+.sb-header {
+  align-items: flex-end;
+  gap: .8rem;
+  display: flex;
+}
+
+.sb-logo {
+  width: 4.6rem;
+}
+
+.sb-link:link, .sb-link:visited {
+  color: #333;
+  font-size: 3.8rem;
+  font-weight: 600;
+}
+
+.sidebar-header {
+  border-bottom: 1px solid #ddd;
+  padding: 1.2rem 0;
+}
+
+.sb-nav {
+  padding: 6.4rem .8rem;
+}
+
+.nav-lists {
+  flex-direction: column;
+  gap: 2.4rem;
+  list-style: none;
+  display: flex;
+}
+
+.nav-link:link, .nav-link:visited {
+  align-items: flex-end;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  display: flex;
+}
+
+.nav-link:hover, .nav-link:active {
+  background-color: #f2f2f2;
+  border-radius: .6rem;
+}
+
+.nav-link-text {
+  color: #333;
+  font-size: 2.4rem;
+}
+
+.nav-link-active {
+  background-color: #fff;
+  border: .3px solid #e8f3ff;
+  border-radius: .6rem;
+  box-shadow: 0 .4rem .4rem #e8f3ff;
+}
+
+.nav-link-active svg {
+  stroke: #8dc4ff;
+}
+/*# sourceMappingURL=BudgetPrep.c92073ef.css.map */
