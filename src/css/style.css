@@ -13,18 +13,18 @@
 }
 
 .sb-logo {
-    width: 4.6rem;
+    width: 3.6rem;
 }
 
 .sb-link:link,
 .sb-link:visited {
     color: #333;
     font-weight: 600;
-    font-size: 3.8rem;
+    font-size: 3rem;
 }
 
 .sidebar-header {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 2px solid #eee;
     padding: 1.2rem 0;
 }
 
@@ -34,14 +34,14 @@
 /**************************/
 
 .sb-nav {
-    padding: 6.4rem 0.8rem;
+    padding: 4.8rem 0.8rem;
 }
 
 .nav-lists {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 2.4rem;
+    gap: 2rem;
 }
 
 .nav-link:link,
@@ -59,7 +59,7 @@
 }
 
 .nav-link-text {
-    font-size: 2.4rem;
+    font-size: 2rem;
     color: #333;
 }
 
@@ -71,6 +71,254 @@
     border-radius: 0.6rem;
 }
 
-.nav-link-active svg{
+.nav-link-active svg {
     stroke: #8dc4ff;
+}
+
+.nav-link svg{
+    width: 2.2rem;
+}
+
+/**************************/
+/* Dashboard Section */
+/**************************/
+
+
+/* Dashboard Header */
+
+.section-dashboard {
+    padding: 2rem 0;
+}
+
+.dashboard-container {
+    padding: 1.6rem 4.2rem;
+    display: flex;
+    gap: 2.4rem;
+    align-items: center;
+}
+
+.btn-add-expense {
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    color: #f2f2f2;
+    font-size: 1.6rem;
+    font-weight: 500;
+    border-radius: 4px;
+    gap: 0.4rem;
+}
+
+.btn-add-expense:hover {
+    background-color: #177ae6;
+}
+
+.btn-plus-icon {
+    width: 1.4rem;
+}
+
+.dashboard-button-container {
+    margin-left: auto;
+}
+
+.dashboard-content {
+    border-bottom: 2px solid #eee;
+    margin-bottom: 4rem;
+}
+
+/* Dashboard Summary */
+
+.dashboard-summary-container {
+    border: 2px solid #eee;
+    border-radius: 0.6rem;
+    padding: 1.8rem 3.6rem;
+    margin-bottom: 5.2rem;
+    /* height: 8rem; */
+}
+
+.dashboard-summary-heading {
+    font-size: 2.2rem;
+    color: #444;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.dashboard-expense-container {}
+
+.dashboard-expense-content {
+    display: flex;
+    gap: 8rem;
+    /* justify-content: center; */
+}
+
+.dashboard-expense-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.dashboard-expense-text {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+/* Dashboard Chart */
+.dashboard-chart-container {
+    display: flex;
+    gap: 4.8rem;
+}
+
+.dashboard-pie-container {
+    height: 20rem;
+    padding: 2rem 4.2rem;
+    width: 50%;
+}
+
+.dashboard-bar-container {
+    height: 20rem;
+    padding: 2rem 4.2rem;
+    width: 50%;
+}
+
+/* Add Expense Form */
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background-color: white;
+}
+
+.expense-form-header {
+    display: flex;
+    gap: 4.8rem;
+    width: 42rem;
+}
+
+.form-exp-text {
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.expense-form-container {
+    padding: 2.4rem 2rem;
+    border-radius: 0.8rem;
+    display: none;
+}
+
+.exp-form-close {
+    background: none;
+    flex: 0 0 5%;
+    margin-left: auto;
+}
+
+.form-exp-text-container {
+    flex: 0 0 95%;
+    display: flex;
+    justify-content: center;
+}
+
+.exp-form-close svg:hover {
+    stroke: #444;
+}
+
+.expense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+    width: 42rem;
+}
+
+.exp-form-group {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-input-fields {
+    padding: 1.2rem 1rem;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    font-size: 1.4rem;
+    font-family: inherit;
+    width: 100%;
+}
+
+.form-label {
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-amt-container {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.4rem;
+}
+
+.exp-form-btn {
+    color: #fff;
+    font-weight: 500;
+    padding: 1.2rem 3.8rem;
+    font-size: 2rem;
+    border-radius: 6px;
+}
+
+.form-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.exp-form-btn {
+    width: 100%;
+}
+
+.exp-form-btn:hover {
+    background-color: #177ae6;
+}
+
+
+/**************************/
+/* Dashboard Section */
+/**************************/
+
+.section-transaction{
+    padding: 2rem 0;
+}
+
+.trans-filter-container{
+    padding: 0 2.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.trans-input-group{
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.trans-input-field{
+    width: 16rem;
+    padding: 0.6rem 1rem;
+    font-size: 1.4rem;
+    border: 1.5px solid #ccc;
+    font-family: inherit;
+    border-radius: 4px;
+}
+
+.trans-form-label{
+    font-size: 1.4rem;
+    color: #444;
+    font-weight: 500;
+}
+
+.btn-trans{
+    border: none;
 }

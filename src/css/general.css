@@ -61,11 +61,11 @@ Medium: 11px
     box-sizing: border-box;
 }
 
-html{
+html {
     font-size: 62.5%;
 }
 
-body{
+body {
     font-family: "Inter", sans-serif;
     line-height: 1;
     font-weight: 400;
@@ -73,9 +73,8 @@ body{
     overflow-x: hidden;
     display: grid;
     grid-template-columns: 2fr 8fr;
-    background-color: #f9f9f9;
+    background-color: #f8f8f8;
 }
-
 
 /**************************/
 /* Reusable Components */
@@ -85,4 +84,72 @@ a:link,
 a:visited {
     text-decoration: none;
     color: #555;
+}
+
+.main-section {
+    background-color: #fff;
+    margin-top: 2.6rem;
+    border: 2px solid #eee;
+    border-radius: 0.6rem;
+    height: 100vh;
+}
+
+.container {
+    max-width: 96rem;
+    margin: 0 auto;
+}
+
+.heading-secondary{
+    color: #333;
+    font-weight: 600;
+    font-size: 2.6rem;
+    margin-bottom: 0.8rem;
+}
+
+.heading-desc{
+    font-size: 1.4rem;
+}
+
+.btn{
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary{
+    background-color: #1a88ff;
+}
+
+.transition-3{
+    transition: all 0.3s;
+}
+
+.border-med{
+    border: 2px solid #eee;
+    border-radius: 0.6rem;
+}
+
+.modal-backdrop{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.active{
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mb-sm-3{
+    margin-bottom: 2rem;
+}
+
+.mb-md-1{
+    margin-bottom: 3rem;
 }

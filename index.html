@@ -28,15 +28,135 @@
         </header>
         <nav class="sb-nav">
             <ul class="nav-lists">
-                <li class="nav-list"><a href="#" class="nav-link nav-link-active"><i data-lucide="house"></i><span class="nav-link-text">Dashboard</span></a></li>
-                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="sticky-note"></i><span class="nav-link-text">Transactions</span></a></li>
-                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="chart-no-axes-combined"></i><span class="nav-link-text">Analytics</span></a></li>
-                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="settings"></i><span class="nav-link-text">Settings</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link nav-link-active"><i data-lucide="house"></i><span
+                            class="nav-link-text">Dashboard</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="sticky-note"></i><span
+                            class="nav-link-text">Transactions</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="chart-no-axes-combined"></i><span
+                            class="nav-link-text">Analytics</span></a></li>
+                <li class="nav-list"><a href="#" class="nav-link"><i data-lucide="settings"></i><span
+                            class="nav-link-text">Settings</span></a></li>
             </ul>
         </nav>
     </aside>
     <main>
-        <p>Hello</p>
+        <!-- <section class="section-dashboard main-section">
+            <div class="dashboard-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-heading-container">
+                        <h2 class="heading-secondary">Dashboard</h2>
+                        <p class="heading-desc">Get a quick overview of your monthly spending, remaining budget, and key
+                            financial insights at a glance.</p>
+                    </div>
+                    <div class="dashboard-button-container">
+                        <button class="btn btn-primary btn-add-expense transition-3"><i data-lucide="plus"
+                                class="btn-plus-icon"></i> Add Expense</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container dashboard-summary-container">
+                <p class="dashboard-summary-heading">Summary</p>
+                <div class="dashboard-expense-content">
+                    <div class="dashboard-expense-container">
+                        <p class="dashboard-expense-text">Total Expenses : <span>1,000</span></p>
+                        <p class="dashboard-expense-text">Spent <span>800 of 1000</span></p>
+                    </div>
+                    <div>
+                        <p class="dashboard-expense-text">Remaining Budget : <span>200</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container dashboard-chart-container">
+                <div class="dashboard-pie-container border-med">
+                </div>
+                <div class="dashboard-bar-container border-med"></div>
+            </div>
+
+            <div class="expense-form-container modal">
+                <div class="expense-form-header mb-md-1">
+                        <p class="form-exp-text">Add Expense</p>
+                    <button class="btn exp-form-close"><i data-lucide="x"></i></button>
+                </div>
+                <form id="expense-form" class="expense-form mb-md-1">
+                    <div class="exp-form-group">
+                        <label for="select-categories" class="form-label">Category</label>
+                        <select id="select-categories" class="expense-form-categories form-input-fields">
+                            <option>Please choos an option</option>
+                            <option>Option</option>
+                            <option>Option</option>
+                            <option>Option</option>
+                            <option>Option</option>
+                        </select>
+                    </div>
+                    <div class="form-amt-container">
+                        <div class="exp-form-group">
+                            <label for="exp-form-amt" class="form-label">Amount</label>
+                            <input id="exp-form-amt" type="tel" placeholder="100"
+                                class="expense-form-categories form-input-fields" />
+                        </div>
+
+                        <div class="exp-form-group">
+                            <label for="exp-form-date" class="form-label">Date</label>
+                            <input id="exp-form-date" type="date" placeholder="24/08/2025"
+                                class="expense-form-categories form-input-fields" />
+                        </div>
+                    </div>
+                    <div class="exp-form-group">
+                        <label for="exp-form-desc" class="form-label">Description</label>
+                        <input id="exp-form-desc" placeholder="Add Description"
+                            class="expense-form-categories form-input-fields" />
+                    </div>
+                </form>
+                <div class="form-btn-container">
+                    <button class="btn btn-primary exp-form-btn transition-3">Add Expense</button>
+                </div>
+            </div>
+
+            <div class="modal-backdrop"></div>
+        </section> -->
+
+        <section class="section-transaction main-section">
+            <div class="dashboard-content">
+                <div class="dashboard-container">
+                    <div class="dashboard-heading-container">
+                        <h2 class="heading-secondary">Transactions</h2>
+                        <p class="heading-desc">View, search, and manage all your expenses in one place. Filter, edit,
+                            or download your spending records.</p>
+                    </div>
+                    <div class="dashboard-button-container">
+                        <button class="btn btn-primary btn-add-expense transition-3"><i data-lucide="plus"
+                                class="btn-plus-icon"></i> Add Expense</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container trans-filter-container">
+                <div class="trans-input-group">
+                    <label for="filter-categories" class="trans-form-label">Categories</label>
+                    <select id="filter-categories" class="trans-input-field">
+                        <option value="Cat 1">Cat 1</option>
+                        <option value="Cat 1">Cat 2</option>
+                        <option value="Cat 1">Cat 3</option>
+                        <option value="Cat 1">Cat 4</option>
+                    </select>
+                </div>
+                <div class="trans-input-group">
+                    <label for="filter-start-date" class="trans-form-label">Start Date</label>
+                    <input type="text" id="filter-start-date" class="trans-input-field" />
+                </div>
+                <div class="trans-input-group">
+                    <label for="filter-end-date" class="trans-form-label">End Date</label>
+                    <input type="text" id="filter-end-date" class="trans-input-field"/>
+                </div>
+                <div class="trans-btn-group">
+                    <button class="btn-primary btn-trans"><i data-lucide="list-filter"></i>Filter</button>
+                    <button class="btn-primary btn-trans"><i data-lucide="download"></i>Download</button>
+                </div>
+            </div>
+        </section>
+
     </main>
 </body>
 
