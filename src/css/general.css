@@ -119,6 +119,10 @@ a:visited {
     background-color: #1a88ff;
 }
 
+.btn-primary:hover{
+    background-color: #177ae6;
+}
+
 .transition-3{
     transition: all 0.3s;
 }
@@ -152,4 +156,8 @@ a:visited {
 
 .mb-md-1{
     margin-bottom: 3rem;
+}
+
+.mb-md-2{
+margin-bottom: 4.2rem;
 }
