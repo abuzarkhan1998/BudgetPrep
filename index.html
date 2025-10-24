@@ -76,7 +76,7 @@
 
             <div class="expense-form-container modal">
                 <div class="expense-form-header mb-md-1">
-                        <p class="form-exp-text">Add Expense</p>
+                    <p class="form-exp-text">Add Expense</p>
                     <button class="btn exp-form-close"><i data-lucide="x"></i></button>
                 </div>
                 <form id="expense-form" class="expense-form mb-md-1">
@@ -162,10 +162,16 @@
                 <table class="transaction-table">
                     <thead class="trans-head-table-container">
                         <tr class="trans-head-table-row">
-                            <th class="trans-head-table"><span class="thead-sort-column"><span>Date</span><span>&uarr;</span><span>&darr;</span></span></th>
-                            <th class="trans-head-table"><span class="thead-sort-column"><span>Category</span><span>&uarr;</span><span>&darr;</span></span></th>
+                            <th class="trans-head-table"><span
+                                    class="thead-sort-column"><span>Date</span><span>&uarr;</span><span>&darr;</span></span>
+                            </th>
+                            <th class="trans-head-table"><span
+                                    class="thead-sort-column"><span>Category</span><span>&uarr;</span><span>&darr;</span></span>
+                            </th>
                             <th class="trans-head-table">Description</th>
-                            <th class="trans-head-table"><span class="thead-sort-column"><span>Amount</span><span>&uarr;</span><span>&darr;</span></span></th>
+                            <th class="trans-head-table"><span
+                                    class="thead-sort-column"><span>Amount</span><span>&uarr;</span><span>&darr;</span></span>
+                            </th>
                             <th class="trans-head-table">Actions</th>
                         </tr>
                     </thead>
@@ -230,14 +236,35 @@
                 <div class="dashboard-container">
                     <div class="dashboard-heading-container">
                         <h2 class="heading-secondary">Analytics</h2>
-                        <p class="heading-desc">Discover spending trends and patterns over time. Compare monthly insights and identify your top expense categories.</p>
+                        <p class="heading-desc">Discover spending trends and patterns over time. Compare monthly
+                            insights and identify your top expense categories.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="dashboard-summary-container container">
-                <label></label>
-                <select id=""></select>
+            <div class="container mb-md-2">
+                <div class="analytics-select-container trans-input-group">
+                    <label for="analytics-select" class="trans-form-label">Time Period</label>
+                    <select id="analytics-select" class="trans-input-field">
+                        <option>Last 3 Months</option>
+                        <option>Last 6 Months</option>
+                        <option>Last 12 Months</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="container spending-chart-container mb-md-2">
+                <p class="dashboard-summary-heading">Category Spending Trend</p>
+                <div></div>
+            </div>
+
+            <div class="container analytics-categories-container">
+                <div class="anlytics-categories-chart-container">
+                    <p class="dashboard-summary-heading">Top 3 Expence Categories</p>
+                </div>
+                <div class="anlytics-categories-chart-container">
+                    <p class="dashboard-summary-heading">Current vs Previous Month</p>
+                </div>
             </div>
         </section>
 
