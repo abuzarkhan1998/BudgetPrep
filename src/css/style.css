@@ -440,7 +440,7 @@
     background-color: #d1e7ff;
 }
 
-.thead-sort-column{
+.thead-sort-column {
     display: flex;
     gap: 0.4rem;
     cursor: pointer;
@@ -450,30 +450,263 @@
 /* Analytics Section */
 /**************************/
 
-.section-analytics{
+.section-analytics {
     padding: 2rem 0;
 }
 
-.analytics-select-container{
+.analytics-select-container {
     padding: 0 2.4rem;
 }
 
-.spending-chart-container{
+.spending-chart-container {
     border: 2px solid #eee;
     border-radius: 0.6rem;
     padding: 1.8rem 2.4rem;
     height: 20rem;
 }
 
-.analytics-categories-container{
+.analytics-categories-container {
     display: flex;
     gap: 4.8rem;
 }
 
-.anlytics-categories-chart-container{
+.anlytics-categories-chart-container {
     border: 2px solid #eee;
     border-radius: 0.6rem;
     padding: 1.8rem 2.4rem;
     height: 30rem;
     width: 100%;
+}
+
+/**************************/
+/* Settings Section */
+/**************************/
+
+.section-settings {
+    padding: 2rem 0;
+}
+
+.settings-tab-container {
+    padding: 0 2.2rem;
+}
+
+.settings-parent-div {
+    /* Replaced direct border-bottom with pseudo-element for partial highlight capability */
+    position: relative;
+    display: flex;
+    gap: 3rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid #eee;
+}
+
+.settings-tab {
+    font-size: 1.8rem;
+    color: #444;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    /* Needed for active underline positioning */
+}
+
+.settings-tab:hover {
+    color: #555;
+}
+
+.settings-tab.active {
+    color: #177ae6;
+}
+
+/* Parent light gray full-width underline */
+/* .settings-parent-div::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #eee;
+} */
+
+/* Active tab blue underline exactly over the parent's underline segment */
+.settings-tab.active::after {
+    content: "";
+    position: absolute;
+    --underline-overhang: 0.8rem;
+    left: calc(-1 * var(--underline-overhang));
+    bottom: -0.8rem;
+    /* Offset matches parent's padding-bottom */
+    width: calc(100% + (var(--underline-overhang) * 2));
+    height: 3px;
+    background: #177ae6;
+    border-radius: 2px;
+}
+
+.settings-profile-container {
+    padding: 0 2.2rem;
+}
+
+.profile-header-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.profile-header {
+    font-size: 2.2rem;
+    color: #444;
+    font-weight: 600;
+}
+
+.profile-header-desc {
+    color: #444;
+    font-size: 1.4rem;
+}
+
+#settings-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-size: 1.8rem;
+}
+
+.settings-form-label {
+    color: #444;
+    font-weight: 600;
+}
+
+.settings-field-container{
+    display: grid;
+    grid-template-columns: 0.2fr 0.8fr;
+    align-items: center;
+}
+
+.settings-profile-input{
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #ccc;
+    font-family: inherit;
+    color: inherit;
+    font-size: inherit;
+    border-radius: 4px;
+    width: 20rem;
+}
+
+.settings-profile-name-container{
+    display: flex;
+    gap: 2rem;
+}
+
+.settings-profile-btn{
+    color: #fff;
+    font-weight: 500;
+    padding: 0.6rem 1.2rem;
+    font-size: 1.6rem;
+    border-radius: 4px;
+}
+
+.profile-settings-button-container{
+    display: flex;
+    gap: 1.8rem;
+    padding-top: 1.4rem;
+}
+
+.settings-currency{
+    font-weight: 600;
+    color: #333;
+}
+
+.settings-budget-container{
+    padding: 0 2.2rem;
+}
+
+#settings-budget-form{
+    flex-direction: column;
+    gap: 2rem;
+    font-size: 1.8rem;
+    display: flex;
+}
+
+.settings-budget-input-container{
+    position:relative;
+}
+
+.settings-budget-input{
+    padding-left: 2.4rem;
+}
+
+.settings-budget-label{
+    position: absolute;
+    top:1rem;
+    left: 0.8rem;
+}
+
+#settings-add-category-form{
+     display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-size: 1.8rem;
+}
+
+.color-picker-container{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.2rem;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    width: fit-content;
+    background-color: #ffff;
+    transition: border-color 0.2s ease;
+}
+
+.color-picker-container:hover{
+    border-color: #79B2D6;
+}
+
+.color-picker-wrapper input[type="color"] {
+  appearance: none;
+  border: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  background: none;
+}
+
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+#color-code {
+  font-family: monospace;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.settings-categories-lists{
+    list-style: none;
+    padding: 0 2rem;
+}
+
+.settings-categories-lists-item{
+    display: flex;
+    font-family: inherit;
+    font-size: 2rem;
+    color: #444;
+    font-weight: 500;
+    align-items: center;
+    gap: 2.4rem;
+}
+
+.categories-list-color{
+    background-color: #E57373;
+    width: 2rem;
+    content: "";
+    height: 2rem;
+    border-radius: 100px;
 }
