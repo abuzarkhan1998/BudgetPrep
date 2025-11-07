@@ -149,6 +149,10 @@ a:visited {
     pointer-events: all;
 }
 
+.mb-sm-2{
+    margin-bottom: 1.4rem;
+}
+
 .mb-sm-3{
     margin-bottom: 2rem;
 }
@@ -169,6 +173,78 @@ margin-bottom: 4.2rem;
     margin-bottom: 6rem;
 }
 
+.spinner {
+  margin: 5rem auto;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 2;
+    opacity: 0.9;
+    display: none;
+  svg {
+    height: 6rem;
+    width: 6rem;
+    animation: spin 2s infinite linear;
+    stroke: #eee;
+  }
+}
+
+.notification-modal{
+    padding: 1.6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40rem;
+    border-radius: 6px;
+}
+
+.modal-notification-icon svg{
+    width: 10rem;
+    height:10rem;
+    stroke: #28a745;
+    stroke-width: 1;
+}
+
+.modal-error svg{
+    stroke: #dc3545;
+}
+
+.modal-info svg{
+    stroke: #ffc107;
+}
+
+.modal-notification-title{
+    font-weight: 600;
+    color: #444;
+    font-size: 2.6rem;
+}
+
+.modal-notification-message{
+    color: #444;
+    font-size: 1.6rem;
+}
+
+.modal-notification-btn{
+    padding: 1rem 2.4rem;
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
 .hidden{
     display: none;
+}
+
+
+/* define the keyframes */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

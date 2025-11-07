@@ -158,7 +158,7 @@
                 </div>
             </div>
 
-            <div class="container transaction-table-container">
+            <div class="container transaction-table-container mb-md-1">
                 <table class="transaction-table">
                     <thead class="trans-head-table-container">
                         <tr class="trans-head-table-row">
@@ -238,6 +238,31 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="container pagination-container">
+                <div class="total-records-container">
+                    <p>Page 1 of 5 Pages</p>
+                    <p class="total-records">100 Total Records</p>
+                </div>
+                <div class="pagination-btn-container">
+                    <div class="pagination-btn-div">
+                        <button class="btn pagination-btn">1</button>
+                    </div>
+                    <div class="pagination-btn-div">
+                        <button class="btn pagination-btn">2</button>
+                    </div>
+                    <div class="pagination-btn-div">
+                        <button class="btn pagination-btn pagination-btn-active">3</button>
+                    </div>
+                    <div class="pagination-btn-div">
+                        <button class="btn pagination-btn">4</button>
+                    </div>
+                    <div class="pagination-btn-div">
+                        <button class="btn pagination-btn">5</button>
+                    </div>
+                </div>
+                <div class="pagination-empty-div"></div>
             </div>
         </section>
 
@@ -445,11 +470,59 @@
                                     <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </li>
+                            <li class="settings-categories-lists-item categories-edit-list-field">
+                                <div class="category-list-name-container">
+                                    <div class="color-picker-container">
+                                        <input type="color" list="categoryColors" id="colors" />
+                                        <span id="color-code">#79B2D6</span>
+                                        <datalist id="categoryColors">
+                                            <option value="#E57373"></option>
+                                            <option value="#FFB74D"></option>
+                                            <option value="#FFD54F"></option>
+                                            <option value="#81C784"></option>
+                                            <option value="#4DB6AC"></option>
+                                            <option value="#64B5F6"></option>
+                                            <option value="#BA68C8"></option>
+                                            <option value="#B0BEC5"></option>
+                                        </datalist>
+                                    </div>
+                                    <input type="text" id="settings-category-edit-name" class="settings-profile-input" />
+                                </div>
+                                <div class="category-edit-btn-container">
+                                    <button class="btn edit-category-save-btn"><i data-lucide="check"></i></button>
+                                    <button class="btn edit-category-cancel-btn"><i data-lucide="x"></i></button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
+
+        <div class="spinner">
+            <i data-lucide="loader-circle"></i>
+        </div>
+
+        <div class="modal notification-modal modal-success hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-check"></i></div>
+            <p class="modal-notification-title mb-sm-2">Success!</p>
+            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+
+        <div class="modal notification-modal modal-error hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-x"></i></div>
+            <p class="modal-notification-title mb-sm-2">Error!</p>
+            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+
+        <div class="modal notification-modal modal-info hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
     </main>
 </body>
 
