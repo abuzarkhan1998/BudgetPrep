@@ -1,15 +1,17 @@
 import { createIcons, icons } from "lucide";
-import * as Model from "../js/Views/settingsView";
-import dashboardView from "./Views/dashboardView";
-import settingsView from "./Views/settingsView";
+import * as Model from "./model.js";
+import dashboardView from "./Views/dashboardView.js";
+import settingsView from "./Views/settingsView.js";
 
-const controlNavigation = function (targetPage) {
+const controlNavigation = async function (targetPage) {
 //   console.log(targetPage);
 setUrl(targetPage);
 if(targetPage === 'settings')
 {
     settingsView.renderView();
     settingsView.navigateTabs();
+    const apiData = await Model.getCountriesFromApi();
+    console.log(apiData);
 }
 };
 

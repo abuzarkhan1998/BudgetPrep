@@ -1,29 +1,43 @@
+import { createIcons, icons } from "lucide";
+
 class settingsView {
+  _parentContainer = document.querySelector("main");
+  _tabContainer;
 
-    _parentContainer = document.querySelector('main');
-    _tabContainer;
+  renderView() {
+    // console.log(this._parentContainer);
+    this._parentContainer.textContent = "";
+    this._parentContainer.insertAdjacentHTML(
+      "afterbegin",
+      this._returnMarkup()
+    );
+    this._tabContainer = document.querySelector(".settings-parent-div");
+    createIcons({ icons });
+  }
+  navigateTabs() {
+    this._tabContainer.addEventListener("click", function (e) {
+      // console.log(e);
+      const selectedTab = e.target.closest(".settings-tab");
+      if (!selectedTab) return;
+      document
+        .querySelectorAll(".settings-tab")
+        .forEach((tab) => tab.classList.remove("active"));
+      document
+        .querySelectorAll(".settings-tab-div")
+        .forEach((divTab) => divTab.classList.add("hidden"));
+      // console.log(selectedTab);
+      selectedTab.classList.add("active");
 
+      const selectActiveTabDiv = document.querySelector(
+        `.${selectedTab.dataset.settingsTab}`
+      );
+      console.log(selectActiveTabDiv);
+      if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
+    });
+  }
 
-    renderView(){
-        // console.log(this._parentContainer);
-        this._parentContainer.textContent = "";
-        this._parentContainer.insertAdjacentHTML('afterbegin',this._returnMarkup());
-        this._tabContainer = document.querySelector('.settings-parent-div');
-    }
-
-    navigateTabs(){
-        this._tabContainer.addEventListener('click',function(e){
-            // console.log(e);
-            const selectedTab = e.target.closest('.settings-tab');
-            if(!selectedTab) return;
-            document.querySelectorAll('.settings-tab').forEach(tab=>tab.classList.remove('active'));
-            // console.log(selectedTab);
-            selectedTab.classList.add('active');
-        })
-    }
-
-    _returnMarkup(){
-        return `<section class="main-section section-settings">
+  _returnMarkup() {
+    return `<section class="main-section section-settings">
             <div class="dashboard-content">
                 <div class="dashboard-container">
                     <div class="dashboard-heading-container">
@@ -36,13 +50,13 @@ class settingsView {
 
             <div class="container settings-tab-container mb-md-1">
                 <div class="settings-parent-div">
-                    <span class="settings-tab active">Profile</span>
-                    <span class="settings-tab">Budget</span>
-                    <span class="settings-tab">Categories</span>
+                    <span class="settings-tab active" data-settings-tab="settings-profile-container">Profile</span>
+                    <span class="settings-tab" data-settings-tab="settings-budget-container">Budget</span>
+                    <span class="settings-tab" data-settings-tab="settings-categories-container">Categories</span>
                 </div>
             </div>
 
-            <div class="container settings-profile-container">
+            <div class="container settings-profile-container settings-tab-div">
                 <div class="profile-header-container mb-md-2">
                     <p class="profile-header">Profile</p>
                     <p class="profile-header-desc">Update your personal details here.</p>
@@ -58,14 +72,14 @@ class settingsView {
                         </div>
                         <div class="settings-field-container">
                             <span class="settings-form-label">Country *</span>
-                            <select id="settings-country" class="settings-profile-input">
-                                <option>USA</option>
-                                <option>India</option>
-                                <option>India</option>
-                                <option>India</option>
-                                <option>India</option>
-                                <option>India</option>
-                            </select>
+                            <div class="custom-select">
+                              <input type="text" placeholder="Search country..." class="custom-select-input">
+                              <div class="custom-select-options">
+                                <div class="option">India</div>
+                                <div class="option">United States</div>
+                                <div class="option">Japan</div>
+                              </div>
+                            </div>
                         </div>
                         <div class="settings-field-container">
                             <span class="settings-form-label">Currency</span>
@@ -82,7 +96,7 @@ class settingsView {
                 </div>
             </div>
 
-            <div class="container settings-budget-container hidden">
+            <div class="container settings-budget-container hidden settings-tab-div">
                 <div class="profile-header-container mb-md-2">
                     <p class="profile-header">Budget</p>
                     <p class="profile-header-desc">Define your monthly budget and monitor your spending.</p>
@@ -107,7 +121,7 @@ class settingsView {
                 </div>
             </div>
 
-            <div class="container settings-categories-container hidden">
+            <div class="container settings-categories-container hidden settings-tab-div">
                 <div class="mb-md-4 setings-add-categories-container">
                     <div class="profile-header-container mb-md-2">
                         <p class="profile-header">Categories</p>
@@ -218,7 +232,7 @@ class settingsView {
                 </div>
             </div>
         </section>`;
-    }
+  }
 }
 
 export default new settingsView();

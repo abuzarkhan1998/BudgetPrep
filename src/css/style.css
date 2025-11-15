@@ -462,7 +462,7 @@
     width: 15%;
 }
 
-.pagination-empty-div{
+.pagination-empty-div {
     width: 15%;
     content: "";
 }
@@ -479,7 +479,7 @@
     justify-content: center;
 }
 
-.pagination-btn{
+.pagination-btn {
     background: none;
     border-radius: 50%;
     width: 3rem;
@@ -493,7 +493,7 @@
     font-weight: 500;
 }
 
-.pagination-btn-active{
+.pagination-btn-active {
     background-color: #177ae6;
     color: #fff;
 }
@@ -641,6 +641,57 @@
     font-size: inherit;
     border-radius: 4px;
     width: 20rem;
+}
+
+#settings-country {
+    width: 42rem;
+}
+
+.custom-select {
+    max-width: 42rem;
+    position: relative;
+}
+
+.custom-select-input {
+    width: 42rem;
+    padding: .6rem 1rem;
+    font-size: inherit;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0.6rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-height: 20rem;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none; /* hidden by default */
+}
+
+.option {
+  padding: 1rem 1.2rem;
+  font-size: 1.4rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.option:hover {
+  background-color: #f4f7fb;
+}
+
+/* Show dropdown when active */
+.custom-select.active .custom-select-options {
+  display: block;
 }
 
 .settings-profile-name-container {
@@ -796,21 +847,21 @@
     align-items: center;
 }
 
-.category-list-name-container .color-picker-container{
+.category-list-name-container .color-picker-container {
     margin-right: 3rem;
     padding: 0.5rem 1.2rem;
 }
 
-.category-list-name-container .settings-profile-input{
+.category-list-name-container .settings-profile-input {
     width: 40rem;
 }
 
-.categories-edit-list-field{
-    gap :18rem;
+.categories-edit-list-field {
+    gap: 18rem;
     grid-template-columns: 8fr 2fr;
 }
 
-.edit-category-save-btn{
+.edit-category-save-btn {
     color: #fff;
     background-color: #28a745;
     padding: 0.2rem 0.4rem;
@@ -820,11 +871,11 @@
     border-radius: 2px;
 }
 
-.edit-category-save-btn:hover{
-     background-color: #24963e;
+.edit-category-save-btn:hover {
+    background-color: #24963e;
 }
 
-.edit-category-cancel-btn{
+.edit-category-cancel-btn {
     color: #fff;
     background-color: #dc3545;
     padding: 0.2rem 0.4rem;
@@ -834,11 +885,11 @@
     border-radius: 2px;
 }
 
-.edit-category-cancel-btn:hover{
+.edit-category-cancel-btn:hover {
     background-color: #c6303e;
 }
 
-.category-edit-btn-container{
+.category-edit-btn-container {
     display: flex;
     align-items: center;
     gap: 1.4rem;
