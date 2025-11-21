@@ -3,8 +3,22 @@ import { createIcons, icons } from "lucide";
 class settingsView {
   _parentContainer = document.querySelector("main");
   _tabContainer;
+  _countryData;
+  _currencyInputField;
+  _currencyOptionsContainer;
+  _currencyDisplayLabel;
+  _profileForm;
+  _firstNameInput;
+  _lastNameInput;
+  _countryNameInput;
+  _budgetForm;
+  _colorsDataListEl;
+  _userDetails;
+  _addCategorycolorCodeLabel;
+  _editCategorycolorCodeLabel;
+  _colorPickerContainers;
 
-  renderView() {
+  renderView(apiResponse,userData) {
     // console.log(this._parentContainer);
     this._parentContainer.textContent = "";
     this._parentContainer.insertAdjacentHTML(
@@ -12,8 +26,26 @@ class settingsView {
       this._returnMarkup()
     );
     this._tabContainer = document.querySelector(".settings-parent-div");
+    this._currencyInputField = document.getElementById(
+      "settings-country-input"
+    );
+    this._currencyOptionsContainer = document.querySelector(
+      ".custom-select-options"
+    );
+    this._currencyDisplayLabel = document.querySelector(".settings-currency");
+    this._profileForm = document.getElementById("settings-profile-form");
+    this._budgetForm = document.getElementById("settings-budget-form");
+    this._colorsDataListEl = document.querySelectorAll(".categories-colors");
+    this._colorcodeLabel = document.getElementById("color-code");
+    this._colorPickerContainers = document.querySelectorAll(".color-picker-container");
     createIcons({ icons });
+    this._countryData = apiResponse;
+    // console.log(this._countryData);
+    this._userDetails = userData;
+    console.log(this._userDetails);
+    this._initializeCategoryColor();
   }
+
   navigateTabs() {
     this._tabContainer.addEventListener("click", function (e) {
       // console.log(e);
@@ -31,10 +63,169 @@ class settingsView {
       const selectActiveTabDiv = document.querySelector(
         `.${selectedTab.dataset.settingsTab}`
       );
-      console.log(selectActiveTabDiv);
+    //   console.log(selectActiveTabDiv);
       if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
     });
   }
+
+  addHandlerShowCurrency() {
+    this._currencyInputField.addEventListener("keyup", (e) => {
+      //  console.log(e.target.value);
+      if (!e.target.value) {
+        this._currencyOptionsContainer.style.display = "none";
+        return;
+      }
+      //  console.log(this._countryData);
+      const filteredData = this._countryData.filter((data) =>
+        data.countryName.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      //  console.log(filteredData);
+      this._displayCountriesOptions(filteredData);
+    });
+  }
+
+  _displayCountriesOptions(data) {
+    this._currencyOptionsContainer.style.display = "block";
+    this._currencyOptionsContainer.innerHTML = "";
+    data.forEach((option) => {
+      const optionEl = `<div class="country-option" data-country-name="${option.countryName}">${option.countryName}</div>`;
+      this._currencyOptionsContainer.insertAdjacentHTML("afterbegin", optionEl);
+    });
+  }
+
+  selectCountry() {
+    this._currencyOptionsContainer.addEventListener("click", (e) => {
+     const currencyInputField = document.getElementById('settings-currency-input');
+      const optionEl = e.target.closest(".country-option");
+      if (!optionEl) return;
+    //   console.log(optionEl);
+      const selectedCurrency = this._countryData.find(
+        (val) =>
+          val.countryName.toLowerCase() ===
+          optionEl.dataset.countryName.toLowerCase()
+      );
+    //   console.log(selectedCurrency);
+      this._currencyInputField.value = "";
+      this._currencyInputField.value = optionEl.dataset.countryName;
+      this._currencyOptionsContainer.innerHTML = "";
+      this._currencyOptionsContainer.style.display = "none";
+      this._currencyDisplayLabel.textContent = selectedCurrency.currencySymbol
+        ? selectedCurrency.currencySymbol
+        : selectedCurrency.currencyName;
+     currencyInputField.value = selectedCurrency.currencySymbol
+        ? selectedCurrency.currencySymbol
+        : selectedCurrency.currencyName;
+    });
+  }
+
+  submitProfileForm(handler) {
+    this._profileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const profilevalidationInputs =
+        this._profileForm.querySelectorAll("[data-validate]");
+      // console.log(profilevalidationInputs);
+      const requiredValidation = this._inputRequiredValidation(
+        profilevalidationInputs
+      );
+      const countryValidation = this._validateCountryField();
+      if (requiredValidation || countryValidation) return;
+      console.log("Form Submitted");
+      console.log(e);
+      const data = [...new FormData(e.target)];
+      const formData = Object.fromEntries(data);
+      handler(formData);
+    });
+  }
+
+  _inputRequiredValidation(inputFields) {
+    let isValidationError = false;
+    inputFields.forEach((input) => {
+      const key = input.dataset.validate;
+      const validator = document.querySelector(`[data-validator="${key}"]`);
+      // console.log(`Validation start for ${key}`);
+      // console.log(input);
+      // console.log(validator);
+      if (!validator) return;
+      if (input.value.trim() === "") {
+        validator.textContent = `${key.replace("-", " ")} is required`;
+        validator.classList.remove("hidden");
+        isValidationError = true;
+      } else {
+        validator.textContent = "";
+        validator.classList.add("hidden");
+        isValidationError = false;
+      }
+    });
+    return isValidationError;
+  }
+
+  _validateCountryField() {
+    const countryInputElement = document.getElementById(
+      "settings-country-input"
+    );
+    const validatorElement = document.querySelector(
+      `[data-validator="country"]`
+    );
+    if (countryInputElement.value.trim() === "") return false;
+    if (this._currencyDisplayLabel.textContent === "") {
+      validatorElement.textContent =
+        "please select a proper country from the dropdown list";
+      validatorElement.classList.remove("hidden");
+      return true;
+    } else {
+      validatorElement.textContent = "";
+      validatorElement.classList.add("hidden");
+      return false;
+    }
+  }
+
+  submitBudgetForm(handler){
+    this._budgetForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        // console.log(this._budgetForm);
+        const budgetFormInput = this._budgetForm.querySelectorAll("[data-validate]");
+        const requiredValidation = this._inputRequiredValidation(budgetFormInput);
+        if (requiredValidation) return;
+        const data = [...new FormData(e.target)];
+        const formData = Object.fromEntries(data);
+        formData.budget = +formData.budget;
+        handler(formData);
+    })
+  }
+
+  preventTextCharacters(){
+    document.querySelector('.settings-budget-input').addEventListener('input',function(e){
+        e.target.value = e.target.value.replace(/\D/g,"");
+    })
+  }
+
+  getUserDetails(handler){
+    const userData = handler();
+    return userData;
+  }
+
+  _initializeCategoryColor(){
+    const filteredColors = this._userDetails.colors.filter(color => !this._userDetails.categories.some(cat=>cat.color === color));
+    console.log(filteredColors);
+    this._colorsDataListEl.forEach(el=>{
+        // console.log(el);
+        filteredColors.forEach(color=>{
+            const optionEl = `<option value="${color}"></option>`;
+            el.insertAdjacentHTML('afterbegin',optionEl);
+        });
+    });
+  }
+
+ _handleClickonColorPicker(){
+    this._colorPickerContainers.forEach(ele =>{
+       ele.addEventListener('click',(e)=>{
+        console.log(e);
+        const childInputEle = ele.querySelector('.color-input');
+        console.log(childInputEle);
+        childInputEle.click();
+       });
+    });
+ }
 
   _returnMarkup() {
     return `<section class="main-section section-settings">
@@ -66,24 +257,28 @@ class settingsView {
                         <div class="settings-field-container">
                             <span class="settings-form-label">Name *</span>
                             <div class="settings-profile-name-container">
-                                <input type="text" id="settings-first-name" class="settings-profile-input" />
-                                <input type="text" id="settings-last-name" class="settings-profile-input" />
+                                <div>
+                                  <input type="text" id="settings-first-name" class="settings-profile-input" data-validate="first-name" name="firstName" />
+                                  <p class="validation-label hidden" data-validator="first-name"></p>
+                                </div>
+                                <div>
+                                  <input type="text" id="settings-last-name" class="settings-profile-input" data-validate="last-name" name="lastName"/>
+                                  <p class="validation-label hidden" data-validator="last-name"></p>
+                                </div>
                             </div>
                         </div>
                         <div class="settings-field-container">
                             <span class="settings-form-label">Country *</span>
                             <div class="custom-select">
-                              <input type="text" placeholder="Search country..." class="custom-select-input">
-                              <div class="custom-select-options">
-                                <div class="option">India</div>
-                                <div class="option">United States</div>
-                                <div class="option">Japan</div>
-                              </div>
+                              <input id="settings-country-input" type="text" placeholder="Search country..." class="custom-select-input" name="country" data-validate="country" />
+                              <div class="custom-select-options"></div>
+                              <p class="validation-label hidden" data-validator="country"></p>
                             </div>
                         </div>
                         <div class="settings-field-container">
                             <span class="settings-form-label">Currency</span>
-                            <span class="settings-currency">$</span>
+                            <span class="settings-currency"></span>
+                            <input type="hidden" name="currency" id="settings-currency-input">
                         </div>
                         <div class="settings-field-container">
                             <span class="settings-form-label"></span>
@@ -108,7 +303,8 @@ class settingsView {
                             <div class="settings-budget-input-container">
                                 <label class="settings-budget-label">$</label>
                                 <input type="text" id="settings-monthly-budget"
-                                    class="settings-profile-input settings-budget-input" />
+                                    class="settings-profile-input settings-budget-input" data-validate="monthly-budget" name="budget" inputmode="numeric" />
+                                <p class="validation-label hidden" data-validator="monthly-budget"></p>
                             </div>
                         </div>
                         <div class="settings-field-container">
@@ -135,18 +331,10 @@ class settingsView {
                             </div>
                             <div class="settings-field-container">
                                 <span class="settings-form-label">Color *</span>
-                                <div class="color-picker-container">
-                                    <input type="color" list="categoryColors" id="colors" />
-                                    <span id="color-code">#79B2D6</span>
-                                    <datalist id="categoryColors">
-                                        <option value="#E57373"></option>
-                                        <option value="#FFB74D"></option>
-                                        <option value="#FFD54F"></option>
-                                        <option value="#81C784"></option>
-                                        <option value="#4DB6AC"></option>
-                                        <option value="#64B5F6"></option>
-                                        <option value="#BA68C8"></option>
-                                        <option value="#B0BEC5"></option>
+                                <div class="color-picker-container add-category-color-picker">
+                                    <input type="color" list="categoryColors" class="color-input" />
+                                    <span id="color-code" class="add-category-color-code color-code-label">#79B2D6</span>
+                                    <datalist id="categoryColors" class="categories-colors">
                                     </datalist>
                                 </div>
                             </div>
@@ -206,18 +394,10 @@ class settingsView {
                             </li>
                             <li class="settings-categories-lists-item categories-edit-list-field">
                                 <div class="category-list-name-container">
-                                    <div class="color-picker-container">
-                                        <input type="color" list="categoryColors" id="colors" />
-                                        <span id="color-code">#79B2D6</span>
-                                        <datalist id="categoryColors">
-                                            <option value="#E57373"></option>
-                                            <option value="#FFB74D"></option>
-                                            <option value="#FFD54F"></option>
-                                            <option value="#81C784"></option>
-                                            <option value="#4DB6AC"></option>
-                                            <option value="#64B5F6"></option>
-                                            <option value="#BA68C8"></option>
-                                            <option value="#B0BEC5"></option>
+                                    <div class="color-picker-container edit-category-color-picker">
+                                        <input type="color" list="categoryColors" class="color-input" />
+                                        <span id="color-code" class="edit-category-color-code color-code-label">#79B2D6</span>
+                                        <datalist id="categoryColors" class="categories-colors">
                                         </datalist>
                                     </div>
                                     <input type="text" id="settings-category-edit-name" class="settings-profile-input" />

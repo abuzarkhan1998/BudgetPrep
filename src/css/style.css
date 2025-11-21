@@ -641,6 +641,7 @@
     font-size: inherit;
     border-radius: 4px;
     width: 20rem;
+    height: 3.6rem;
 }
 
 #settings-country {
@@ -677,7 +678,7 @@
   display: none; /* hidden by default */
 }
 
-.option {
+.country-option {
   padding: 1rem 1.2rem;
   font-size: 1.4rem;
   color: #333;
@@ -685,7 +686,7 @@
   transition: background-color 0.15s ease;
 }
 
-.option:hover {
+.country-option:hover {
   background-color: #f4f7fb;
 }
 
@@ -764,6 +765,7 @@
     width: fit-content;
     background-color: #ffff;
     transition: border-color 0.2s ease;
+    cursor: pointer;
 }
 
 .color-picker-container:hover {

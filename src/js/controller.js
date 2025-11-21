@@ -8,10 +8,17 @@ const controlNavigation = async function (targetPage) {
 setUrl(targetPage);
 if(targetPage === 'settings')
 {
-    settingsView.renderView();
-    settingsView.navigateTabs();
     const apiData = await Model.getCountriesFromApi();
-    console.log(apiData);
+    const userData = Model.returnUserDetails();
+    // console.log(apiData);
+    settingsView.renderView(apiData,userData);
+    settingsView.navigateTabs();
+    settingsView.addHandlerShowCurrency();
+    settingsView.selectCountry();
+    settingsView.submitProfileForm(updateProfileDetails);
+    settingsView.submitBudgetForm(updateUserBudget);
+    settingsView.preventTextCharacters();
+    settingsView._handleClickonColorPicker();
 }
 };
 
@@ -22,6 +29,21 @@ const setUrl = function(targetUrl){
     history.pushState({},'',newUrl);
 }
 
+const updateProfileDetails = function(formData){
+    console.log(formData);
+    Model.updateProfileDetails(formData);
+}
+
+const updateUserBudget = function(formData)
+{
+    console.log(formData);
+    Model.updateUserBudget(formData);
+}
+
+const returnUserDetails = function(){
+    const colorsData = Model.returnUserDetails();
+    return colorsData;
+}
 
 const init = function () {
   createIcons({ icons });

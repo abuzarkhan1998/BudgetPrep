@@ -238,6 +238,17 @@ margin-bottom: 4.2rem;
     display: none;
 }
 
+.active{
+    display: block;
+}
+
+.validation-label{
+    padding: 0.4rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #f44455;
+}
+
 
 /* define the keyframes */
 @keyframes spin {
