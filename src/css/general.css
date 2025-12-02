@@ -190,6 +190,9 @@ margin-bottom: 4.2rem;
     stroke: #eee;
   }
 }
+.spinner.active{
+    display: block;
+}
 
 .notification-modal{
     padding: 1.6rem 4rem;

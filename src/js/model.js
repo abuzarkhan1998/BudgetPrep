@@ -7,10 +7,10 @@ export const state = {
     budget:0,
     categories: [
       { id: 1, name: "Food & Groceries", color: "#8dc4ff", isDefault: true },
-      { id: 1, name: "Rent & Utilities", color: "#60d2ca", isDefault: true },
-      { id: 1, name: "Transportation", color: "#b089f4", isDefault: true },
+      { id: 2, name: "Rent & Utilities", color: "#60d2ca", isDefault: true },
+      { id: 3, name: "Transportation", color: "#b089f4", isDefault: true },
     ],
-    colors:['#8dc4ff','#60d2ca','#b089f4','#E57373','#FFB74D','#FFD54F','#81C784','#4DB6AC', '#64B5F6', '#BA68C8', '#B0BEC5']
+    colors:['#8dc4ff','#60d2ca','#b089f4','#e57373','#ffB74d','#ffd54f','#81c784','#4db6ac', '#64b5f6', '#ba68c8', '#b0bec5']
   },
 };
 
@@ -46,15 +46,51 @@ export const getCountriesFromApi = async function () {
 
 export const updateProfileDetails = function(formData){
 state.userDetails.profile = formData;
-console.log(state);
+// console.log(state);
+saveDatatoLocalStorage();
 }
 
 export const updateUserBudget = function(formData){
 state.userDetails.budget = formData.budget;
-console.log(state);
+// console.log(state);
+saveDatatoLocalStorage();
+}
+
+export const addCategories = function(formData){
+    const newId = +state.userDetails.categories.at(-1).id+1;
+    console.log(newId);
+    const data = {
+        id: newId,
+        name:formData.name,
+        color:formData.color,
+        isDefault:false
+    };
+    state.userDetails.categories.push(data);
+    // console.log(state);
+    saveDatatoLocalStorage();
+}
+
+export const updateCategory = function(ctgr){
+  const category = state.userDetails.categories.find(cat => cat.id === ctgr.id);
+   if (!category) {
+    console.error(`Category with ID ${ctgr.id} not found`);
+    return;
+  }
+  category.name = ctgr.name;
+  category.color = ctgr.color;
+  saveDatatoLocalStorage();
+  console.log(state);
 }
 
 export const returnUserDetails = function()
 {
+    const data = localStorage.getItem('budgetData');
+    if(!data) return state.userDetails;
+    const savedState = JSON.parse(data);
+    Object.assign(state,savedState);
     return state.userDetails;
+}
+
+const saveDatatoLocalStorage = function(){
+    localStorage.setItem('budgetData',JSON.stringify(state));
 }

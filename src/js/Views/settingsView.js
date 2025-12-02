@@ -17,9 +17,16 @@ class settingsView {
   _addCategorycolorCodeLabel;
   _editCategorycolorCodeLabel;
   _colorPickerContainers;
+  _addCategoryColorCodeInput;
+  _addCategoryForm;
+  _successModal;
+  _toastrModalBtns;
+  _categoryListsEl;
 
-  renderView(apiResponse,userData) {
+  renderView(apiResponse, userData, targetTab) {
     // console.log(this._parentContainer);
+    this._userDetails = userData;
+    console.log(this._userDetails);
     this._parentContainer.textContent = "";
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
@@ -32,18 +39,40 @@ class settingsView {
     this._currencyOptionsContainer = document.querySelector(
       ".custom-select-options"
     );
+    this._displayActiveTab(targetTab);
     this._currencyDisplayLabel = document.querySelector(".settings-currency");
     this._profileForm = document.getElementById("settings-profile-form");
     this._budgetForm = document.getElementById("settings-budget-form");
     this._colorsDataListEl = document.querySelectorAll(".categories-colors");
     this._colorcodeLabel = document.getElementById("color-code");
-    this._colorPickerContainers = document.querySelectorAll(".color-picker-container");
+    this._colorPickerContainers = document.querySelectorAll(
+      ".color-picker-container"
+    );
+    this._addCategoryColorCodeInput = document.querySelector(".color-input");
+    this._addCategorycolorCodeLabel = document.querySelector(
+      ".add-category-color-code"
+    );
+    this._addCategoryForm = document.getElementById(
+      "settings-add-category-form"
+    );
+    this._successModal = document.querySelector(".modal-success");
+    this._toastrModalBtns = document.querySelectorAll(
+      ".modal-notification-btn"
+    );
+    this._categoryListsEl = document.querySelector(
+      ".settings-categories-lists"
+    );
+    // console.log(this._categoryListsEl);
+    // console.log(this._toastrModalBtns);
     createIcons({ icons });
     this._countryData = apiResponse;
+    this._initData();
     // console.log(this._countryData);
-    this._userDetails = userData;
-    console.log(this._userDetails);
     this._initializeCategoryColor();
+    this.selectColor();
+    this._closeToastrEl();
+    this._openCategoryEditor();
+    this._cancelEdit();
   }
 
   navigateTabs() {
@@ -63,7 +92,7 @@ class settingsView {
       const selectActiveTabDiv = document.querySelector(
         `.${selectedTab.dataset.settingsTab}`
       );
-    //   console.log(selectActiveTabDiv);
+      //   console.log(selectActiveTabDiv);
       if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
     });
   }
@@ -95,16 +124,18 @@ class settingsView {
 
   selectCountry() {
     this._currencyOptionsContainer.addEventListener("click", (e) => {
-     const currencyInputField = document.getElementById('settings-currency-input');
+      const currencyInputField = document.getElementById(
+        "settings-currency-input"
+      );
       const optionEl = e.target.closest(".country-option");
       if (!optionEl) return;
-    //   console.log(optionEl);
+      //   console.log(optionEl);
       const selectedCurrency = this._countryData.find(
         (val) =>
           val.countryName.toLowerCase() ===
           optionEl.dataset.countryName.toLowerCase()
       );
-    //   console.log(selectedCurrency);
+      //   console.log(selectedCurrency);
       this._currencyInputField.value = "";
       this._currencyInputField.value = optionEl.dataset.countryName;
       this._currencyOptionsContainer.innerHTML = "";
@@ -112,7 +143,7 @@ class settingsView {
       this._currencyDisplayLabel.textContent = selectedCurrency.currencySymbol
         ? selectedCurrency.currencySymbol
         : selectedCurrency.currencyName;
-     currencyInputField.value = selectedCurrency.currencySymbol
+      currencyInputField.value = selectedCurrency.currencySymbol
         ? selectedCurrency.currencySymbol
         : selectedCurrency.currencyName;
     });
@@ -129,8 +160,8 @@ class settingsView {
       );
       const countryValidation = this._validateCountryField();
       if (requiredValidation || countryValidation) return;
-      console.log("Form Submitted");
-      console.log(e);
+      // console.log("Form Submitted");
+      // console.log(e);
       const data = [...new FormData(e.target)];
       const formData = Object.fromEntries(data);
       handler(formData);
@@ -143,8 +174,8 @@ class settingsView {
       const key = input.dataset.validate;
       const validator = document.querySelector(`[data-validator="${key}"]`);
       // console.log(`Validation start for ${key}`);
-      // console.log(input);
-      // console.log(validator);
+      console.log(input);
+      console.log(validator);
       if (!validator) return;
       if (input.value.trim() === "") {
         validator.textContent = `${key.replace("-", " ")} is required`;
@@ -179,53 +210,320 @@ class settingsView {
     }
   }
 
-  submitBudgetForm(handler){
-    this._budgetForm.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        // console.log(this._budgetForm);
-        const budgetFormInput = this._budgetForm.querySelectorAll("[data-validate]");
-        const requiredValidation = this._inputRequiredValidation(budgetFormInput);
-        if (requiredValidation) return;
-        const data = [...new FormData(e.target)];
-        const formData = Object.fromEntries(data);
-        formData.budget = +formData.budget;
-        handler(formData);
-    })
+  submitBudgetForm(handler) {
+    this._budgetForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // console.log(this._budgetForm);
+      const budgetFormInput =
+        this._budgetForm.querySelectorAll("[data-validate]");
+      const requiredValidation = this._inputRequiredValidation(budgetFormInput);
+      if (requiredValidation) return;
+      const data = [...new FormData(e.target)];
+      const formData = Object.fromEntries(data);
+      formData.budget = +formData.budget;
+      handler(formData);
+    });
   }
 
-  preventTextCharacters(){
-    document.querySelector('.settings-budget-input').addEventListener('input',function(e){
-        e.target.value = e.target.value.replace(/\D/g,"");
-    })
+  preventTextCharacters() {
+    document
+      .querySelector(".settings-budget-input")
+      .addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/\D/g, "");
+      });
   }
 
-  getUserDetails(handler){
+  getUserDetails(handler) {
     const userData = handler();
     return userData;
   }
 
-  _initializeCategoryColor(){
-    const filteredColors = this._userDetails.colors.filter(color => !this._userDetails.categories.some(cat=>cat.color === color));
-    console.log(filteredColors);
-    this._colorsDataListEl.forEach(el=>{
-        // console.log(el);
-        filteredColors.forEach(color=>{
-            const optionEl = `<option value="${color}"></option>`;
-            el.insertAdjacentHTML('afterbegin',optionEl);
-        });
+  _initializeCategoryColor() {
+    const filteredColors = this._userDetails.colors.filter(
+      (color) =>
+        !this._userDetails.categories.some(
+          (cat) => cat.color.toLowerCase() === color.toLowerCase()
+        )
+    );
+    // console.log(filteredColors);
+    this._colorsDataListEl.forEach((el) => {
+      // console.log(el);
+      filteredColors.forEach((color) => {
+        const optionEl = `<option value="${color}"></option>`;
+        el.insertAdjacentHTML("afterbegin", optionEl);
+      });
+    });
+    this._addCategoryColorCodeInput.value =
+      this._addCategorycolorCodeLabel.textContent = filteredColors[0];
+  }
+
+  _handleClickonColorPicker() {
+    this._colorPickerContainers.forEach((ele) => {
+      ele.addEventListener("click", (e) => {
+        // console.log(e.target);
+        const childInputEle = ele.querySelector(".color-input");
+        // console.log(childInputEle);
+        childInputEle.click();
+      });
     });
   }
 
- _handleClickonColorPicker(){
-    this._colorPickerContainers.forEach(ele =>{
-       ele.addEventListener('click',(e)=>{
-        console.log(e);
-        const childInputEle = ele.querySelector('.color-input');
-        console.log(childInputEle);
-        childInputEle.click();
-       });
+  selectColor() {
+    this._addCategoryColorCodeInput.addEventListener("input", function (e) {
+      console.log(e);
+      const parentContainer = e.target.closest(".color-picker-container");
+      const spanElement = parentContainer.querySelector(".color-code-label");
+      spanElement.textContent = e.target.value;
     });
- }
+  }
+
+  addCategoryForm(handler) {
+    this._addCategoryForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // console.log(e);
+      const inputField =
+        this._addCategoryForm.querySelectorAll("[data-validate]");
+      const requiredValidation = this._inputRequiredValidation(inputField);
+      const repeatingValidation = this._validaterepeatingCategories();
+      if (requiredValidation || repeatingValidation) return;
+      const formData = [...new FormData(e.target)];
+      const data = Object.fromEntries(formData);
+      handler(data);
+    });
+  }
+
+  _validaterepeatingCategories() {
+    const categoryNameInputElement = document.getElementById(
+      "settings-category-name"
+    );
+    const validatorElement = document.querySelector(
+      `[data-validator="category-name"]`
+    );
+    if (categoryNameInputElement.value.trim() === "") return false;
+    if (
+      this._userDetails.categories.some(
+        (cat) => cat.name === categoryNameInputElement.value
+      )
+    ) {
+      validatorElement.textContent = "category name cannot be repeated";
+      validatorElement.classList.remove("hidden");
+      return true;
+    } else {
+      validatorElement.textContent = "";
+      validatorElement.classList.add("hidden");
+      return false;
+    }
+  }
+
+  _clearView() {
+    this._parentContainer.textContent = "";
+  }
+
+  renderSpinner() {
+    // this._clearView();
+    const backDrop = `<div class="modal-backdrop"></div>`;
+    const renderSpinner = `<div class="spinner"><i data-lucide="loader-circle"></i></div>`;
+    this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+    this._parentContainer.insertAdjacentHTML("afterbegin", renderSpinner);
+    const spinnerEl = document.querySelector(".spinner");
+    const backDropEl = document.querySelector(".modal-backdrop");
+    spinnerEl.classList.add("active");
+    backDropEl.classList.add("active");
+    createIcons({ icons });
+  }
+
+  _initData() {
+    if (!this._userDetails) return;
+    // console.log(this._userDetails);
+    document.getElementById("settings-first-name").value =
+      this._userDetails.profile.firstName;
+    document.getElementById("settings-last-name").value =
+      this._userDetails.profile.lastName;
+    this._currencyInputField.value = this._userDetails.profile.country;
+    document.getElementById("settings-currency-input").value =
+      this._currencyDisplayLabel.textContent =
+      document.querySelector(".settings-budget-label").textContent =
+        this._userDetails.profile.currency;
+    document.getElementById("settings-monthly-budget").value =
+      this._userDetails.budget;
+  }
+
+  displaySuccessMessage(toastrDesc, buttonDesc) {
+    const toastrDescEl = this._successModal.querySelector(
+      ".modal-notification-message"
+    );
+    const btnEl = this._successModal.querySelector(".modal-notification-btn");
+    console.log(btnEl);
+    toastrDescEl.textContent = toastrDesc;
+    btnEl.textContent = buttonDesc;
+    const backDrop = `<div class="modal-backdrop"></div>`;
+    this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+    this._successModal.classList.remove("hidden");
+    const backDropEl = document.querySelector(".modal-backdrop");
+    backDropEl.classList.add("active");
+  }
+
+  _closeToastrEl() {
+    this._toastrModalBtns.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        console.log("clicked");
+        e.preventDefault();
+        const modals = document.querySelectorAll(".notification-modal");
+        modals.forEach((modal) => modal.classList.add("hidden"));
+        const backDropEl = document.querySelector(".modal-backdrop");
+        if (backDropEl) {
+          backDropEl.remove();
+        }
+      });
+    });
+  }
+
+  _displayActiveTab(tab) {
+    const tabEl = document.querySelector(`[data-settings-tab=${tab}]`);
+    // console.log(tabEl);
+    if (!tabEl) return;
+    document
+      .querySelectorAll(".settings-tab")
+      .forEach((tab) => tab.classList.remove("active"));
+    document
+      .querySelectorAll(".settings-tab-div")
+      .forEach((divTab) => divTab.classList.add("hidden"));
+    tabEl.classList.add("active");
+    const selectActiveTabDiv = document.querySelector(
+      `.${tabEl.dataset.settingsTab}`
+    );
+    if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
+  }
+
+  _openCategoryEditor() {
+    this._categoryListsEl.addEventListener("click", (e) => {
+      // e.preventDefault();
+      const editBtn = e.target.closest(".edit-btn");
+      if (!editBtn) return;
+      // console.log(editBtn);
+      const listEl = editBtn.closest(".settings-categories-lists-item");
+      const categoryId = listEl.dataset.categoryId;
+      // console.log(listEl);
+      listEl.classList.remove("trans-table-button-col");
+      listEl.classList.add("categories-edit-list-field");
+      listEl.textContent = ``;
+      listEl.innerHTML = `<div class="category-list-name-container">
+                                    <div class="color-picker-container edit-category-color-picker">
+                                        <input type="color" list="categoryColors" class="color-input edit-category-color-input" name="color-${categoryId}" />
+                                        <span id="color-code" class="edit-category-color-code color-code-label"></span>
+                                        <datalist id="categoryColors" class="categories-colors">
+                                        </datalist>
+                                    </div>
+                                    <div>
+                                      <input type="text" id="settings-category-edit-name" class="settings-profile-input" data-validate="category-name"/>
+                                      <p class="validation-label hidden" data-validator="category-name"></p>
+                                    </div>
+                                </div>
+                                <div class="category-edit-btn-container">
+                                    <button class="btn edit-category-save-btn"><i data-lucide="check"></i></button>
+                                    <button class="btn edit-category-cancel-btn"><i data-lucide="x"></i></button>
+                                </div>`;
+      createIcons({ icons });
+      //  console.log(categoryId,typeof(categoryId));
+      const selectedCategory = this._userDetails.categories.find(
+        (cat) => cat.id === +categoryId
+      );
+      //  console.log(selectedCategory);
+      const colorSpanEl = listEl.querySelector(".color-code-label");
+      //  console.log(colorSpanEl);
+      const colorPickerEl = listEl.querySelector(".edit-category-color-input");
+      const catNameEl = listEl.querySelector(".settings-profile-input");
+      colorSpanEl.textContent = colorPickerEl.value = selectedCategory.color;
+      catNameEl.value = selectedCategory.name;
+      // this._initializeEditCategoryColor(listEl);
+      this._colorPickerContainers = document.querySelectorAll(
+        ".color-picker-container"
+      );
+      this._handleClickonColorPicker();
+      this._editCategorySelectColors();
+    });
+  }
+
+  _cancelEdit() {
+    this._categoryListsEl.addEventListener("click", (e) => {
+      // e.preventDefault();
+      const cancelBtn = e.target.closest(".edit-category-cancel-btn");
+      if (!cancelBtn) return;
+      // console.log(cancelBtn);
+      const listEl = cancelBtn.closest(".settings-categories-lists-item");
+      console.log(listEl);
+      listEl.classList.remove("categories-edit-list-field");
+      listEl.classList.add("trans-table-button-col");
+      const categoryId = listEl.dataset.categoryId;
+      const selectedCategory = this._userDetails.categories.find(
+        (cat) => cat.id === +categoryId
+      );
+      listEl.textContent = "";
+      listEl.innerHTML = `<div class="category-list-name-container">
+                 <span class="categories-list-color" style="background-color:${selectedCategory.color}"></span>
+                 <span class="categories-list-name">${selectedCategory.name}</span>
+             </div>
+             <div>
+                 <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
+                 <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
+             </div>`;
+      createIcons({ icons });
+    });
+  }
+
+  updateCategory(handler) {
+    this._categoryListsEl.addEventListener("click", (e) => {
+      // e.preventDefault();
+      const confirmBtn = e.target.closest(".edit-category-save-btn");
+      if (!confirmBtn) return;
+      // console.log("Clicked");
+      const listEl = confirmBtn.closest(".settings-categories-lists-item");
+      // console.log(listEl);
+      const inputField = listEl.querySelectorAll("[data-validate]");
+      // console.log(inputField);
+      const repeatingValidation = this._validateEditCategories(listEl);
+      if (repeatingValidation) return;
+      const catName = listEl.querySelector(".settings-profile-input").value;
+      const color = listEl.querySelector(".color-input").value;
+      // console.log(catName,color);
+      handler(listEl.dataset.categoryId, catName, color);
+    });
+  }
+
+  _validateEditCategories(listEl) {
+    const inputField = listEl.querySelector(".settings-profile-input");
+    const key = inputField.dataset.validate;
+    const validatorEl = listEl.querySelector(`[data-validator="${key}"]`);
+    // console.log(inputField);
+    // console.log(validatorEl);
+    const filteredData = this._userDetails.categories.filter(
+      (cat) => cat.id !== +listEl.dataset.categoryId
+    );
+    // console.log(filteredData);
+    if (inputField.value.trim() === "") {
+      validatorEl.textContent = `${key.replace("-", " ")} is required`;
+      validatorEl.classList.remove("hidden");
+      return true;
+    } else if (filteredData.some((cat) => cat.name === inputField.value)) {
+      validatorEl.textContent = "category name cannot be repeated";
+      validatorEl.classList.remove("hidden");
+      return true;
+    } else {
+      validatorEl.textContent = "";
+      validatorEl.classList.add("hidden");
+      return false;
+    }
+  }
+
+  _editCategorySelectColors(){
+    document.querySelectorAll(".edit-category-color-input").forEach(ele =>{
+      ele.addEventListener('input',(e)=>{
+      const parentContainer = e.target.closest(".color-picker-container");
+      const spanElement = parentContainer.querySelector(".color-code-label");
+      spanElement.textContent = e.target.value;
+      })
+    });
+  }
 
   _returnMarkup() {
     return `<section class="main-section section-settings">
@@ -241,13 +539,13 @@ class settingsView {
 
             <div class="container settings-tab-container mb-md-1">
                 <div class="settings-parent-div">
-                    <span class="settings-tab active" data-settings-tab="settings-profile-container">Profile</span>
+                    <span class="settings-tab" data-settings-tab="settings-profile-container">Profile</span>
                     <span class="settings-tab" data-settings-tab="settings-budget-container">Budget</span>
                     <span class="settings-tab" data-settings-tab="settings-categories-container">Categories</span>
                 </div>
             </div>
 
-            <div class="container settings-profile-container settings-tab-div">
+            <div class="container settings-profile-container settings-tab-div hidden">
                 <div class="profile-header-container mb-md-2">
                     <p class="profile-header">Profile</p>
                     <p class="profile-header-desc">Update your personal details here.</p>
@@ -327,13 +625,16 @@ class settingsView {
                         <form id="settings-add-category-form">
                             <div class="settings-field-container">
                                 <span class="settings-form-label">Category Name *</span>
-                                <input type="text" id="settings-category-name" class="settings-profile-input" />
+                                <div>
+                                 <input type="text" id="settings-category-name" class="settings-profile-input" name="name" data-validate="category-name"/>
+                                 <p class="validation-label hidden" data-validator="category-name"></p>
+                                </div>
                             </div>
                             <div class="settings-field-container">
                                 <span class="settings-form-label">Color *</span>
                                 <div class="color-picker-container add-category-color-picker">
-                                    <input type="color" list="categoryColors" class="color-input" />
-                                    <span id="color-code" class="add-category-color-code color-code-label">#79B2D6</span>
+                                    <input type="color" list="categoryColors" class="color-input add-category-color-input" name="color" />
+                                    <span id="color-code" class="add-category-color-code color-code-label"></span>
                                     <datalist id="categoryColors" class="categories-colors">
                                     </datalist>
                                 </div>
@@ -352,66 +653,46 @@ class settingsView {
                     <p class="profile-header mb-md-1">Your Categories</p>
                     <div class="settings-categories-lists-container">
                         <ul class="settings-categories-lists">
-                            <li class="settings-categories-lists-item trans-table-button-col">
-                                <div class="category-list-name-container">
-                                    <span class="categories-list-color"></span>
-                                    <span class="categories-list-name">Food</span>
-                                </div>
-                                <div>
-                                    <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                    <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                                </div>
-                            </li>
-                            <li class="settings-categories-lists-item trans-table-button-col">
-                                <div class="category-list-name-container">
-                                    <span class="categories-list-color"></span>
-                                    <span class="categories-list-name">Food</span>
-                                </div>
-                                <div>
-                                    <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                    <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                                </div>
-                            </li>
-                            <li class="settings-categories-lists-item trans-table-button-col">
-                                <div class="category-list-name-container">
-                                    <span class="categories-list-color"></span>
-                                    <span class="categories-list-name">Food</span>
-                                </div>
-                                <div>
-                                    <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                    <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                                </div>
-                            </li>
-                            <li class="settings-categories-lists-item trans-table-button-col">
-                                <div class="category-list-name-container">
-                                    <span class="categories-list-color"></span>
-                                    <span class="categories-list-name">Food</span>
-                                </div>
-                                <div>
-                                    <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                    <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                                </div>
-                            </li>
-                            <li class="settings-categories-lists-item categories-edit-list-field">
-                                <div class="category-list-name-container">
-                                    <div class="color-picker-container edit-category-color-picker">
-                                        <input type="color" list="categoryColors" class="color-input" />
-                                        <span id="color-code" class="edit-category-color-code color-code-label">#79B2D6</span>
-                                        <datalist id="categoryColors" class="categories-colors">
-                                        </datalist>
-                                    </div>
-                                    <input type="text" id="settings-category-edit-name" class="settings-profile-input" />
-                                </div>
-                                <div class="category-edit-btn-container">
-                                    <button class="btn edit-category-save-btn"><i data-lucide="check"></i></button>
-                                    <button class="btn edit-category-cancel-btn"><i data-lucide="x"></i></button>
-                                </div>
-                            </li>
+                        ${this._userDetails.categories
+                          .map((data) => this._renderCategoryList(data))
+                          .join("")}
                         </ul>
                     </div>
                 </div>
             </div>
-        </section>`;
+        </section>
+        <div class="modal notification-modal modal-success hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-check"></i></div>
+            <p class="modal-notification-title mb-sm-2">Success!</p>
+            <p class="modal-notification-message mb-sm-3"></p>
+            <button class="btn btn-primary modal-notification-btn"></button>
+        </div>
+        <div class="modal notification-modal modal-error hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-x"></i></div>
+            <p class="modal-notification-title mb-sm-2">Error!</p>
+            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+        <div class="modal notification-modal modal-info hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+        `;
+  }
+
+  _renderCategoryList(cat) {
+    return `<li class="settings-categories-lists-item trans-table-button-col" data-category-id=${cat.id}>
+             <div class="category-list-name-container">
+                 <span class="categories-list-color" style="background-color:${cat.color}"></span>
+                 <span class="categories-list-name">${cat.name}</span>
+             </div>
+             <div>
+                 <button class="btn edit-btn" ${cat.id === 1 || cat.id === 2 || cat.id === 3 ? 'disabled' : ''}><i data-lucide="square-pen"></i></button>
+                 <button class="btn delete-btn" ${cat.id === 1 || cat.id === 2 || cat.id === 3 ? 'disabled' : ''}><i data-lucide="trash-2"></i></button>
+             </div>
+            </li>`;
   }
 }
 

@@ -846,7 +846,7 @@
 
 .category-list-name-container {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .category-list-name-container .color-picker-container {
@@ -856,6 +856,7 @@
 
 .category-list-name-container .settings-profile-input {
     width: 40rem;
+     padding: 1.8rem 1rem;
 }
 
 .categories-edit-list-field {
@@ -895,4 +896,8 @@
     display: flex;
     align-items: center;
     gap: 1.4rem;
+}
+
+.color-input{
+    cursor: pointer;
 }
