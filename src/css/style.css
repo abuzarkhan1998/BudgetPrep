@@ -428,6 +428,12 @@
     stroke: #156dcc;
 }
 
+.btn-disabled svg,
+.btn-disabled svg:hover
+{
+   stroke : #8dc4ff; 
+}
+
 .edit-btn {
     margin-right: 1.2rem;
 }

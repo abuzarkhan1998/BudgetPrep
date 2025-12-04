@@ -22,6 +22,7 @@ if(targetPage === 'settings')
     settingsView._handleClickonColorPicker();
     settingsView.addCategoryForm(addCategoryForm);
     settingsView.updateCategory(updateCategory);
+    settingsView.deleteCategory(deleteCategory);
 }
 };
 
@@ -67,6 +68,13 @@ const updateCategory = async function(catId,catName,color){
     await controlNavigation('settings','settings-categories-container');
     settingsView.displaySuccessMessage('Category Updated Successfully','OK');
 }
+
+const deleteCategory = async function (categoryId) {
+  // console.log(categoryId);
+  Model.deleteCategory(categoryId);
+  await controlNavigation("settings", "settings-categories-container");
+  settingsView.displaySuccessMessage("Category Deleted Successfully", "OK");
+};
 
 // const returnUserDetails = function(){
 //     const colorsData = Model.returnUserDetails();

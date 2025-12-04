@@ -122,6 +122,15 @@ a:visited {
     background-color: #177ae6;
 }
 
+.btn-secondary{
+    background-color: #a7acb1;
+}
+
+.btn-secondary:hover{
+    background-color: #989ea4;
+}
+
+
 .transition-3{
     transition: all 0.3s;
 }
@@ -235,6 +244,19 @@ margin-bottom: 4.2rem;
     color: #fff;
     font-weight: 500;
     border-radius: 4px;
+}
+
+.modal-confirmation-btn{
+    padding: 1rem 2.4rem;
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.confirmation-modal-btn-container{
+    display: flex;
+    gap: 2rem;
 }
 
 .hidden{

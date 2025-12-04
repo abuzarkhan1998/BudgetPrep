@@ -91,6 +91,14 @@ export const returnUserDetails = function()
     return state.userDetails;
 }
 
+export const deleteCategory = function(categoryId){
+  const categoryIndex = state.userDetails.categories.findIndex(cat => cat.id === categoryId);
+  if(!categoryIndex) return;
+  console.log(categoryIndex);
+  state.userDetails.categories.splice(categoryIndex,1);
+  saveDatatoLocalStorage();
+}
+
 const saveDatatoLocalStorage = function(){
     localStorage.setItem('budgetData',JSON.stringify(state));
 }

@@ -22,6 +22,8 @@ class settingsView {
   _successModal;
   _toastrModalBtns;
   _categoryListsEl;
+  _confirmationModal;
+  _deleteConfirmationBtn;
 
   renderView(apiResponse, userData, targetTab) {
     // console.log(this._parentContainer);
@@ -62,6 +64,8 @@ class settingsView {
     this._categoryListsEl = document.querySelector(
       ".settings-categories-lists"
     );
+    this._confirmationModal = document.querySelector(".confirmation-modal");
+    this._deleteConfirmationBtn = document.querySelector(".modal-confirmation-btn");
     // console.log(this._categoryListsEl);
     // console.log(this._toastrModalBtns);
     createIcons({ icons });
@@ -73,6 +77,7 @@ class settingsView {
     this._closeToastrEl();
     this._openCategoryEditor();
     this._cancelEdit();
+    this._openDeleteConfirmationModal();
   }
 
   navigateTabs() {
@@ -174,8 +179,8 @@ class settingsView {
       const key = input.dataset.validate;
       const validator = document.querySelector(`[data-validator="${key}"]`);
       // console.log(`Validation start for ${key}`);
-      console.log(input);
-      console.log(validator);
+      // console.log(input);
+      // console.log(validator);
       if (!validator) return;
       if (input.value.trim() === "") {
         validator.textContent = `${key.replace("-", " ")} is required`;
@@ -184,7 +189,6 @@ class settingsView {
       } else {
         validator.textContent = "";
         validator.classList.add("hidden");
-        isValidationError = false;
       }
     });
     return isValidationError;
@@ -366,7 +370,7 @@ class settingsView {
   _closeToastrEl() {
     this._toastrModalBtns.forEach((btn) => {
       btn.addEventListener("click", function (e) {
-        console.log("clicked");
+        // console.log("clicked");
         e.preventDefault();
         const modals = document.querySelectorAll(".notification-modal");
         modals.forEach((modal) => modal.classList.add("hidden"));
@@ -471,6 +475,21 @@ class settingsView {
     });
   }
 
+  _openDeleteConfirmationModal() {
+    this._categoryListsEl.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest(".delete-btn");
+      if (!deleteBtn) return;
+      this._confirmationModal.classList.remove("hidden");
+      const backDrop = `<div class="modal-backdrop"></div>`;
+      this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+      const backDropEl = document.querySelector(".modal-backdrop");
+      backDropEl.classList.add("active");
+      const listEl = deleteBtn.closest(".settings-categories-lists-item");
+      const categoryId = listEl.dataset.categoryId;
+      this._confirmationModal.dataset.categoryId = categoryId
+    });
+  }
+
   updateCategory(handler) {
     this._categoryListsEl.addEventListener("click", (e) => {
       // e.preventDefault();
@@ -515,13 +534,26 @@ class settingsView {
     }
   }
 
-  _editCategorySelectColors(){
-    document.querySelectorAll(".edit-category-color-input").forEach(ele =>{
-      ele.addEventListener('input',(e)=>{
-      const parentContainer = e.target.closest(".color-picker-container");
-      const spanElement = parentContainer.querySelector(".color-code-label");
-      spanElement.textContent = e.target.value;
-      })
+  _editCategorySelectColors() {
+    document.querySelectorAll(".edit-category-color-input").forEach((ele) => {
+      ele.addEventListener("input", (e) => {
+        const parentContainer = e.target.closest(".color-picker-container");
+        const spanElement = parentContainer.querySelector(".color-code-label");
+        spanElement.textContent = e.target.value;
+      });
+    });
+  }
+
+  deleteCategory(handler){
+    this._deleteConfirmationBtn.addEventListener("click",(e)=>{
+      const categoryId = this._confirmationModal.dataset.categoryId;
+      // console.log(categoryId);
+      this._confirmationModal.classList.add('hidden');
+      const backDropEl = document.querySelector(".modal-backdrop");
+        if (backDropEl) {
+          backDropEl.remove();
+        }
+      handler(+categoryId);
     });
   }
 
@@ -670,27 +702,51 @@ class settingsView {
         <div class="modal notification-modal modal-error hidden">
             <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-x"></i></div>
             <p class="modal-notification-title mb-sm-2">Error!</p>
-            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <p class="modal-notification-message mb-sm-3"></p>
             <button class="btn btn-primary modal-notification-btn">OK</button>
         </div>
         <div class="modal notification-modal modal-info hidden">
             <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
             <p class="modal-notification-title mb-sm-2">Info!</p>
-            <p class="modal-notification-message mb-sm-3">Budget added successfully</p>
+            <p class="modal-notification-message mb-sm-3"></p>
             <button class="btn btn-primary modal-notification-btn">OK</button>
         </div>
-        `;
+         <div class="modal notification-modal modal-info hidden confirmation-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Are you sure?</p>
+            <p class="modal-notification-message mb-sm-3">Once deleted, it cannot be retrieveid.</p>
+            <div class="confirmation-modal-btn-container">
+              <button class="btn btn-primary modal-confirmation-btn">Delete</button>
+              <button class="btn btn-secondary modal-notification-btn">Cancel</button>
+            </div>
+        </div>`;
   }
 
   _renderCategoryList(cat) {
-    return `<li class="settings-categories-lists-item trans-table-button-col" data-category-id=${cat.id}>
+    return `<li class="settings-categories-lists-item trans-table-button-col" data-category-id=${
+      cat.id
+    }>
              <div class="category-list-name-container">
-                 <span class="categories-list-color" style="background-color:${cat.color}"></span>
+                 <span class="categories-list-color" style="background-color:${
+                   cat.color
+                 }"></span>
                  <span class="categories-list-name">${cat.name}</span>
              </div>
              <div>
-                 <button class="btn edit-btn" ${cat.id === 1 || cat.id === 2 || cat.id === 3 ? 'disabled' : ''}><i data-lucide="square-pen"></i></button>
-                 <button class="btn delete-btn" ${cat.id === 1 || cat.id === 2 || cat.id === 3 ? 'disabled' : ''}><i data-lucide="trash-2"></i></button>
+                 <button class="btn edit-btn ${
+                   cat.id === 1 || cat.id === 2 || cat.id === 3
+                     ? "btn-disabled"
+                     : ""
+                 }" ${
+      cat.id === 1 || cat.id === 2 || cat.id === 3 ? "disabled" : ""
+    }><i data-lucide="square-pen"></i></button>
+                 <button class="btn delete-btn ${
+                   cat.id === 1 || cat.id === 2 || cat.id === 3
+                     ? "btn-disabled"
+                     : ""
+                 }" ${
+      cat.id === 1 || cat.id === 2 || cat.id === 3 ? "disabled" : ""
+    }><i data-lucide="trash-2"></i></button>
              </div>
             </li>`;
   }
