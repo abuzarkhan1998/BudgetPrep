@@ -72,12 +72,17 @@ class settingsView {
     this._countryData = apiResponse;
     this._initData();
     // console.log(this._countryData);
+    this.navigateTabs();
+    this.addHandlerShowCurrency();
+    this.selectCountry();
+    this.preventTextCharacters();
     this._initializeCategoryColor();
     this.selectColor();
     this._closeToastrEl();
     this._openCategoryEditor();
     this._cancelEdit();
     this._openDeleteConfirmationModal();
+    this._handleClickonColorPicker();
   }
 
   navigateTabs() {

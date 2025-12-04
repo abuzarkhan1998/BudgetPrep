@@ -13,13 +13,8 @@ if(targetPage === 'settings')
     const userData = Model.returnUserDetails();
     // console.log(apiData);
     settingsView.renderView(apiData,userData,targetTab);
-    settingsView.navigateTabs();
-    settingsView.addHandlerShowCurrency();
-    settingsView.selectCountry();
     settingsView.submitProfileForm(updateProfileDetails);
     settingsView.submitBudgetForm(updateUserBudget);
-    settingsView.preventTextCharacters();
-    settingsView._handleClickonColorPicker();
     settingsView.addCategoryForm(addCategoryForm);
     settingsView.updateCategory(updateCategory);
     settingsView.deleteCategory(deleteCategory);
