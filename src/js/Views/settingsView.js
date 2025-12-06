@@ -1,7 +1,7 @@
 import { createIcons, icons } from "lucide";
+import View from "./View.js";
 
-class settingsView {
-  _parentContainer = document.querySelector("main");
+class settingsView extends View {
   _tabContainer;
   _countryData;
   _currencyInputField;
@@ -19,7 +19,6 @@ class settingsView {
   _colorPickerContainers;
   _addCategoryColorCodeInput;
   _addCategoryForm;
-  _successModal;
   _toastrModalBtns;
   _categoryListsEl;
   _confirmationModal;
@@ -70,6 +69,7 @@ class settingsView {
     // console.log(this._toastrModalBtns);
     createIcons({ icons });
     this._countryData = apiResponse;
+    // console.log(this._countryData);
     this._initData();
     // console.log(this._countryData);
     this.navigateTabs();
@@ -178,26 +178,26 @@ class settingsView {
     });
   }
 
-  _inputRequiredValidation(inputFields) {
-    let isValidationError = false;
-    inputFields.forEach((input) => {
-      const key = input.dataset.validate;
-      const validator = document.querySelector(`[data-validator="${key}"]`);
-      // console.log(`Validation start for ${key}`);
-      // console.log(input);
-      // console.log(validator);
-      if (!validator) return;
-      if (input.value.trim() === "") {
-        validator.textContent = `${key.replace("-", " ")} is required`;
-        validator.classList.remove("hidden");
-        isValidationError = true;
-      } else {
-        validator.textContent = "";
-        validator.classList.add("hidden");
-      }
-    });
-    return isValidationError;
-  }
+  // _inputRequiredValidation(inputFields) {
+  //   let isValidationError = false;
+  //   inputFields.forEach((input) => {
+  //     const key = input.dataset.validate;
+  //     const validator = document.querySelector(`[data-validator="${key}"]`);
+  //     // console.log(`Validation start for ${key}`);
+  //     // console.log(input);
+  //     // console.log(validator);
+  //     if (!validator) return;
+  //     if (input.value.trim() === "") {
+  //       validator.textContent = `${key.replace("-", " ")} is required`;
+  //       validator.classList.remove("hidden");
+  //       isValidationError = true;
+  //     } else {
+  //       validator.textContent = "";
+  //       validator.classList.add("hidden");
+  //     }
+  //   });
+  //   return isValidationError;
+  // }
 
   _validateCountryField() {
     const countryInputElement = document.getElementById(
@@ -324,26 +324,29 @@ class settingsView {
     }
   }
 
-  _clearView() {
-    this._parentContainer.textContent = "";
-  }
+  // _clearView() {
+  //   this._parentContainer.textContent = "";
+  // }
 
-  renderSpinner() {
-    // this._clearView();
-    const backDrop = `<div class="modal-backdrop"></div>`;
-    const renderSpinner = `<div class="spinner"><i data-lucide="loader-circle"></i></div>`;
-    this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
-    this._parentContainer.insertAdjacentHTML("afterbegin", renderSpinner);
-    const spinnerEl = document.querySelector(".spinner");
-    const backDropEl = document.querySelector(".modal-backdrop");
-    spinnerEl.classList.add("active");
-    backDropEl.classList.add("active");
-    createIcons({ icons });
-  }
+  // renderSpinner() {
+  //   // this._clearView();
+  //   const backDrop = `<div class="modal-backdrop"></div>`;
+  //   const renderSpinner = `<div class="spinner"><i data-lucide="loader-circle"></i></div>`;
+  //   this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+  //   this._parentContainer.insertAdjacentHTML("afterbegin", renderSpinner);
+  //   const spinnerEl = document.querySelector(".spinner");
+  //   const backDropEl = document.querySelector(".modal-backdrop");
+  //   spinnerEl.classList.add("active");
+  //   backDropEl.classList.add("active");
+  //   createIcons({ icons });
+  // }
 
   _initData() {
     if (!this._userDetails) return;
     // console.log(this._userDetails);
+    if(this._userDetails.profile.country){
+
+    }
     document.getElementById("settings-first-name").value =
       this._userDetails.profile.firstName;
     document.getElementById("settings-last-name").value =
@@ -357,35 +360,35 @@ class settingsView {
       this._userDetails.budget;
   }
 
-  displaySuccessMessage(toastrDesc, buttonDesc) {
-    const toastrDescEl = this._successModal.querySelector(
-      ".modal-notification-message"
-    );
-    const btnEl = this._successModal.querySelector(".modal-notification-btn");
-    console.log(btnEl);
-    toastrDescEl.textContent = toastrDesc;
-    btnEl.textContent = buttonDesc;
-    const backDrop = `<div class="modal-backdrop"></div>`;
-    this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
-    this._successModal.classList.remove("hidden");
-    const backDropEl = document.querySelector(".modal-backdrop");
-    backDropEl.classList.add("active");
-  }
+  // displaySuccessMessage(toastrDesc, buttonDesc) {
+  //   const toastrDescEl = this._successModal.querySelector(
+  //     ".modal-notification-message"
+  //   );
+  //   const btnEl = this._successModal.querySelector(".modal-notification-btn");
+  //   console.log(btnEl);
+  //   toastrDescEl.textContent = toastrDesc;
+  //   btnEl.textContent = buttonDesc;
+  //   const backDrop = `<div class="modal-backdrop"></div>`;
+  //   this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+  //   this._successModal.classList.remove("hidden");
+  //   const backDropEl = document.querySelector(".modal-backdrop");
+  //   backDropEl.classList.add("active");
+  // }
 
-  _closeToastrEl() {
-    this._toastrModalBtns.forEach((btn) => {
-      btn.addEventListener("click", function (e) {
-        // console.log("clicked");
-        e.preventDefault();
-        const modals = document.querySelectorAll(".notification-modal");
-        modals.forEach((modal) => modal.classList.add("hidden"));
-        const backDropEl = document.querySelector(".modal-backdrop");
-        if (backDropEl) {
-          backDropEl.remove();
-        }
-      });
-    });
-  }
+  // _closeToastrEl() {
+  //   this._toastrModalBtns.forEach((btn) => {
+  //     btn.addEventListener("click", function (e) {
+  //       // console.log("clicked");
+  //       e.preventDefault();
+  //       const modals = document.querySelectorAll(".notification-modal");
+  //       modals.forEach((modal) => modal.classList.add("hidden"));
+  //       const backDropEl = document.querySelector(".modal-backdrop");
+  //       if (backDropEl) {
+  //         backDropEl.remove();
+  //       }
+  //     });
+  //   });
+  // }
 
   _displayActiveTab(tab) {
     const tabEl = document.querySelector(`[data-settings-tab=${tab}]`);
