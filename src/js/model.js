@@ -12,6 +12,7 @@ export const state = {
     ],
     colors:['#8dc4ff','#60d2ca','#b089f4','#e57373','#ffB74d','#ffd54f','#81c784','#4db6ac', '#64b5f6', '#ba68c8', '#b0bec5']
   },
+  transactions:[]
 };
 
 export const getCountriesFromApi = async function () {
