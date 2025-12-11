@@ -100,6 +100,26 @@ export const deleteCategory = function(categoryId){
   saveDatatoLocalStorage();
 }
 
+export const addTransactions =  function(formData){
+  let newID = 1;
+  if(state.transactions.length > 0){
+    newID = state.transactions.at(-1).id+1;
+  }
+  const category = state.userDetails.categories.find(cat=> cat.name === formData.categoryName);
+  if(!category) return
+  const newTransaction = {
+    id:newID,
+    date : new Date(formData.date),
+    categoryId: category.id,
+    categoryName: formData.categoryName,
+    description: formData.description,
+    amount:formData.amount
+  }
+  state.transactions.push(newTransaction);
+  console.log(state);
+  saveDatatoLocalStorage();
+}
+
 const saveDatatoLocalStorage = function(){
     localStorage.setItem('budgetData',JSON.stringify(state));
 }

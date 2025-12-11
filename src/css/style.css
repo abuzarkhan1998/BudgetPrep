@@ -272,6 +272,8 @@
 .form-btn-container {
     display: flex;
     justify-content: center;
+    width:100%;
+    margin-top: 1.8rem;
 }
 
 .exp-form-btn {
@@ -907,3 +909,9 @@
 .color-input{
     cursor: pointer;
 }
+
+/* .flatpickr-calendar {
+  transform: scale(0.85);     
+  transform-origin: top left; 
+}
+ */

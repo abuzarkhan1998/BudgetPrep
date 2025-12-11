@@ -279,7 +279,7 @@ class settingsView extends View {
 
   selectColor() {
     this._addCategoryColorCodeInput.addEventListener("input", function (e) {
-      console.log(e);
+      // console.log(e);
       const parentContainer = e.target.closest(".color-picker-container");
       const spanElement = parentContainer.querySelector(".color-code-label");
       spanElement.textContent = e.target.value;

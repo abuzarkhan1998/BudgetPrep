@@ -12,6 +12,9 @@ class transactionsView extends View {
     );
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
+    this._successModal = document.querySelector(".modal-success");
+    this._toastrModalBtns = document.querySelectorAll(".modal-notification-btn");
+    this._closeToastrEl();
   }
 
   openTransactionModal(handler){
@@ -168,7 +171,34 @@ class transactionsView extends View {
                 </div>
                 <div class="pagination-empty-div"></div>
             </div>
-        </section>`;
+        </section>
+         <div class="modal notification-modal modal-success hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-check"></i></div>
+            <p class="modal-notification-title mb-sm-2">Success!</p>
+            <p class="modal-notification-message mb-sm-3"></p>
+            <button class="btn btn-primary modal-notification-btn"></button>
+        </div>
+        <div class="modal notification-modal modal-error hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-x"></i></div>
+            <p class="modal-notification-title mb-sm-2">Error!</p>
+            <p class="modal-notification-message mb-sm-3"></p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+        <div class="modal notification-modal modal-info hidden">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3"></p>
+            <button class="btn btn-primary modal-notification-btn">OK</button>
+        </div>
+         <div class="modal notification-modal modal-info hidden confirmation-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Are you sure?</p>
+            <p class="modal-notification-message mb-sm-3">Once deleted, it cannot be retrieveid.</p>
+            <div class="confirmation-modal-btn-container">
+              <button class="btn btn-primary modal-confirmation-btn">Delete</button>
+              <button class="btn btn-secondary modal-notification-btn">Cancel</button>
+            </div>
+        </div>`;
   }
 }
 

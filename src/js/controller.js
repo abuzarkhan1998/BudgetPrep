@@ -92,8 +92,19 @@ const deleteCategory = async function (categoryId) {
 
 //---------Add Transactions View--------
 const openAddTransactionsView = function(sectionClass){
+    const userData = Model.returnUserDetails();
     // console.log('click');
-    addTransactionView.renderView(sectionClass);
+    addTransactionView.renderView(sectionClass,userData.categories);
+    addTransactionView.updateTransactions(updateTransactions);
+}
+
+const updateTransactions = function(formData){
+  // console.log(formData);
+  transactionsView.renderSpinner();
+  Model.addTransactions(formData);
+  addTransactionView.closeModal();
+  controlNavigation("transactions");
+  transactionsView.displaySuccessMessage("Transaction Added Successfully", "OK");
 }
 
 const init = function () {
