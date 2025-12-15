@@ -24,7 +24,7 @@ const controlNavigation = async function (
     settingsView.deleteCategory(deleteCategory);
   }
   if (targetPage == "transactions") {
-    transactionsView.renderView();
+    transactionsView.renderView(Model.state.transactions);
     transactionsView.openTransactionModal(openAddTransactionsView);
   }
 };

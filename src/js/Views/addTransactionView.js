@@ -2,6 +2,7 @@ import { createIcons, icons } from "lucide";
 import View from "./View.js";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import {DATAPERPAGE} from "../config.js";
 
 class addTransactionView extends View {
   _modalEle;

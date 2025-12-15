@@ -1,6 +1,6 @@
 import { COUNTRY_API, COUNTRYAPI_KEY } from "./config.js";
 
-export const state = {
+export let state = {
   isInitialized: false,
   userDetails: {
     profile: {},
@@ -12,7 +12,8 @@ export const state = {
     ],
     colors:['#8dc4ff','#60d2ca','#b089f4','#e57373','#ffB74d','#ffd54f','#81c784','#4db6ac', '#64b5f6', '#ba68c8', '#b0bec5']
   },
-  transactions:[]
+  transactions:[],
+  currentPage:1
 };
 
 export const getCountriesFromApi = async function () {
@@ -109,7 +110,7 @@ export const addTransactions =  function(formData){
   if(!category) return
   const newTransaction = {
     id:newID,
-    date : new Date(formData.date),
+    date : formData.date,
     categoryId: category.id,
     categoryName: formData.categoryName,
     description: formData.description,
@@ -120,6 +121,16 @@ export const addTransactions =  function(formData){
   saveDatatoLocalStorage();
 }
 
+const init = function(){
+  const storageData = localStorage.getItem('budgetData');
+  if(storageData)  state = JSON.parse(storageData);
+  console.log(state);
+  // state.transactions = [];
+  // saveDatatoLocalStorage();
+}
+
 const saveDatatoLocalStorage = function(){
     localStorage.setItem('budgetData',JSON.stringify(state));
 }
+
+init();

@@ -1,11 +1,18 @@
 import { createIcons, icons } from "lucide";
 import View from "./View.js";
+import { DATEOPTION, DATAPERPAGE } from "../config.js";
 
 class transactionsView extends View {
   _addTransactionBtn;
+  _data;
+  _totalTransactionsPages;
 
-  renderView() {
+  renderView(transactions) {
     this._clearView();
+    this._data = transactions;
+    // console.log(this._data);
+    this._totalTransactionsPages = Math.ceil(this._data.length / DATAPERPAGE);
+    console.log(this._totalTransactionsPages);
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
       this._returnMarkup()
@@ -13,17 +20,23 @@ class transactionsView extends View {
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
-    this._toastrModalBtns = document.querySelectorAll(".modal-notification-btn");
+    this._toastrModalBtns = document.querySelectorAll(
+      ".modal-notification-btn"
+    );
     this._closeToastrEl();
+    // this.returntransactionMarkup();
   }
 
-  openTransactionModal(handler){
-    this._addTransactionBtn.addEventListener('click',function(e){
-        handler('section-transaction');
-    })
+  openTransactionModal(handler) {
+    this._addTransactionBtn.addEventListener("click", function (e) {
+      handler("section-transaction");
+    });
   }
 
   _returnMarkup() {
+    const sortedByDateCategories = this._data.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
     return ` <section class="section-transaction main-section">
             <div class="dashboard-content">
                 <div class="dashboard-container">
@@ -82,75 +95,20 @@ class transactionsView extends View {
                             <th class="trans-head-table">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="trans-table-body">
-                        <tr class="trans-table-row">
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="trans-table-row">
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="trans-table-row">
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="trans-table-row">
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="trans-table-row">
-                            <td>Oct 15, 2025</td>
-                            <td>Food</td>
-                            <td>Lunch at Cafe</td>
-                            <td>350</td>
-                            <td class="trans-table-button-col">
-                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
-                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
+                   <tbody class="trans-table-body">
+            ${sortedByDateCategories
+              .map((cat) => {
+                return this.returnTransactionMarkup(cat);
+              })
+              .join("")}
+            </tbody>
                 </table>
             </div>
 
             <div class="container pagination-container">
                 <div class="total-records-container">
                     <p>Page 1 of 5 Pages</p>
-                    <p class="total-records">100 Total Records</p>
+                    <p class="total-records">${sortedByDateCategories.length} Total Records</p>
                 </div>
                 <div class="pagination-btn-container">
                     <div class="pagination-btn-div">
@@ -199,6 +157,22 @@ class transactionsView extends View {
               <button class="btn btn-secondary modal-notification-btn">Cancel</button>
             </div>
         </div>`;
+  }
+
+  returnTransactionMarkup(transaction) {
+    return `<tr class="trans-table-row" data-transaction-id=${transaction.id}>
+                            <td>${new Intl.DateTimeFormat(
+                              "en-US",
+                              DATEOPTION
+                            ).format(new Date(transaction.date))}</td>
+                            <td>${transaction.categoryName}</td>
+                            <td>${transaction.description}</td>
+                            <td>${transaction.amount}</td>
+                            <td class="trans-table-button-col">
+                                <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
+                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
+                            </td>
+                        </tr>`;
   }
 }
 
