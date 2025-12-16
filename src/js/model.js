@@ -1,4 +1,4 @@
-import { COUNTRY_API, COUNTRYAPI_KEY } from "./config.js";
+import { COUNTRY_API, COUNTRYAPI_KEY,DATAPERPAGE } from "./config.js";
 
 export let state = {
   isInitialized: false,
@@ -120,6 +120,22 @@ export const addTransactions =  function(formData){
   console.log(state);
   saveDatatoLocalStorage();
 }
+
+// export const updatePagination = function(pageNo){
+  
+// }
+
+export const displayTransactions = function (pageNo = 1) {
+  state.currentPage = pageNo;
+  const start = (pageNo - 1) * DATAPERPAGE;
+  const end = pageNo * DATAPERPAGE;
+  const transactionsData = state.transactions.slice(start,end);
+  return {
+    pageNo,
+    transactionsData,
+    totalTransactions:state.transactions.length
+  }
+};
 
 const init = function(){
   const storageData = localStorage.getItem('budgetData');

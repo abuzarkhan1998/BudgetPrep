@@ -5,18 +5,27 @@ import { DATEOPTION, DATAPERPAGE } from "../config.js";
 class transactionsView extends View {
   _addTransactionBtn;
   _data;
+  _pageNo;
   _totalTransactionsPages;
-
-  renderView(transactions) {
+  _paginationBtnContainer;
+  _totalTransactionsNumber;
+  
+  renderView(viewData) {
     this._clearView();
-    this._data = transactions;
+    ({transactionsData:this._data,pageNo:this._pageNo, totalTransactions:this._totalTransactionsNumber} = viewData);
+    // console.log(this._totalTransactions);
+    // this._data = transactions;
     // console.log(this._data);
-    this._totalTransactionsPages = Math.ceil(this._data.length / DATAPERPAGE);
-    console.log(this._totalTransactionsPages);
+    this._totalTransactionsPages = Math.ceil(this._totalTransactionsNumber / DATAPERPAGE);
+    const sortedByDateCategories = this._data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // console.log(this._totalTransactionsPages);
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
-      this._returnMarkup()
+      this._returnMarkup(sortedByDateCategories)
     );
+    this._paginationBtnContainer = document.querySelector(".pagination-btn-container");
+    this.returnPageNumberMarkup();
+    this.displayActivePageBtn();
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
@@ -33,10 +42,25 @@ class transactionsView extends View {
     });
   }
 
-  _returnMarkup() {
-    const sortedByDateCategories = this._data.sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
+  selectTransactionPage(handler){
+    this._paginationBtnContainer.addEventListener('click',function(e){
+        e.preventDefault();
+        const btn = e.target.closest(".pagination-btn");
+        if(!btn) return;
+        // console.log(btn);
+        const paginationNumber = btn.dataset.currentPage;
+        // console.log(paginationNumber);
+        handler(paginationNumber);
+    })
+  }
+
+  displayActivePageBtn(){
+    const btn = document.querySelector(`[data-current-page="${this._pageNo}"]`);
+    // console.log(btn);
+    btn.classList.add("pagination-btn-active");
+  }
+
+  _returnMarkup(transactions) {
     return ` <section class="section-transaction main-section">
             <div class="dashboard-content">
                 <div class="dashboard-container">
@@ -96,7 +120,7 @@ class transactionsView extends View {
                         </tr>
                     </thead>
                    <tbody class="trans-table-body">
-            ${sortedByDateCategories
+            ${transactions
               .map((cat) => {
                 return this.returnTransactionMarkup(cat);
               })
@@ -107,25 +131,10 @@ class transactionsView extends View {
 
             <div class="container pagination-container">
                 <div class="total-records-container">
-                    <p>Page 1 of 5 Pages</p>
-                    <p class="total-records">${sortedByDateCategories.length} Total Records</p>
+                    <p>Page ${this._pageNo} of ${this._totalTransactionsPages} Pages</p>
+                    <p class="total-records">${this._totalTransactionsNumber} Total Records</p>
                 </div>
                 <div class="pagination-btn-container">
-                    <div class="pagination-btn-div">
-                        <button class="btn pagination-btn">1</button>
-                    </div>
-                    <div class="pagination-btn-div">
-                        <button class="btn pagination-btn">2</button>
-                    </div>
-                    <div class="pagination-btn-div">
-                        <button class="btn pagination-btn pagination-btn-active">3</button>
-                    </div>
-                    <div class="pagination-btn-div">
-                        <button class="btn pagination-btn">4</button>
-                    </div>
-                    <div class="pagination-btn-div">
-                        <button class="btn pagination-btn">5</button>
-                    </div>
                 </div>
                 <div class="pagination-empty-div"></div>
             </div>
@@ -173,6 +182,15 @@ class transactionsView extends View {
                                 <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
                             </td>
                         </tr>`;
+  }
+
+  returnPageNumberMarkup(){
+    for(let i=1; i <= this._totalTransactionsPages; i++){
+        const html = `<div class="pagination-btn-div">
+                        <button class="btn pagination-btn" data-current-page="${i}">${i}</button>
+                    </div>`;
+      this._paginationBtnContainer.insertAdjacentHTML('beforeend', html);
+    }
   }
 }
 

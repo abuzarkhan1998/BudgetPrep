@@ -24,7 +24,8 @@ const controlNavigation = async function (
     settingsView.deleteCategory(deleteCategory);
   }
   if (targetPage == "transactions") {
-    transactionsView.renderView(Model.state.transactions);
+    displayTransactionswithPagination(1);
+    // transactionsView.renderView(Model.state.transactions);
     transactionsView.openTransactionModal(openAddTransactionsView);
   }
 };
@@ -88,7 +89,16 @@ const deleteCategory = async function (categoryId) {
 
 
 //---------Transactions View--------
-
+const displayTransactionswithPagination = function (pageNo){
+  // Model.updatePagination(pageNo);
+  const transactionsData = Model.displayTransactions(pageNo);
+  // const viewData = {
+  //   pageNo,
+  //   transactionsData
+  // };
+  transactionsView.renderView(transactionsData);
+  transactionsView.selectTransactionPage(displayTransactionswithPagination);
+}
 
 //---------Add Transactions View--------
 const openAddTransactionsView = function(sectionClass){
