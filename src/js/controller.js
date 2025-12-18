@@ -26,7 +26,6 @@ const controlNavigation = async function (
   if (targetPage == "transactions") {
     displayTransactionswithPagination(1);
     // transactionsView.renderView(Model.state.transactions);
-    transactionsView.openTransactionModal(openAddTransactionsView);
   }
 };
 
@@ -98,6 +97,15 @@ const displayTransactionswithPagination = function (pageNo){
   // };
   transactionsView.renderView(transactionsData);
   transactionsView.selectTransactionPage(displayTransactionswithPagination);
+  transactionsView.sortTransactionsHandler(sortTransactions);
+  transactionsView.openTransactionModal(openAddTransactionsView);
+}
+
+const sortTransactions = function(obj){
+  console.log(obj);
+  if(!obj) return;
+  const pageNo = Model.updateSortedTransactions(obj);
+  displayTransactionswithPagination(pageNo);
 }
 
 //---------Add Transactions View--------

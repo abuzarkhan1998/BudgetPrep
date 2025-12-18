@@ -9,23 +9,34 @@ class transactionsView extends View {
   _totalTransactionsPages;
   _paginationBtnContainer;
   _totalTransactionsNumber;
-  
+  _sortState;
+
   renderView(viewData) {
     this._clearView();
-    ({transactionsData:this._data,pageNo:this._pageNo, totalTransactions:this._totalTransactionsNumber} = viewData);
-    // console.log(this._totalTransactions);
+    ({
+      transactionsData: this._data,
+      pageNo: this._pageNo,
+      totalTransactions: this._totalTransactionsNumber,
+      transactionSortState: this._sortState,
+    } = viewData);
+    // console.log(this._sortState);
     // this._data = transactions;
     // console.log(this._data);
-    this._totalTransactionsPages = Math.ceil(this._totalTransactionsNumber / DATAPERPAGE);
-    const sortedByDateCategories = this._data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    this._totalTransactionsPages = Math.ceil(
+      this._totalTransactionsNumber / DATAPERPAGE
+    );
+    // const sortedByDateCategories = this._data.sort((a, b) => new Date(b.date) - new Date(a.date));
     // console.log(this._totalTransactionsPages);
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
-      this._returnMarkup(sortedByDateCategories)
+      this._returnMarkup()
     );
-    this._paginationBtnContainer = document.querySelector(".pagination-btn-container");
+    this._paginationBtnContainer = document.querySelector(
+      ".pagination-btn-container"
+    );
     this.returnPageNumberMarkup();
     this.displayActivePageBtn();
+    this._displaySortedIcon();
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
@@ -42,25 +53,73 @@ class transactionsView extends View {
     });
   }
 
-  selectTransactionPage(handler){
-    this._paginationBtnContainer.addEventListener('click',function(e){
-        e.preventDefault();
-        const btn = e.target.closest(".pagination-btn");
-        if(!btn) return;
-        // console.log(btn);
-        const paginationNumber = btn.dataset.currentPage;
-        // console.log(paginationNumber);
-        handler(paginationNumber);
-    })
+  selectTransactionPage(handler) {
+    this._paginationBtnContainer.addEventListener("click", function (e) {
+      e.preventDefault();
+      const btn = e.target.closest(".pagination-btn");
+      if (!btn) return;
+      // console.log(btn);
+      const paginationNumber = btn.dataset.currentPage;
+      // console.log(paginationNumber);
+      handler(paginationNumber);
+    });
   }
 
-  displayActivePageBtn(){
+  displayActivePageBtn() {
     const btn = document.querySelector(`[data-current-page="${this._pageNo}"]`);
     // console.log(btn);
+    if (!btn) return;
     btn.classList.add("pagination-btn-active");
   }
 
-  _returnMarkup(transactions) {
+  _displaySortedIcon() {
+    // console.log(this._sortState);
+    let sortField = this._sortState.field;
+    if(sortField === 'categoryName'){
+        sortField = 'category-name';
+    }
+    const ele = document.querySelector(`[data-sort=${sortField}]`);
+    if (!ele) return;
+    // console.log(ele);
+    const arrowEle =
+      this._sortState.direction === "asc"
+        ? "<span>&uarr;</span>"
+        : "<span>&darr;</span>";
+    ele.insertAdjacentHTML("beforeend", arrowEle);
+  }
+
+  sortTransactionsHandler(handler) {
+    document
+      .querySelector(".trans-head-table-row")
+      .addEventListener("click", (e) => {
+        const ele = e.target.closest(".thead-sort-column");
+        if (!ele) return;
+        // console.log(ele);
+        let fieldEl = ele.dataset.sort;
+        console.log(fieldEl);
+        if (fieldEl === "category-name") {
+          fieldEl = "categoryName";
+        }
+        // console.log(this._sortState,this._totalTransactionsNumber);
+        let Obj;
+        if (fieldEl === this._sortState.field) {
+          Obj = {
+            field: fieldEl,
+            direction: this._sortState.direction === "asc" ? "desc" : "asc",
+          };
+        }
+        else{
+             Obj = {
+          field: fieldEl,
+          direction: "asc",
+        };
+        }
+
+        handler(Obj);
+      });
+  }
+
+  _returnMarkup() {
     return ` <section class="section-transaction main-section">
             <div class="dashboard-content">
                 <div class="dashboard-container">
@@ -107,20 +166,20 @@ class transactionsView extends View {
                     <thead class="trans-head-table-container">
                         <tr class="trans-head-table-row">
                             <th class="trans-head-table"><span
-                                    class="thead-sort-column"><span>Date</span><span>&uarr;</span><span>&darr;</span></span>
+                                    class="thead-sort-column" data-sort="date"><span>Date</span></span>
                             </th>
                             <th class="trans-head-table"><span
-                                    class="thead-sort-column"><span>Category</span><span>&uarr;</span><span>&darr;</span></span>
+                                    class="thead-sort-column" data-sort="category-name"><span>Category</span></span>
                             </th>
                             <th class="trans-head-table">Description</th>
                             <th class="trans-head-table"><span
-                                    class="thead-sort-column"><span>Amount</span><span>&uarr;</span><span>&darr;</span></span>
+                                    class="thead-sort-column" data-sort="amount"><span>Amount</span></span>
                             </th>
                             <th class="trans-head-table">Actions</th>
                         </tr>
                     </thead>
                    <tbody class="trans-table-body">
-            ${transactions
+            ${this._data
               .map((cat) => {
                 return this.returnTransactionMarkup(cat);
               })
@@ -131,8 +190,12 @@ class transactionsView extends View {
 
             <div class="container pagination-container">
                 <div class="total-records-container">
-                    <p>Page ${this._pageNo} of ${this._totalTransactionsPages} Pages</p>
-                    <p class="total-records">${this._totalTransactionsNumber} Total Records</p>
+                    <p>Page ${this._pageNo} of ${
+      this._totalTransactionsPages
+    } Pages</p>
+                    <p class="total-records">${
+                      this._totalTransactionsNumber
+                    } Total Records</p>
                 </div>
                 <div class="pagination-btn-container">
                 </div>
@@ -184,12 +247,12 @@ class transactionsView extends View {
                         </tr>`;
   }
 
-  returnPageNumberMarkup(){
-    for(let i=1; i <= this._totalTransactionsPages; i++){
-        const html = `<div class="pagination-btn-div">
+  returnPageNumberMarkup() {
+    for (let i = 1; i <= this._totalTransactionsPages; i++) {
+      const html = `<div class="pagination-btn-div">
                         <button class="btn pagination-btn" data-current-page="${i}">${i}</button>
                     </div>`;
-      this._paginationBtnContainer.insertAdjacentHTML('beforeend', html);
+      this._paginationBtnContainer.insertAdjacentHTML("beforeend", html);
     }
   }
 }

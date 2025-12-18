@@ -1,27 +1,43 @@
-import { COUNTRY_API, COUNTRYAPI_KEY,DATAPERPAGE } from "./config.js";
+import { COUNTRY_API, COUNTRYAPI_KEY, DATAPERPAGE } from "./config.js";
 
 export let state = {
   isInitialized: false,
   userDetails: {
     profile: {},
-    budget:0,
+    budget: 0,
     categories: [
       { id: 1, name: "Food & Groceries", color: "#8dc4ff", isDefault: true },
       { id: 2, name: "Rent & Utilities", color: "#60d2ca", isDefault: true },
       { id: 3, name: "Transportation", color: "#b089f4", isDefault: true },
     ],
-    colors:['#8dc4ff','#60d2ca','#b089f4','#e57373','#ffB74d','#ffd54f','#81c784','#4db6ac', '#64b5f6', '#ba68c8', '#b0bec5']
+    colors: [
+      "#8dc4ff",
+      "#60d2ca",
+      "#b089f4",
+      "#e57373",
+      "#ffB74d",
+      "#ffd54f",
+      "#81c784",
+      "#4db6ac",
+      "#64b5f6",
+      "#ba68c8",
+      "#b0bec5",
+    ],
   },
-  transactions:[],
-  currentPage:1
+  transactions: [],
+  currentPage: 1,
+  transactionSortState: {
+    field: "date",
+    direction: "desc",
+  },
 };
 
 export const getCountriesFromApi = async function () {
   try {
-        const apiResponse = await fetch(COUNTRY_API, {
+    const apiResponse = await fetch(COUNTRY_API, {
       method: "GET",
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -31,13 +47,13 @@ export const getCountriesFromApi = async function () {
     }
     const responseData = await apiResponse.json();
     // console.log(responseData);
-    const data = responseData.map(res=>{
-        const currency = Array.isArray(res.currencies) ? res.currencies[0] : null;
-        return{
-            countryName:res.name,
-            currencyName : currency?.name || "NA",
-            currencySymbol: currency?.symbol || "NA"
-        }
+    const data = responseData.map((res) => {
+      const currency = Array.isArray(res.currencies) ? res.currencies[0] : null;
+      return {
+        countryName: res.name,
+        currencyName: currency?.name || "NA",
+        currencySymbol: currency?.symbol || "NA",
+      };
     });
     // console.log(data);
     return data;
@@ -46,35 +62,37 @@ export const getCountriesFromApi = async function () {
   }
 };
 
-export const updateProfileDetails = function(formData){
-state.userDetails.profile = formData;
-// console.log(state);
-saveDatatoLocalStorage();
-}
+export const updateProfileDetails = function (formData) {
+  state.userDetails.profile = formData;
+  // console.log(state);
+  saveDatatoLocalStorage();
+};
 
-export const updateUserBudget = function(formData){
-state.userDetails.budget = formData.budget;
-// console.log(state);
-saveDatatoLocalStorage();
-}
+export const updateUserBudget = function (formData) {
+  state.userDetails.budget = formData.budget;
+  // console.log(state);
+  saveDatatoLocalStorage();
+};
 
-export const addCategories = function(formData){
-    const newId = +state.userDetails.categories.at(-1).id+1;
-    console.log(newId);
-    const data = {
-        id: newId,
-        name:formData.name,
-        color:formData.color,
-        isDefault:false
-    };
-    state.userDetails.categories.push(data);
-    // console.log(state);
-    saveDatatoLocalStorage();
-}
+export const addCategories = function (formData) {
+  const newId = +state.userDetails.categories.at(-1).id + 1;
+  console.log(newId);
+  const data = {
+    id: newId,
+    name: formData.name,
+    color: formData.color,
+    isDefault: false,
+  };
+  state.userDetails.categories.push(data);
+  // console.log(state);
+  saveDatatoLocalStorage();
+};
 
-export const updateCategory = function(ctgr){
-  const category = state.userDetails.categories.find(cat => cat.id === ctgr.id);
-   if (!category) {
+export const updateCategory = function (ctgr) {
+  const category = state.userDetails.categories.find(
+    (cat) => cat.id === ctgr.id
+  );
+  if (!category) {
     console.error(`Category with ID ${ctgr.id} not found`);
     return;
   }
@@ -82,71 +100,105 @@ export const updateCategory = function(ctgr){
   category.color = ctgr.color;
   saveDatatoLocalStorage();
   console.log(state);
-}
+};
 
-export const returnUserDetails = function()
-{
-    const data = localStorage.getItem('budgetData');
-    if(!data) return state.userDetails;
-    const savedState = JSON.parse(data);
-    Object.assign(state,savedState);
-    return state.userDetails;
-}
+export const returnUserDetails = function () {
+  const data = localStorage.getItem("budgetData");
+  if (!data) return state.userDetails;
+  const savedState = JSON.parse(data);
+  Object.assign(state, savedState);
+  return state.userDetails;
+};
 
-export const deleteCategory = function(categoryId){
-  const categoryIndex = state.userDetails.categories.findIndex(cat => cat.id === categoryId);
-  if(!categoryIndex) return;
+export const deleteCategory = function (categoryId) {
+  const categoryIndex = state.userDetails.categories.findIndex(
+    (cat) => cat.id === categoryId
+  );
+  if (!categoryIndex) return;
   console.log(categoryIndex);
-  state.userDetails.categories.splice(categoryIndex,1);
+  state.userDetails.categories.splice(categoryIndex, 1);
   saveDatatoLocalStorage();
-}
+};
 
-export const addTransactions =  function(formData){
+export const addTransactions = function (formData) {
   let newID = 1;
-  if(state.transactions.length > 0){
-    newID = state.transactions.at(-1).id+1;
+  if (state.transactions.length > 0) {
+    newID = state.transactions.at(-1).id + 1;
   }
-  const category = state.userDetails.categories.find(cat=> cat.name === formData.categoryName);
-  if(!category) return
+  const category = state.userDetails.categories.find(
+    (cat) => cat.name === formData.categoryName
+  );
+  if (!category) return;
   const newTransaction = {
-    id:newID,
-    date : formData.date,
+    id: newID,
+    date: formData.date,
     categoryId: category.id,
     categoryName: formData.categoryName,
     description: formData.description,
-    amount:formData.amount
-  }
+    amount: formData.amount,
+  };
   state.transactions.push(newTransaction);
   console.log(state);
   saveDatatoLocalStorage();
-}
+};
 
 // export const updatePagination = function(pageNo){
-  
+
 // }
 
 export const displayTransactions = function (pageNo = 1) {
   state.currentPage = pageNo;
+  const sortedTransactions = returnSortedTransactionsData(state.transactions);
   const start = (pageNo - 1) * DATAPERPAGE;
   const end = pageNo * DATAPERPAGE;
-  const transactionsData = state.transactions.slice(start,end);
+  const transactionsData = sortedTransactions.slice(start, end);
   return {
     pageNo,
     transactionsData,
-    totalTransactions:state.transactions.length
-  }
+    totalTransactions: state.transactions.length,
+    transactionSortState:state.transactionSortState
+  };
 };
 
-const init = function(){
-  const storageData = localStorage.getItem('budgetData');
-  if(storageData)  state = JSON.parse(storageData);
+const returnSortedTransactionsData = function(transactions){
+const {field,direction} = state.transactionSortState;
+const sortedTransactions = transactions.sort((a,b)=>{
+  let valA = a[field];
+  let valB = b[field];
+  if(field === 'date'){
+    valA = new Date(valA);
+    valB = new Date(valB);
+  }
+  if(field === 'amount'){
+    valA = +valA;
+    valB = +valB;
+  }
+  if(typeof valA === 'string'){
+    return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+  }
+  return direction === 'asc' ? valA - valB : valB - valA;
+});
+
+return sortedTransactions;
+}
+
+export const updateSortedTransactions = function(sortedTransactions){
+  if(!sortedTransactions) return;
+  state.transactionSortState = sortedTransactions;
+  saveDatatoLocalStorage();
+  return state.currentPage;
+}
+
+const init = function () {
+  const storageData = localStorage.getItem("budgetData");
+  if (storageData) state = JSON.parse(storageData);
   console.log(state);
   // state.transactions = [];
   // saveDatatoLocalStorage();
-}
+};
 
-const saveDatatoLocalStorage = function(){
-    localStorage.setItem('budgetData',JSON.stringify(state));
-}
+const saveDatatoLocalStorage = function () {
+  localStorage.setItem("budgetData", JSON.stringify(state));
+};
 
 init();
