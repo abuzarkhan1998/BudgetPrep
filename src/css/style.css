@@ -296,14 +296,15 @@
 .trans-filter-container {
     padding: 0 2.4rem;
     display: flex;
-    align-items: flex-end;
     gap: 2rem;
+    align-items: flex-end;
 }
 
 .trans-input-group {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    
 }
 
 .trans-input-field {
@@ -343,6 +344,7 @@
 .trans-btn-group {
     display: flex;
     gap: 2.4rem;
+    margin-left: 4rem;
 }
 
 /* Transaction table */

@@ -10,6 +10,12 @@ class transactionsView extends View {
   _paginationBtnContainer;
   _totalTransactionsNumber;
   _sortState;
+  _filterCategoriesEl;
+  _filterStartDateEl;
+  _filterEndDateEl
+  _categoriesData;
+  _tableContainerEl;
+  _recordsContainerEl;
 
   renderView(viewData) {
     this._clearView();
@@ -18,6 +24,7 @@ class transactionsView extends View {
       pageNo: this._pageNo,
       totalTransactions: this._totalTransactionsNumber,
       transactionSortState: this._sortState,
+      categories: this._categoriesData,
     } = viewData);
     // console.log(this._sortState);
     // this._data = transactions;
@@ -37,13 +44,22 @@ class transactionsView extends View {
     this.returnPageNumberMarkup();
     this.displayActivePageBtn();
     this._displaySortedIcon();
+    flatpickr(".trans-filter-date", {
+      dateFormat: "m/d/Y",
+    });
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
     this._toastrModalBtns = document.querySelectorAll(
       ".modal-notification-btn"
     );
+    this._filterCategoriesEl = document.getElementById("filter-categories");
+    this._filterStartDateEl = document.getElementById("filter-start-date");
+    this._filterEndDateEl = document.getElementById("filter-end-date");
+    this._tableContainerEl = document.querySelector(".transaction-table-container");
+    this._recordsContainerEl = document.querySelector(".total-records-container");
     this._closeToastrEl();
+    this._initCategoryDropdown();
     // this.returntransactionMarkup();
   }
 
@@ -54,14 +70,15 @@ class transactionsView extends View {
   }
 
   selectTransactionPage(handler) {
-    this._paginationBtnContainer.addEventListener("click", function (e) {
+    this._paginationBtnContainer.addEventListener("click", (e) => {
       e.preventDefault();
       const btn = e.target.closest(".pagination-btn");
       if (!btn) return;
+      if(btn.classList.contains('pagination-btn-active')) return;
       // console.log(btn);
       const paginationNumber = btn.dataset.currentPage;
       // console.log(paginationNumber);
-      handler(paginationNumber);
+      handler(paginationNumber,this._data);
     });
   }
 
@@ -75,8 +92,8 @@ class transactionsView extends View {
   _displaySortedIcon() {
     // console.log(this._sortState);
     let sortField = this._sortState.field;
-    if(sortField === 'categoryName'){
-        sortField = 'category-name';
+    if (sortField === "categoryName") {
+      sortField = "category-name";
     }
     const ele = document.querySelector(`[data-sort=${sortField}]`);
     if (!ele) return;
@@ -107,16 +124,117 @@ class transactionsView extends View {
             field: fieldEl,
             direction: this._sortState.direction === "asc" ? "desc" : "asc",
           };
-        }
-        else{
-             Obj = {
-          field: fieldEl,
-          direction: "asc",
-        };
+        } else {
+          Obj = {
+            field: fieldEl,
+            direction: "asc",
+          };
         }
 
         handler(Obj);
       });
+  }
+
+  _initCategoryDropdown() {
+    // console.log(this._categoriesData);
+    this._categoriesData.forEach((cat) => {
+      const optionEle = `<option value="${cat.name}">${cat.name}</option>`;
+      this._filterCategoriesEl.insertAdjacentHTML("beforeend", optionEle);
+    });
+    const queryString = window.location.search;
+    const params = new URLSearchParams(queryString);
+    const categoryParams = params.get('category');
+    const startDateParams = params.get('startDate');
+    const endDateParams = params.get('endDate');
+    console.log(categoryParams,startDateParams,endDateParams);
+    if(categoryParams) this._filterCategoriesEl.value = categoryParams;
+    if(startDateParams) this._filterStartDateEl.value = startDateParams;
+    if(endDateParams) this._filterEndDateEl.value = endDateParams;
+  }
+
+  filterData(handler) {
+    document
+      .querySelector(".btn-trans-filter")
+      .addEventListener("click", (e) => {
+        const categoryNameEl = document.getElementById("filter-categories");
+        const startDateEl = document.getElementById("filter-start-date");
+        const endDateEl = document.getElementById("filter-end-date");
+        // console.log(categoryNameEl.value);
+        // console.log(startDateEl.value);
+        // console.log(endDateEl.value);
+        const validator = this._validateFilterDates(startDateEl.value, endDateEl.value);
+        if(validator) return;
+        if(!categoryNameEl.value && !startDateEl.value && !endDateEl.value) return;
+        // console.log(categoryNameEl.value, startDateEl.value, endDateEl.value);
+        handler(categoryNameEl.value, startDateEl.value, endDateEl.value);
+      });
+  }
+
+  _validateFilterDates(startDate, endDate) {
+    if (!startDate || !endDate) return;
+    // console.log(new Date(startDate), new Date(endDate));
+    const validatorEl = document.querySelector('[data-validator="end-date"]');
+    if (startDate > endDate) {
+      if(!validatorEl) return;
+      validatorEl.textContent = "start date cannot be greater than end date";
+      validatorEl.classList.remove("hidden-visibility");
+      return true;
+    }
+    validatorEl.classList.add("hidden-visibility");
+    return false;
+  }
+
+  displayUpdatedTransactions(data){
+    this._data = data;
+    this._totalTransactionsNumber = this._data.length;
+    this._totalTransactionsPages = Math.ceil(
+      this._totalTransactionsNumber / DATAPERPAGE
+    );
+    this.updateTransactionsTableDOM();
+    this._displaySortedIcon();
+    this._paginationBtnContainer.textContent = '';
+    this.returnPageNumberMarkup();
+    this.displayActivePageBtn();
+    this._updatePagesNumberDOM();
+    createIcons({ icons });
+  }
+
+  updateTransactionsTableDOM(){
+  this._tableContainerEl.textContent = '';
+  const tableEl = `<table class="transaction-table">
+        <thead class="trans-head-table-container">
+            <tr class="trans-head-table-row">
+                <th class="trans-head-table"><span class="thead-sort-column" data-sort="date"><span>Date</span></span>
+                </th>
+                <th class="trans-head-table"><span class="thead-sort-column"
+                        data-sort="category-name"><span>Category</span></span>
+                </th>
+                <th class="trans-head-table">Description</th>
+                <th class="trans-head-table"><span class="thead-sort-column"
+                        data-sort="amount"><span>Amount</span></span>
+                </th>
+                <th class="trans-head-table">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="trans-table-body">
+            ${this._data
+            .map((cat) => {
+            return this.returnTransactionMarkup(cat);
+            })
+            .join("")}
+        </tbody>
+    </table>`
+    this._tableContainerEl.insertAdjacentHTML('afterbegin', tableEl);
+  }
+
+  _updatePagesNumberDOM(){
+    this._recordsContainerEl.textContent = '';
+    this._recordsContainerEl.insertAdjacentHTML('afterbegin',`<p>Page ${this._pageNo} of ${
+            this._totalTransactionsPages
+            } Pages</p>
+        <p class="total-records">${
+            this._totalTransactionsNumber
+            } Total Records</p>`);
   }
 
   _returnMarkup() {
@@ -135,29 +253,41 @@ class transactionsView extends View {
                 </div>
             </div>
 
-            <div class="container trans-filter-container mb-md-2">
+            <div class="container trans-filter-container mb-sm-3">
                 <div class="trans-input-group">
                     <label for="filter-categories" class="trans-form-label">Categories</label>
-                    <select id="filter-categories" class="trans-input-field">
-                        <option value="Cat 1">Cat 1</option>
-                        <option value="Cat 1">Cat 2</option>
-                        <option value="Cat 1">Cat 3</option>
-                        <option value="Cat 1">Cat 4</option>
-                    </select>
+                    <div>
+                     <select id="filter-categories" class="trans-input-field">
+                         <option value="all">All</option>
+                     </select>
+                     <p class="transaction-validation hidden-visibility"></p>
+                    </div>
                 </div>
                 <div class="trans-input-group">
                     <label for="filter-start-date" class="trans-form-label">Start Date</label>
-                    <input type="text" id="filter-start-date" class="trans-input-field" />
+                    <div>
+                     <input type="text" id="filter-start-date" class="trans-input-field trans-filter-date" />
+                     <p class="transaction-validation hidden-visibility"></p>
+                    </div>
                 </div>
                 <div class="trans-input-group">
                     <label for="filter-end-date" class="trans-form-label">End Date</label>
-                    <input type="text" id="filter-end-date" class="trans-input-field" />
+                    <div>
+                      <input type="text" id="filter-end-date" class="trans-input-field trans-filter-date" data-validate="end-date"/>
+                      <p class="validation-label transaction-validation hidden-visibility" data-validator="end-date"></p>
+                    </div>
                 </div>
                 <div class="trans-btn-group">
-                    <button class="btn-primary btn-trans transition-3 btn"><i
-                            data-lucide="list-filter"></i>Filter</button>
-                    <button class="btn-primary btn-trans transition-3 btn"><i
+                  <div>
+                      <button class="btn-primary btn-trans transition-3 btn btn-trans-filter"><i
+                              data-lucide="list-filter"></i>Filter</button>
+                      <p class="transaction-validation hidden-visibility"></p>
+                   </div>
+                   <div>
+                      <button class="btn-primary btn-trans transition-3 btn"><i
                             data-lucide="download"></i>Download</button>
+                       <p class="transaction-validation hidden-visibility"></p>
+                    </div>
                 </div>
             </div>
 

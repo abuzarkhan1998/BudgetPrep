@@ -146,48 +146,74 @@ export const addTransactions = function (formData) {
 
 // }
 
-export const displayTransactions = function (pageNo = 1) {
+export const displayTransactions = function (pageNo = 1,transactions) {
   state.currentPage = pageNo;
-  const sortedTransactions = returnSortedTransactionsData(state.transactions);
+  const sortedTransactions = returnSortedTransactionsData(transactions);
   const start = (pageNo - 1) * DATAPERPAGE;
   const end = pageNo * DATAPERPAGE;
   const transactionsData = sortedTransactions.slice(start, end);
   return {
     pageNo,
     transactionsData,
-    totalTransactions: state.transactions.length,
-    transactionSortState:state.transactionSortState
+    totalTransactions: transactions.length,
+    transactionSortState: state.transactionSortState,
+    categories: state.userDetails.categories,
   };
 };
 
-const returnSortedTransactionsData = function(transactions){
-const {field,direction} = state.transactionSortState;
-const sortedTransactions = transactions.sort((a,b)=>{
-  let valA = a[field];
-  let valB = b[field];
-  if(field === 'date'){
-    valA = new Date(valA);
-    valB = new Date(valB);
-  }
-  if(field === 'amount'){
-    valA = +valA;
-    valB = +valB;
-  }
-  if(typeof valA === 'string'){
-    return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-  }
-  return direction === 'asc' ? valA - valB : valB - valA;
-});
+const returnSortedTransactionsData = function (transactions) {
+  const { field, direction } = state.transactionSortState;
+  const sortedTransactions = transactions.sort((a, b) => {
+    let valA = a[field];
+    let valB = b[field];
+    if (field === "date") {
+      valA = new Date(valA);
+      valB = new Date(valB);
+    }
+    if (field === "amount") {
+      valA = +valA;
+      valB = +valB;
+    }
+    if (typeof valA === "string") {
+      return direction === "asc"
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    }
+    return direction === "asc" ? valA - valB : valB - valA;
+  });
 
-return sortedTransactions;
-}
+  return sortedTransactions;
+};
 
-export const updateSortedTransactions = function(sortedTransactions){
-  if(!sortedTransactions) return;
+export const updateSortedTransactions = function (sortedTransactions) {
+  if (!sortedTransactions) return;
   state.transactionSortState = sortedTransactions;
   saveDatatoLocalStorage();
   return state.currentPage;
-}
+};
+
+export const filterTransactions = function (category, startDate, endDate,pageno=1) {
+  if (!category && !startDate && !endDate) return;
+  // console.log(state.transactions);
+  const filteredData = state.transactions.filter((tran) => {
+    if (category && category !== "all" && tran.categoryName !== category) {
+      // console.log("Category is not filtered");
+      return false;
+    }
+    const tranDate = new Date(tran.date);
+    // console.log(tranDate);
+    if (startDate && tranDate < new Date(startDate)) {
+      // console.log("startDate is not filtered");
+      return false;
+    }
+    if (endDate && tranDate > new Date(endDate)) {
+      // console.log("endDate is not filtered");
+      return false;
+    }
+    return true;
+  });
+  return displayTransactions(pageno,filteredData);
+};
 
 const init = function () {
   const storageData = localStorage.getItem("budgetData");
