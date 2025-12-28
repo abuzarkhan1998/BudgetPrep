@@ -123,7 +123,11 @@ export const deleteCategory = function (categoryId) {
 export const addTransactions = function (formData) {
   let newID = 1;
   if (state.transactions.length > 0) {
-    newID = state.transactions.at(-1).id + 1;
+    const transactions = state.transactions.sort((a,b) => {
+      return a.id - b.id;
+    });
+    // console.log(transactions)
+    newID = transactions.at(-1).id + 1;
   }
   const category = state.userDetails.categories.find(
     (cat) => cat.name === formData.categoryName
@@ -142,6 +146,24 @@ export const addTransactions = function (formData) {
   saveDatatoLocalStorage();
 };
 
+export const updateTransactions = function (formData, id) {
+  // console.log(formData, id,typeof id);
+  if (!id) return;
+  const transaction = state.transactions.find(tran => tran.id === id);
+  if(!transaction) return;
+  console.log(transaction);
+  const category = state.userDetails.categories.find(
+    (cat) => cat.name === formData.categoryName
+  );
+  if (!category) return;
+  transaction.date = formData.date;
+  transaction.categoryId = category.id;
+  transaction.categoryName = formData.categoryName;
+  transaction.description = formData.description;
+  transaction.amount = formData.amount;
+  console.log(state);
+  saveDatatoLocalStorage();
+};
 // export const updatePagination = function(pageNo){
 
 // }
@@ -158,6 +180,7 @@ export const displayTransactions = function (pageNo = 1,transactions) {
     totalTransactions: transactions.length,
     transactionSortState: state.transactionSortState,
     categories: state.userDetails.categories,
+    currency : state.userDetails.profile.currency
   };
 };
 
@@ -214,6 +237,35 @@ export const filterTransactions = function (category, startDate, endDate,pageno=
   });
   return displayTransactions(pageno,filteredData);
 };
+
+export const getIndividualTransaction = function(id){
+  if(!id) return;
+  // console.log(id);
+  return state.transactions.find(tran => tran.id === +id);
+  // console.log(transaction);
+}
+
+export const deleteTransaction = function (transId) {
+  const index = state.transactions.findIndex((tran) => tran.id === +transId);
+  console.log(index);
+  if (index === -1) return;
+  state.transactions.splice(index, 1);
+  saveDatatoLocalStorage();
+};
+
+export const exportTransactions = function(){
+  const sortedTransactions = returnSortedTransactionsData(state.transactions);
+  const transactions = state.transactions.map(tran =>{
+    const data = {
+      Date : tran.date,
+      Category : tran.categoryName,
+      Description: tran.description,
+      Amount: tran.amount
+    };
+    return data;
+  })
+  return transactions;
+}
 
 const init = function () {
   const storageData = localStorage.getItem("budgetData");

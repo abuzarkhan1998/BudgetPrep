@@ -4,6 +4,7 @@ import dashboardView from "./Views/dashboardView.js";
 import settingsView from "./Views/settingsView.js";
 import transactionsView from "./Views/transactionsView.js";
 import addTransactionView from "./Views/addTransactionView.js";
+import Papa from "papaparse";
 
 const controlNavigation = async function (
   targetPage,
@@ -24,15 +25,16 @@ const controlNavigation = async function (
     settingsView.deleteCategory(deleteCategory);
   }
   if (targetPage == "transactions") {
-    const transactionsData = Model.displayTransactions(
-      1,
-      Model.state.transactions
-    );
-    transactionsView.renderView(transactionsData);
-    transactionsView.selectTransactionPage(displayTransactionswithPagination);
-    transactionsView.sortTransactionsHandler(sortTransactions);
-    transactionsView.openTransactionModal(openAddTransactionsView);
-    transactionsView.filterData(filerTransactions);
+    displayTransactionswithPagination(1);
+    // const transactionsData = Model.displayTransactions(
+    //   1,
+    //   Model.state.transactions
+    // );
+    // transactionsView.renderView(transactionsData);
+    // transactionsView.selectTransactionPage(displayTransactionswithPagination);
+    // transactionsView.sortTransactionsHandler(sortTransactions);
+    // transactionsView.openTransactionModal(openAddTransactionsView);
+    // transactionsView.filterData(filerTransactions);
     // transactionsView.renderView(Model.state.transactions);
   }
 };
@@ -102,29 +104,33 @@ const displayTransactionswithPagination = function (pageNo, transactions) {
     const categoryParams = params.get("category");
     const startDateParams = params.get("startDate");
     const endDateParams = params.get("endDate");
-    console.log("has params", categoryParams, startDateParams, endDateParams);
+    // console.log("has params", categoryParams, startDateParams, endDateParams);
     transactionsData = Model.filterTransactions(
       categoryParams,
       startDateParams,
       endDateParams,
       pageNo
     );
-    console.log(transactionsData);
+    // console.log(transactionsData);
   } else {
    transactionsData = Model.displayTransactions(
       pageNo,
       Model.state.transactions
     );
+    console.log(transactionsData);
   }
   transactionsView.renderView(transactionsData);
   transactionsView.selectTransactionPage(displayTransactionswithPagination);
   transactionsView.sortTransactionsHandler(sortTransactions);
   transactionsView.openTransactionModal(openAddTransactionsView);
   transactionsView.filterData(filerTransactions);
+  transactionsView.editTransactionsHandler(openAddTransactionsView);
+  transactionsView.deleteTransactionsHandler(deleteTransactions);
+  transactionsView.exportTransactionsHanlder(exportTransactions);
 };
 
 const sortTransactions = function (obj) {
-  console.log(obj);
+  // console.log(obj);
   if (!obj) return;
   const pageNo = Model.updateSortedTransactions(obj);
   displayTransactionswithPagination(pageNo);
@@ -162,26 +168,63 @@ const filerTransactions = function (category, startDate, endDate) {
   transactionsView.sortTransactionsHandler(sortTransactions);
   transactionsView.openTransactionModal(openAddTransactionsView);
   transactionsView.filterData(filerTransactions);
+  transactionsView.editTransactionsHandler(openAddTransactionsView);
+  transactionsView.deleteTransactionsHandler(deleteTransactions);
+  transactionsView.exportTransactionsHanlder(exportTransactions);
 };
 
+const exportTransactions = function(){
+  const data = Model.exportTransactions();
+  // console.log(data);
+  const csv = Papa.unparse(data);
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "transactions.csv";
+  a.click();
+}
+
 //---------Add Transactions View--------
-const openAddTransactionsView = function (sectionClass) {
+const openAddTransactionsView = function (sectionClass,isEdit=false,id =0) {
+  let transaction;
+  // console.log(id);
+  if(isEdit){
+    transaction = Model.getIndividualTransaction(id);
+  }
+  if(isEdit && !transaction) return;
+  // console.log(transaction)
   const userData = Model.returnUserDetails();
   // console.log('click');
-  addTransactionView.renderView(sectionClass, userData.categories);
+  addTransactionView.renderView(
+      sectionClass,
+      userData.categories,
+      isEdit,
+      transaction
+    );
   addTransactionView.updateTransactions(updateTransactions);
 };
 
-const updateTransactions = function (formData) {
+const updateTransactions = function (formData, isEdit = false, id = 0) {
   // console.log(formData);
   transactionsView.renderSpinner();
-  Model.addTransactions(formData);
+  if (isEdit) {
+    // console.log(id,formData);
+    Model.updateTransactions(formData, id);
+  } else {
+    Model.addTransactions(formData);
+  }
   addTransactionView.closeModal();
   controlNavigation("transactions");
-  transactionsView.displaySuccessMessage(
-    "Transaction Added Successfully",
-    "OK"
-  );
+  const modalMessage = isEdit ? 'Transaction Updated Successfully' : 'Transaction Added Successfully';
+  transactionsView.displaySuccessMessage(modalMessage, "OK");
+};
+
+const deleteTransactions = function(transId){
+  console.log(transId);
+  Model.deleteTransaction(transId);
+  controlNavigation("transactions");
+  transactionsView.displaySuccessMessage('Transaction Updated Successfully', "OK");
 };
 
 const init = function () {

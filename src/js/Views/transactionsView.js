@@ -1,6 +1,6 @@
 import { createIcons, icons } from "lucide";
 import View from "./View.js";
-import { DATEOPTION, DATAPERPAGE } from "../config.js";
+import { DATEOPTION, DATAPERPAGE,CURRENCYFORMAT } from "../config.js";
 
 class transactionsView extends View {
   _addTransactionBtn;
@@ -12,10 +12,16 @@ class transactionsView extends View {
   _sortState;
   _filterCategoriesEl;
   _filterStartDateEl;
-  _filterEndDateEl
+  _filterEndDateEl;
   _categoriesData;
   _tableContainerEl;
   _recordsContainerEl;
+  _tableEl;
+  _confirmationModal;
+  _deleteConfirmationBtn;
+  _downloadTransactionBtn;
+  _currencyFormatter;
+  _currencySymbol;
 
   renderView(viewData) {
     this._clearView();
@@ -25,6 +31,7 @@ class transactionsView extends View {
       totalTransactions: this._totalTransactionsNumber,
       transactionSortState: this._sortState,
       categories: this._categoriesData,
+      currency: this._currencySymbol
     } = viewData);
     // console.log(this._sortState);
     // this._data = transactions;
@@ -32,6 +39,7 @@ class transactionsView extends View {
     this._totalTransactionsPages = Math.ceil(
       this._totalTransactionsNumber / DATAPERPAGE
     );
+    this._currencyFormatter = new Intl.NumberFormat('en-US',CURRENCYFORMAT);
     // const sortedByDateCategories = this._data.sort((a, b) => new Date(b.date) - new Date(a.date));
     // console.log(this._totalTransactionsPages);
     this._parentContainer.insertAdjacentHTML(
@@ -56,16 +64,25 @@ class transactionsView extends View {
     this._filterCategoriesEl = document.getElementById("filter-categories");
     this._filterStartDateEl = document.getElementById("filter-start-date");
     this._filterEndDateEl = document.getElementById("filter-end-date");
-    this._tableContainerEl = document.querySelector(".transaction-table-container");
-    this._recordsContainerEl = document.querySelector(".total-records-container");
+    this._tableContainerEl = document.querySelector(
+      ".transaction-table-container"
+    );
+    this._recordsContainerEl = document.querySelector(
+      ".total-records-container"
+    );
+    this._tableEl = document.querySelector(".trans-table-body");
+    this._confirmationModal = document.querySelector(".confirmation-modal");
+    this._deleteConfirmationBtn = document.querySelector(".modal-confirmation-btn");
+    this._downloadTransactionBtn = document.querySelector(".btn-trans-dwnld");
     this._closeToastrEl();
     this._initCategoryDropdown();
+    this._openDeleteConfirmationModal();
     // this.returntransactionMarkup();
   }
 
   openTransactionModal(handler) {
     this._addTransactionBtn.addEventListener("click", function (e) {
-      handler("section-transaction");
+      handler("section-transaction", false);
     });
   }
 
@@ -74,11 +91,11 @@ class transactionsView extends View {
       e.preventDefault();
       const btn = e.target.closest(".pagination-btn");
       if (!btn) return;
-      if(btn.classList.contains('pagination-btn-active')) return;
+      if (btn.classList.contains("pagination-btn-active")) return;
       // console.log(btn);
       const paginationNumber = btn.dataset.currentPage;
       // console.log(paginationNumber);
-      handler(paginationNumber,this._data);
+      handler(paginationNumber, this._data);
     });
   }
 
@@ -113,7 +130,7 @@ class transactionsView extends View {
         if (!ele) return;
         // console.log(ele);
         let fieldEl = ele.dataset.sort;
-        console.log(fieldEl);
+        //console.log(fieldEl);
         if (fieldEl === "category-name") {
           fieldEl = "categoryName";
         }
@@ -143,13 +160,13 @@ class transactionsView extends View {
     });
     const queryString = window.location.search;
     const params = new URLSearchParams(queryString);
-    const categoryParams = params.get('category');
-    const startDateParams = params.get('startDate');
-    const endDateParams = params.get('endDate');
-    console.log(categoryParams,startDateParams,endDateParams);
-    if(categoryParams) this._filterCategoriesEl.value = categoryParams;
-    if(startDateParams) this._filterStartDateEl.value = startDateParams;
-    if(endDateParams) this._filterEndDateEl.value = endDateParams;
+    const categoryParams = params.get("category");
+    const startDateParams = params.get("startDate");
+    const endDateParams = params.get("endDate");
+    // console.log(categoryParams,startDateParams,endDateParams);
+    if (categoryParams) this._filterCategoriesEl.value = categoryParams;
+    if (startDateParams) this._filterStartDateEl.value = startDateParams;
+    if (endDateParams) this._filterEndDateEl.value = endDateParams;
   }
 
   filterData(handler) {
@@ -162,9 +179,13 @@ class transactionsView extends View {
         // console.log(categoryNameEl.value);
         // console.log(startDateEl.value);
         // console.log(endDateEl.value);
-        const validator = this._validateFilterDates(startDateEl.value, endDateEl.value);
-        if(validator) return;
-        if(!categoryNameEl.value && !startDateEl.value && !endDateEl.value) return;
+        const validator = this._validateFilterDates(
+          startDateEl.value,
+          endDateEl.value
+        );
+        if (validator) return;
+        if (!categoryNameEl.value && !startDateEl.value && !endDateEl.value)
+          return;
         // console.log(categoryNameEl.value, startDateEl.value, endDateEl.value);
         handler(categoryNameEl.value, startDateEl.value, endDateEl.value);
       });
@@ -175,7 +196,7 @@ class transactionsView extends View {
     // console.log(new Date(startDate), new Date(endDate));
     const validatorEl = document.querySelector('[data-validator="end-date"]');
     if (startDate > endDate) {
-      if(!validatorEl) return;
+      if (!validatorEl) return;
       validatorEl.textContent = "start date cannot be greater than end date";
       validatorEl.classList.remove("hidden-visibility");
       return true;
@@ -184,7 +205,7 @@ class transactionsView extends View {
     return false;
   }
 
-  displayUpdatedTransactions(data){
+  displayUpdatedTransactions(data) {
     this._data = data;
     this._totalTransactionsNumber = this._data.length;
     this._totalTransactionsPages = Math.ceil(
@@ -192,16 +213,70 @@ class transactionsView extends View {
     );
     this.updateTransactionsTableDOM();
     this._displaySortedIcon();
-    this._paginationBtnContainer.textContent = '';
+    this._paginationBtnContainer.textContent = "";
     this.returnPageNumberMarkup();
     this.displayActivePageBtn();
     this._updatePagesNumberDOM();
     createIcons({ icons });
   }
 
-  updateTransactionsTableDOM(){
-  this._tableContainerEl.textContent = '';
-  const tableEl = `<table class="transaction-table">
+  editTransactionsHandler(handler) {
+    this._tableEl.addEventListener("click", (e) => {
+      const editBtnEl = e.target.closest(".edit-btn");
+      if (!editBtnEl) return;
+      // console.log(editBtnEl);
+      const btnRowEl = e.target.closest(".trans-table-row");
+      if (!btnRowEl) return;
+      // console.log(btnRowEl);
+      const transId = btnRowEl.dataset.transactionId;
+      if (!transId) return;
+      // console.log(transId);
+      handler("section-transaction", true, transId);
+    });
+  }
+
+  _openDeleteConfirmationModal(){
+    this._tableEl.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest(".delete-btn");
+      if(!deleteBtn) return;
+     const btnRowEl = e.target.closest(".trans-table-row");
+      if (!btnRowEl) return;
+      // console.log(btnRowEl);
+      const transId = btnRowEl.dataset.transactionId;
+      if (!transId) return;
+      this._confirmationModal.classList.remove("hidden");
+      const backDrop = `<div class="modal-backdrop"></div>`;
+      this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+      const backDropEl = document.querySelector(".modal-backdrop");
+      backDropEl.classList.add("active");
+      this._confirmationModal.dataset.transactionId = transId;
+    });
+  }
+
+  deleteTransactionsHandler(handler){
+    this._deleteConfirmationBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      // console.log(e.target);
+      const modalDiv = e.target.closest(".confirmation-modal");
+      // console.log(modalDiv);
+      if(!modalDiv) return;
+      const transId = modalDiv.dataset.transactionId;
+      if(!transId) return;
+      // console.log(transId);
+      handler(transId);
+    });
+  }
+
+  exportTransactionsHanlder(handler){
+    this._downloadTransactionBtn.addEventListener("click",(e)=>{
+      console.log("btn clicked");
+      handler();
+    });
+  }
+
+  updateTransactionsTableDOM() {
+    this._tableContainerEl.textContent = "";
+    const tableEl = `<table class="transaction-table">
         <thead class="trans-head-table-container">
             <tr class="trans-head-table-row">
                 <th class="trans-head-table"><span class="thead-sort-column" data-sort="date"><span>Date</span></span>
@@ -218,23 +293,22 @@ class transactionsView extends View {
         </thead>
         <tbody class="trans-table-body">
             ${this._data
-            .map((cat) => {
-            return this.returnTransactionMarkup(cat);
-            })
-            .join("")}
+              .map((cat) => {
+                return this.returnTransactionMarkup(cat);
+              })
+              .join("")}
         </tbody>
-    </table>`
-    this._tableContainerEl.insertAdjacentHTML('afterbegin', tableEl);
+    </table>`;
+    this._tableContainerEl.insertAdjacentHTML("afterbegin", tableEl);
   }
 
-  _updatePagesNumberDOM(){
-    this._recordsContainerEl.textContent = '';
-    this._recordsContainerEl.insertAdjacentHTML('afterbegin',`<p>Page ${this._pageNo} of ${
-            this._totalTransactionsPages
-            } Pages</p>
-        <p class="total-records">${
-            this._totalTransactionsNumber
-            } Total Records</p>`);
+  _updatePagesNumberDOM() {
+    this._recordsContainerEl.textContent = "";
+    this._recordsContainerEl.insertAdjacentHTML(
+      "afterbegin",
+      `<p>Page ${this._pageNo} of ${this._totalTransactionsPages} Pages</p>
+        <p class="total-records">${this._totalTransactionsNumber} Total Records</p>`
+    );
   }
 
   _returnMarkup() {
@@ -284,7 +358,7 @@ class transactionsView extends View {
                       <p class="transaction-validation hidden-visibility"></p>
                    </div>
                    <div>
-                      <button class="btn-primary btn-trans transition-3 btn"><i
+                      <button class="btn-primary btn-trans transition-3 btn btn-trans-dwnld"><i
                             data-lucide="download"></i>Download</button>
                        <p class="transaction-validation hidden-visibility"></p>
                     </div>
@@ -369,7 +443,7 @@ class transactionsView extends View {
                             ).format(new Date(transaction.date))}</td>
                             <td>${transaction.categoryName}</td>
                             <td>${transaction.description}</td>
-                            <td>${transaction.amount}</td>
+                            <td>${this._currencySymbol}${this._currencyFormatter.format(transaction.amount)}</td>
                             <td class="trans-table-button-col">
                                 <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
                                 <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
