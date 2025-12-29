@@ -88,6 +88,9 @@ class addTransactionView extends View {
         dateFormat: "m/d/Y",
         defaultDate: this._transactionData.date,
       });
+      const isExist = this._catgoriesData.some(cat=>cat.name === this._transactionData.categoryName);
+      console.log(isExist);
+      if(!isExist) this._categoriesDropDownEl.value = "";
     } else {
       flatpickr(this._dateInputEl, {
         dateFormat: "m/d/Y",
