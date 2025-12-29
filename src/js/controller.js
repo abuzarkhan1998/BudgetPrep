@@ -1,6 +1,6 @@
 import { createIcons, icons } from "lucide";
 import * as Model from "./model.js";
-import dashboardView from "./Views/dashboardView.js";
+import sideBarView from "./Views/sideBarView.js";
 import settingsView from "./Views/settingsView.js";
 import transactionsView from "./Views/transactionsView.js";
 import addTransactionView from "./Views/addTransactionView.js";
@@ -229,7 +229,7 @@ const deleteTransactions = function(transId){
 
 const init = function () {
   createIcons({ icons });
-  dashboardView.addHandlerNavigatePage(controlNavigation);
+  sideBarView.addHandlerNavigatePage(controlNavigation);
 };
 
 init();

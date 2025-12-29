@@ -1,4 +1,4 @@
-class dashboardView {
+class sideBarView {
   _parentElement =  document.querySelector('.sb-nav');
 
   addHandlerNavigatePage(handler){
@@ -15,4 +15,4 @@ class dashboardView {
   }
 }
 
-export default new dashboardView();
+export default new sideBarView();
