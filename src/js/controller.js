@@ -4,6 +4,7 @@ import sideBarView from "./Views/sideBarView.js";
 import settingsView from "./Views/settingsView.js";
 import transactionsView from "./Views/transactionsView.js";
 import addTransactionView from "./Views/addTransactionView.js";
+import dashboardView from "./Views/dashboardView.js";
 import Papa from "papaparse";
 
 const controlNavigation = async function (
@@ -36,6 +37,11 @@ const controlNavigation = async function (
     // transactionsView.openTransactionModal(openAddTransactionsView);
     // transactionsView.filterData(filerTransactions);
     // transactionsView.renderView(Model.state.transactions);
+  }
+  if(targetPage == "dashboard"){
+    const data = returndetailsforDashboard();
+    dashboardView.renderView(data);
+    dashboardView.openAddTransactionView(openAddTransactionsView);
   }
 };
 
@@ -226,6 +232,18 @@ const deleteTransactions = function(transId){
   controlNavigation("transactions");
   transactionsView.displaySuccessMessage('Transaction Updated Successfully', "OK");
 };
+
+//---------Dashboard View--------
+
+const returndetailsforDashboard = function (){
+  // const today = new Date();
+  // console.log(today);
+  const currentMonth = new Date().getMonth();
+  // console.log(currentMonth);
+  const dashboardData =Model.dashboardData(currentMonth);
+  // console.log(dashboardData);
+  return dashboardData;
+}
 
 const init = function () {
   createIcons({ icons });

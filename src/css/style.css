@@ -146,7 +146,8 @@
 
 .dashboard-expense-content {
     display: flex;
-    gap: 8rem;
+    align-items: center;
+    gap: 6.8rem;
     /* justify-content: center; */
 }
 
@@ -177,6 +178,64 @@
     height: 20rem;
     padding: 2rem 4.2rem;
     width: 50%;
+}
+
+.progress-container {
+    width: 22rem;
+    height: 3rem;
+    border: 1.5px solid #333;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    background: #fff;
+}
+
+.progress-fill{
+    height: 100%;
+    background: #fff;
+    transition: width 0.4s ease;
+    width: 0;
+}
+
+.summary-tab-container{
+    display: flex;
+    gap: 3.4rem;
+    padding: 1.2rem 2rem;
+    box-shadow: 0 .4rem .4rem rgba(0, 0, 0, 0.07);
+    border-radius: .6rem;
+    border: .3px solid #efefef;
+    width: 28rem;
+    justify-content: space-between;
+}
+
+.tab-icon-background{
+    background-color: #badbff;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+}
+
+.tab-icon-background svg{
+    stroke: #177ae6;
+    width: 4rem;
+    height: 4rem;
+}
+
+.summary-details-container{
+    padding-top: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    gap:1.2rem;
+}
+
+.summary-details-name{
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.summary-details-amount{
+    font-size: 2rem;
+    font-weight: 600;
+    color: #444 !important;
 }
 
 /* Add Expense Form */

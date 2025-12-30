@@ -267,6 +267,21 @@ export const exportTransactions = function(){
   return transactions;
 }
 
+export const dashboardData = function(month){
+   const currentMonthExpense = state.transactions.filter(tran => {
+    return new Date(tran.date).getMonth() === month;
+   }).reduce((acc, tran) => acc + +tran.amount,0);
+   let remainingBudget = state.userDetails.budget - currentMonthExpense;
+   if(remainingBudget < 0) remainingBudget = 0;
+  //  console.log(currentMontExpense);
+   return {
+    budget: state.userDetails.budget,
+    monthExpense: currentMonthExpense,
+    currencySymbol:state.userDetails.profile.currency,
+    remainingBudget
+  };
+}
+
 const init = function () {
   const storageData = localStorage.getItem("budgetData");
   if (storageData) state = JSON.parse(storageData);
