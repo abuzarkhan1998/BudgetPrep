@@ -147,7 +147,7 @@
 .dashboard-expense-content {
     display: flex;
     align-items: center;
-    gap: 6.8rem;
+    gap: 2.4rem;
     /* justify-content: center; */
 }
 

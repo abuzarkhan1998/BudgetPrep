@@ -32,7 +32,7 @@ class dashboardView extends View {
   }
 
   _initFields(){
-    this._displayBarProgress();
+    // this._displayBarProgress();
   }
 
   _displayBarProgress(){
@@ -84,11 +84,20 @@ class dashboardView extends View {
                      </div>
                      <div class="summary-tab-container">
                          <div class="summary-details-container">
+                             <p class="summary-details-name">Total Spent</p>
+                             <p class="summary-details-amount mb-sm-3">${this._data.currencySymbol}${this._currencyFormatter.format(this._data.monthExpense)}</p>
+                         </div>
+                         <div class="summary-tab-icon-container">
+                                 <div class="tab-icon-background"><i data-lucide="banknote-arrow-up"></i> </div>
+                         </div>
+                     </div>
+                     <div class="summary-tab-container">
+                         <div class="summary-details-container">
                              <p class="summary-details-name">Remaining Budget</p>
                              <p class="summary-details-amount mb-sm-3">${this._data.currencySymbol}${this._currencyFormatter.format(this._data.remainingBudget)}</p>
                          </div>
                          <div class="summary-tab-icon-container">
-                                 <div class="tab-icon-background"><i data-lucide="banknote-arrow-up"></i> </div>
+                                 <div class="tab-icon-background"><i data-lucide="banknote"></i> </div>
                          </div>
                      </div>
                  </div>
