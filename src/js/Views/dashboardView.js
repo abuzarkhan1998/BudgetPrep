@@ -35,6 +35,7 @@ class dashboardView extends View {
   _initFields() {
     // this._displayBarProgress();
     this._displayCategorySpending();
+    this._displayMonthlyTrend();
   }
 
   _displayBarProgress() {
@@ -71,11 +72,8 @@ class dashboardView extends View {
           speed: 800,
         },
       },
-
       labels: this._data.categorySpending.categories,
-
       colors: this._data.categorySpending.colors,
-
       plotOptions: {
         pie: {
           donut: {
@@ -91,7 +89,10 @@ class dashboardView extends View {
                 show: true,
                 fontSize: "16px",
                 fontWeight: 600,
-                formatter: (val) => `${this._data.currencySymbol}${this._formatCurrencyValue(val)}`,
+                formatter: (val) =>
+                  `${this._data.currencySymbol}${this._formatCurrencyValue(
+                    val
+                  )}`,
               },
               total: {
                 show: true,
@@ -99,10 +100,12 @@ class dashboardView extends View {
                 fontSize: "13px",
                 fontWeight: 500,
                 formatter: () =>
-                  `${this._data.currencySymbol}${this._formatCurrencyValue(this._data.categorySpending.amount.reduce(
-                    (a, b) => a + b,
-                    0
-                  ))}`,
+                  `${this._data.currencySymbol}${this._formatCurrencyValue(
+                    this._data.categorySpending.amount.reduce(
+                      (a, b) => a + b,
+                      0
+                    )
+                  )}`,
               },
             },
           },
@@ -136,13 +139,16 @@ class dashboardView extends View {
         },
         formatter: (seriesName, opts) => {
           const value = opts.w.globals.series[opts.seriesIndex];
-          return `${seriesName} — ${this._data.currencySymbol}${this._formatCurrencyValue(value)}`;
+          return `${seriesName} — ${
+            this._data.currencySymbol
+          }${this._formatCurrencyValue(value)}`;
         },
       },
 
       tooltip: {
         y: {
-          formatter: (val) => `${this._data.currencySymbol}${this._formatCurrencyValue(val)}`,
+          formatter: (val) =>
+            `${this._data.currencySymbol}${this._formatCurrencyValue(val)}`,
         },
       },
 
@@ -178,8 +184,56 @@ class dashboardView extends View {
     chart.render();
   }
 
-  _formatCurrencyValue(val){
+  _formatCurrencyValue(val) {
     return this._currencyFormatter.format(val);
+  }
+
+  _displayMonthlyTrend() {
+    var options = {
+      series: [
+        {
+          data: this._data.monthlyTrend.expenses,
+        },
+      ],
+      chart: {
+        type: "bar",
+        height: 350,
+        toolbar: {
+          show: false,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "30%",
+          borderRadius: 6,
+          borderRadiusApplication: "end",
+          borderRadiusWhenStacked: "last",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories: this._data.monthlyTrend.monthLabel,
+      },
+      tooltip: {
+        y: {
+          title: {
+            formatter: () => "",
+          },
+          formatter: (value) => {
+            return `Expense: ${this._data.currencySymbol}${this._formatCurrencyValue(value)}`;
+          },
+        },
+      },
+    };
+
+    var chart = new ApexCharts(
+      document.querySelector(".dashboard-monthly-trend"),
+      options
+    );
+    chart.render();
   }
 
   _returnMarkup() {
@@ -248,7 +302,10 @@ class dashboardView extends View {
                 <p class="dashboard-summary-heading center-text">Spending by Category</p>
                 <div class="dashboard-category-spending"></div>
                 </div>
-                <div class="dashboard-bar-container border-med"></div>
+                <div class="dashboard-bar-container border-med">
+                <p class="dashboard-summary-heading center-text">Monthly Trend</p>
+                <div class="dashboard-monthly-trend"></div>
+                </div>
             </div>
         </section>`;
   }

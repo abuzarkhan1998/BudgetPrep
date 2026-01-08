@@ -241,8 +241,9 @@ const returndetailsforDashboard = function (){
   // const today = new Date();
   // console.log(today);
   const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
   // console.log(currentMonth);
-  const dashboardData =Model.dashboardData(currentMonth);
+  const dashboardData =Model.dashboardData(currentMonth,currentYear);
   // console.log(dashboardData);
   return dashboardData;
 }

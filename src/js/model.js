@@ -267,15 +267,15 @@ export const exportTransactions = function(){
   return transactions;
 }
 
-export const dashboardData = function(month){
+export const dashboardData = function(month,year){
    const currentMonthExpense = state.transactions.filter(tran => {
-    return new Date(tran.date).getMonth() === month;
+    return (new Date(tran.date).getMonth() === month && new Date(tran.date).getFullYear() === year);
    }).reduce((acc, tran) => acc + +tran.amount,0);
    let remainingBudget = state.userDetails.budget - currentMonthExpense;
    if(remainingBudget < 0) remainingBudget = 0;
   //  console.log(currentMontExpense);
   const currentMonthTransactions = state.transactions.filter(tran=>{
-    return new Date(tran.date).getMonth() === month;
+    return (new Date(tran.date).getMonth() === month && new Date(tran.date).getFullYear() === year);
   });
   // console.log(currentMonthTransactions);
   // // const categories = [...new Set(currentMonthTransactions.map(tran=>tran.categoryName))];
@@ -283,7 +283,6 @@ export const dashboardData = function(month){
   // console.log(categoriesLabel);
   // const categoriesColors = state.userDetails.categories.map(cat=>cat.color);
   // console.log(categoriesColors);
-
     const categoryTotals = currentMonthTransactions.reduce((acc,tran)=>{
       const amount = +tran.amount;
 
@@ -304,7 +303,32 @@ export const dashboardData = function(month){
       color: cat.color
     }
   }).filter(cat=>cat.amount > 0);
+
+  const sixMonthsArray = [];
+  const monthlyExpenseArray = [];
+
+  for(let i=0; i < 6; i++){
+    let currYear = year;
+    const curDate = new Date(currYear, month - i, 1);
+
+    const curMonth = curDate.getMonth();
+    const curYear =  curDate.getFullYear();
+
+    const curMonthExpense = state.transactions.filter(tran=>{
+    return (new Date(tran.date).getMonth() === curMonth && new Date(tran.date).getFullYear() === curYear);}).reduce((acc,tran)=>acc + +tran.amount,0);
+
+    monthlyExpenseArray.unshift(curMonthExpense);
+
+    sixMonthsArray.unshift({
+      month: curMonth,
+      year: curYear,
+      label: `${curDate.toLocaleString('en-US',{month: 'short'})}-${String(curYear).slice(-2)}`
+    })
+  }
+  console.log(sixMonthsArray);
+  console.log(monthlyExpenseArray);
   // console.log(categoriesDetails);
+
    return {
     budget: state.userDetails.budget,
     monthExpense: currentMonthExpense,
@@ -314,6 +338,10 @@ export const dashboardData = function(month){
       categories: categoriesDetails.map(cat=> cat.name),
       amount: categoriesDetails.map(cat=> cat.amount),
       colors: categoriesDetails.map(cat=> cat.color)
+    },
+    monthlyTrend:{
+      monthLabel : sixMonthsArray.map(month=>month.label),
+      expenses: monthlyExpenseArray
     }
   };
 }

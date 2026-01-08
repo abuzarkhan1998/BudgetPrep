@@ -168,14 +168,9 @@
     gap: 4.8rem;
 }
 
-.dashboard-pie-container {
-    padding: 2rem 4.2rem;
-    width: 50%;
-}
-
+.dashboard-pie-container,
 .dashboard-bar-container {
-    height: 20rem;
-    padding: 2rem 4.2rem;
+    padding: 2rem;
     width: 50%;
 }
 
