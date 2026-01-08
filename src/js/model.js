@@ -274,11 +274,47 @@ export const dashboardData = function(month){
    let remainingBudget = state.userDetails.budget - currentMonthExpense;
    if(remainingBudget < 0) remainingBudget = 0;
   //  console.log(currentMontExpense);
+  const currentMonthTransactions = state.transactions.filter(tran=>{
+    return new Date(tran.date).getMonth() === month;
+  });
+  // console.log(currentMonthTransactions);
+  // // const categories = [...new Set(currentMonthTransactions.map(tran=>tran.categoryName))];
+  // const categoriesLabel = state.userDetails.categories.map(cat=>cat.name);
+  // console.log(categoriesLabel);
+  // const categoriesColors = state.userDetails.categories.map(cat=>cat.color);
+  // console.log(categoriesColors);
+
+    const categoryTotals = currentMonthTransactions.reduce((acc,tran)=>{
+      const amount = +tran.amount;
+
+      if(!acc[tran.categoryName]){
+        acc[tran.categoryName] = amount;
+      }
+      else{
+        acc[tran.categoryName] += amount;
+      }
+      return acc;
+    },{});
+    console.log(categoryTotals);
+
+  const categoriesDetails = state.userDetails.categories.map(cat=>{
+    return{
+      name:cat.name,
+      amount:categoryTotals[cat.name] ?? 0,
+      color: cat.color
+    }
+  }).filter(cat=>cat.amount > 0);
+  // console.log(categoriesDetails);
    return {
     budget: state.userDetails.budget,
     monthExpense: currentMonthExpense,
     currencySymbol:state.userDetails.profile.currency,
-    remainingBudget
+    remainingBudget,
+    categorySpending:{
+      categories: categoriesDetails.map(cat=> cat.name),
+      amount: categoriesDetails.map(cat=> cat.amount),
+      colors: categoriesDetails.map(cat=> cat.color)
+    }
   };
 }
 

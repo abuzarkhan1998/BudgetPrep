@@ -43,6 +43,8 @@ const controlNavigation = async function (
     dashboardView.renderView(data);
     dashboardView.openAddTransactionView(openAddTransactionsView);
   }
+  if(targetPage == "analytics"){
+  }
 };
 
 const setUrl = function (targetUrl) {

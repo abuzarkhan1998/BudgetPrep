@@ -1,17 +1,18 @@
 import View from "./View.js";
 import { createIcons, icons } from "lucide";
 import { CURRENCYFORMAT } from "../config.js";
+import ApexCharts from "apexcharts";
 
 class dashboardView extends View {
- _addTransactionBtn;
- _data;
- _currencyFormatter;
- _progressContainerEl;
- _progressFillEl;
+  _addTransactionBtn;
+  _data;
+  _currencyFormatter;
+  _progressContainerEl;
+  _progressFillEl;
 
   renderView(data) {
     this._data = data;
-    this._currencyFormatter = new Intl.NumberFormat('en-US',CURRENCYFORMAT);
+    this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
     console.log(this._data);
     this._clearView();
     this._parentContainer.insertAdjacentHTML(
@@ -19,39 +20,166 @@ class dashboardView extends View {
       this._returnMarkup()
     );
     this._progressContainerEl = document.querySelector(".progress-container");
-    this._progressFillEl =  document.querySelector(".progress-fill");
+    this._progressFillEl = document.querySelector(".progress-fill");
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._initFields();
   }
 
-  openAddTransactionView(handler){
-    this._addTransactionBtn.addEventListener("click",(e)=>{
-        handler("section-dashboard", false);
+  openAddTransactionView(handler) {
+    this._addTransactionBtn.addEventListener("click", (e) => {
+      handler("section-dashboard", false);
     });
   }
 
-  _initFields(){
+  _initFields() {
     // this._displayBarProgress();
+    this._displayCategorySpending();
   }
 
-  _displayBarProgress(){
-    const percent = Math.min((this._data.monthExpense / this._data.budget) * 100,100);
+  _displayBarProgress() {
+    const percent = Math.min(
+      (this._data.monthExpense / this._data.budget) * 100,
+      100
+    );
     console.log(percent);
     console.log(this._progressContainerEl);
     this._progressFillEl.style.width = `${percent}%`;
-    if(percent<60){
-        this._progressFillEl.style.backgroundColor = '#64d68e';
-        this._progressContainerEl.style.border = '1.5px solid #1b9e4b';
+    if (percent < 60) {
+      this._progressFillEl.style.backgroundColor = "#64d68e";
+      this._progressContainerEl.style.border = "1.5px solid #1b9e4b";
+    } else if (percent >= 60 && percent < 85) {
+      this._progressFillEl.style.backgroundColor = "#f9c56d";
+      this._progressContainerEl.style.border = "1.5px solid #bd8c39";
+    } else {
+      this._progressFillEl.style.backgroundColor = "#f26969";
+      this._progressContainerEl.style.border = "1.5px solid #bf3636";
     }
-    else if(percent >= 60 &&   percent < 85){
-        this._progressFillEl.style.backgroundColor = '#f9c56d';
-        this._progressContainerEl.style.border = '1.5px solid #bd8c39';
-    }
-    else{
-        this._progressFillEl.style.backgroundColor = '#f26969';
-        this._progressContainerEl.style.border = '1.5px solid #bf3636';
-    }
+  }
+
+  _displayCategorySpending() {
+    var options = {
+      series: this._data.categorySpending.amount,
+
+      chart: {
+        type: "donut",
+        width: "100%",
+        height: 320,
+        animations: {
+          enabled: true,
+          easing: "easeinout",
+          speed: 800,
+        },
+      },
+
+      labels: this._data.categorySpending.categories,
+
+      colors: this._data.categorySpending.colors,
+
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "60%",
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: "14px",
+                fontWeight: 500,
+              },
+              value: {
+                show: true,
+                fontSize: "16px",
+                fontWeight: 600,
+                formatter: (val) => `${this._data.currencySymbol}${this._formatCurrencyValue(val)}`,
+              },
+              total: {
+                show: true,
+                label: "Total Spending",
+                fontSize: "13px",
+                fontWeight: 500,
+                formatter: () =>
+                  `${this._data.currencySymbol}${this._formatCurrencyValue(this._data.categorySpending.amount.reduce(
+                    (a, b) => a + b,
+                    0
+                  ))}`,
+              },
+            },
+          },
+        },
+      },
+
+      dataLabels: {
+        enabled: true,
+        formatter: (val) => `${Math.round(val)}%`,
+        style: {
+          fontSize: "12px",
+          fontWeight: 500,
+        },
+        dropShadow: {
+          enabled: false,
+        },
+      },
+
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ["#fff"],
+      },
+
+      legend: {
+        position: "bottom",
+        fontSize: "14px",
+        fontWeight: 500,
+        labels: {
+          colors: "#555",
+        },
+        formatter: (seriesName, opts) => {
+          const value = opts.w.globals.series[opts.seriesIndex];
+          return `${seriesName} — ${this._data.currencySymbol}${this._formatCurrencyValue(value)}`;
+        },
+      },
+
+      tooltip: {
+        y: {
+          formatter: (val) => `${this._data.currencySymbol}${this._formatCurrencyValue(val)}`,
+        },
+      },
+
+      subtitle: {
+        text: "Current Month",
+        align: "center",
+        offsetY: 0,
+        style: {
+          fontSize: "13px",
+          color: "#777",
+        },
+      },
+
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 260,
+            },
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      ],
+    };
+
+    var chart = new ApexCharts(
+      document.querySelector(".dashboard-category-spending"),
+      options
+    );
+    chart.render();
+  }
+
+  _formatCurrencyValue(val){
+    return this._currencyFormatter.format(val);
   }
 
   _returnMarkup() {
@@ -71,12 +199,16 @@ class dashboardView extends View {
             </div>
 
              <div class="container dashboard-summary-container">
-                 <p class="dashboard-summary-heading">Summary</p>
+                 <p class="dashboard-summary-heading">This Month Overview</p>
                  <div class="dashboard-expense-content">
                      <div class="summary-tab-container">
                          <div class="summary-details-container">
                              <p class="summary-details-name">Total Budget</p>
-                             <p class="summary-details-amount mb-sm-3">${this._data.currencySymbol}${this._currencyFormatter.format(this._data.budget)}</p>
+                             <p class="summary-details-amount mb-sm-3">${
+                               this._data.currencySymbol
+                             }${this._currencyFormatter.format(
+      this._data.budget
+    )}</p>
                          </div>
                          <div class="summary-tab-icon-container">
                                  <div class="tab-icon-background"><i data-lucide="banknote-arrow-down"></i> </div>
@@ -85,7 +217,11 @@ class dashboardView extends View {
                      <div class="summary-tab-container">
                          <div class="summary-details-container">
                              <p class="summary-details-name">Total Spent</p>
-                             <p class="summary-details-amount mb-sm-3">${this._data.currencySymbol}${this._currencyFormatter.format(this._data.monthExpense)}</p>
+                             <p class="summary-details-amount mb-sm-3">${
+                               this._data.currencySymbol
+                             }${this._currencyFormatter.format(
+      this._data.monthExpense
+    )}</p>
                          </div>
                          <div class="summary-tab-icon-container">
                                  <div class="tab-icon-background"><i data-lucide="banknote-arrow-up"></i> </div>
@@ -94,7 +230,11 @@ class dashboardView extends View {
                      <div class="summary-tab-container">
                          <div class="summary-details-container">
                              <p class="summary-details-name">Remaining Budget</p>
-                             <p class="summary-details-amount mb-sm-3">${this._data.currencySymbol}${this._currencyFormatter.format(this._data.remainingBudget)}</p>
+                             <p class="summary-details-amount mb-sm-3">${
+                               this._data.currencySymbol
+                             }${this._currencyFormatter.format(
+      this._data.remainingBudget
+    )}</p>
                          </div>
                          <div class="summary-tab-icon-container">
                                  <div class="tab-icon-background"><i data-lucide="banknote"></i> </div>
@@ -105,6 +245,8 @@ class dashboardView extends View {
 
             <div class="container dashboard-chart-container">
                 <div class="dashboard-pie-container border-med">
+                <p class="dashboard-summary-heading center-text">Spending by Category</p>
+                <div class="dashboard-category-spending"></div>
                 </div>
                 <div class="dashboard-bar-container border-med"></div>
             </div>
