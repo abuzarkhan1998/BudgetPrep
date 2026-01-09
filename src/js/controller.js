@@ -5,6 +5,7 @@ import settingsView from "./Views/settingsView.js";
 import transactionsView from "./Views/transactionsView.js";
 import addTransactionView from "./Views/addTransactionView.js";
 import dashboardView from "./Views/dashboardView.js";
+import analyticsView from "./Views/analyticsView.js";
 import Papa from "papaparse";
 
 const controlNavigation = async function (
@@ -44,6 +45,7 @@ const controlNavigation = async function (
     dashboardView.openAddTransactionView(openAddTransactionsView);
   }
   if(targetPage == "analytics"){
+    analyticsView.renderView();
   }
 };
 
