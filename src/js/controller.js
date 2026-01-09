@@ -213,7 +213,12 @@ const openAddTransactionsView = function (sectionClass,isEdit=false,id =0) {
   addTransactionView.updateTransactions(updateTransactions);
 };
 
-const updateTransactions = function (formData, isEdit = false, id = 0) {
+const updateTransactions = function (
+  formData,
+  sectionClass,
+  isEdit = false,
+  id = 0
+) {
   // console.log(formData);
   transactionsView.renderSpinner();
   if (isEdit) {
@@ -223,9 +228,16 @@ const updateTransactions = function (formData, isEdit = false, id = 0) {
     Model.addTransactions(formData);
   }
   addTransactionView.closeModal();
-  controlNavigation("transactions");
-  const modalMessage = isEdit ? 'Transaction Updated Successfully' : 'Transaction Added Successfully';
-  transactionsView.displaySuccessMessage(modalMessage, "OK");
+  const modalMessage = isEdit
+    ? "Transaction Updated Successfully"
+    : "Transaction Added Successfully";
+  if (sectionClass === "section-transaction") {
+    controlNavigation("transactions");
+    transactionsView.displaySuccessMessage(modalMessage, "OK");
+  } else if (sectionClass === "section-dashboard") {
+    controlNavigation("dashboard");
+    dashboardView.displaySuccessMessage(modalMessage, "OK");
+  }
 };
 
 const deleteTransactions = function(transId){

@@ -14,9 +14,12 @@ class addTransactionView extends View {
   _amountInputEl;
   _dateInputEl;
   _descInputEl;
+  _sectionClassName;
 
   renderView(sectionClass, categoriesData, isEdit = false, transaction) {
     this._parentContainer = document.querySelector(`.${sectionClass}`);
+    this._sectionClassName = sectionClass;
+    console.log(this._sectionClassName);
     this._catgoriesData = categoriesData;
     this._isEdit = isEdit;
     if (this._isEdit) this._transactionData = transaction;
@@ -114,10 +117,10 @@ class addTransactionView extends View {
       const formData = Object.fromEntries(data);
       //   console.log(formData);
       if (this._isEdit) {
-        handler(formData,true,this._transactionData.id);
+        handler(formData,this._sectionClassName,true,this._transactionData.id);
       }
       else{
-        handler(formData);
+        handler(formData,this._sectionClassName);
       }
     });
   }

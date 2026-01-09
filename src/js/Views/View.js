@@ -61,7 +61,7 @@ _toastrModalBtns;
   _closeToastrEl() {
     this._toastrModalBtns.forEach((btn) => {
       btn.addEventListener("click", function (e) {
-        // console.log("clicked");
+        console.log("clicked");
         e.preventDefault();
         const modals = document.querySelectorAll(".notification-modal");
         modals.forEach((modal) => modal.classList.add("hidden"));
