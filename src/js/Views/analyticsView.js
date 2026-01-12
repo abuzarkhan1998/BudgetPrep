@@ -1,57 +1,84 @@
 import View from "./View";
 import ApexCharts from "apexcharts";
+import { CURRENCYFORMAT } from "../config.js";
 
 
 class analyticsView extends View {
-  renderView() {
+  _data;
+  _currencyFormatter;
+
+  renderView(data) {
+    this._data = data;
+    console.log(this._data);
     this._clearView();
-    this._parentContainer.insertAdjacentHTML("afterbegin",this._returnMarkup());
+    this._parentContainer.insertAdjacentHTML(
+      "afterbegin",
+      this._returnMarkup()
+    );
+    this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
     this._initFields();
   }
 
-  _initFields(){
+  _initFields() {
     this._displayCategorySpendingChart();
   }
 
-  _displayCategorySpendingChart(){
+  _displayCategorySpendingChart() {
     var options = {
-          series: [{
-            name: "Desktops",
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+      series: this._data.categorySpendTrend.chartsData,
+      colors: this._data.categorySpendTrend.colors,
+      chart: {
+        height: 350,
+        type: "line",
+        zoom: {
+          enabled: false,
         },
-        {
-            name: "Laptop",
-            data: [20, 31, 55, 21, 19, 82, 79, 91, 18]
-        }],
-          chart: {
-          height: 350,
-          type: 'line',
-          zoom: {
-            enabled: false
-          }
+        toolbar: {
+          show: false,
         },
-        dataLabels: {
-          enabled: false
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "straight",
+      },
+      grid: {
+        row: {
+          colors: ["#f3f3f3", "transparent"],
+          opacity: 0.5,
         },
-        stroke: {
-          curve: 'straight'
-        },
-        grid: {
-          row: {
-            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.5
+      },
+      xaxis: {
+        categories: this._data.categorySpendTrend.monthsLabel,
+      },
+      tooltip: {
+        y: {
+          title: {
+            formatter: () => "",
+          },
+          formatter: (value,{seriesIndex,w}) => {
+           const categoryName = w.globals.seriesNames[seriesIndex];
+            return `${categoryName}: ${
+              this._data.currencySymbol
+            }${this._formatCurrencyValue(value)}`;
           },
         },
-        xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        }
-        };
+      },
+    };
 
-        var chart = new ApexCharts(document.querySelector(".category-spending-trend"), options);
-        chart.render();
+    var chart = new ApexCharts(
+      document.querySelector(".category-spending-trend"),
+      options
+    );
+    chart.render();
   }
 
-  _returnMarkup(){
+  _formatCurrencyValue(val) {
+    return this._currencyFormatter.format(val);
+  }
+
+  _returnMarkup() {
     return `<section class="section-analytics main-section">
             <div class="dashboard-content">
                 <div class="dashboard-container">
@@ -81,7 +108,7 @@ class analyticsView extends View {
 
             <div class="container analytics-categories-container">
                 <div class="anlytics-categories-chart-container">
-                    <p class="dashboard-summary-heading">Top 3 Expence Categories</p>
+                    <p class="dashboard-summary-heading">Top 3 Expense Categories</p>
                 </div>
                 <div class="anlytics-categories-chart-container">
                     <p class="dashboard-summary-heading">Current vs Previous Month</p>

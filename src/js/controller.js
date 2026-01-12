@@ -45,7 +45,8 @@ const controlNavigation = async function (
     dashboardView.openAddTransactionView(openAddTransactionsView);
   }
   if(targetPage == "analytics"){
-    analyticsView.renderView();
+    const data = returnDetailsforAnalytics();
+    analyticsView.renderView(data);
   }
 };
 
@@ -256,10 +257,15 @@ const returndetailsforDashboard = function (){
   // console.log(today);
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
-  // console.log(currentMonth);
   const dashboardData =Model.dashboardData(currentMonth,currentYear);
   // console.log(dashboardData);
   return dashboardData;
+}
+
+//---------Dashboard View--------
+const returnDetailsforAnalytics = function(timePeriod=3){
+  const analyticsData =Model.returnDataForAnalytics(new Date().getMonth(),new Date().getFullYear(),timePeriod);
+  return analyticsData;
 }
 
 const init = function () {

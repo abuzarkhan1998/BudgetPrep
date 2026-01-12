@@ -13,7 +13,7 @@ class dashboardView extends View {
   renderView(data) {
     this._data = data;
     this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
-    console.log(this._data);
+    // console.log(this._data);
     this._clearView();
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
@@ -25,7 +25,7 @@ class dashboardView extends View {
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
     this._toastrModalBtns = document.querySelectorAll(".modal-notification-btn");
-    console.log(this._toastrModalBtns);
+    // console.log(this._toastrModalBtns);
     this._initFields();
     this._closeToastrEl();
   }

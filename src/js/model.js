@@ -294,7 +294,7 @@ export const dashboardData = function(month,year){
       }
       return acc;
     },{});
-    console.log(categoryTotals);
+    // console.log(categoryTotals);
 
   const categoriesDetails = state.userDetails.categories.map(cat=>{
     return{
@@ -344,6 +344,96 @@ export const dashboardData = function(month,year){
       expenses: monthlyExpenseArray
     }
   };
+}
+
+export const returnDataForAnalytics = function(month,year,timePeriod=3){
+  if(!timePeriod) return;
+  console.log(month,year);
+  const monthsArray = [];
+  const categoryChartsData = [];
+  const colorsArray = [];
+  const startDate = new Date(year, month-timePeriod+1,1);
+  const endDate = new Date(year, month+1,0 );
+  const filteredTransactions = state.transactions.filter(tran=>{
+    return new Date(tran.date) >= startDate && new Date(tran.date) <= endDate
+  });
+  const groupedByCategoriesTrans = filteredTransactions.reduce((acc,tran)=>{
+    const key = tran.categoryName;
+
+    if(!acc[key]){
+      acc[key] = [];
+    }
+
+    acc[key].push(tran);
+    return acc;
+  },{});
+
+  Object.entries(groupedByCategoriesTrans).forEach(([catName,transactions])=>{
+    const monthlyTotals = [];
+    for(let i = timePeriod - 1; i>=0; i--){
+      const targetMonth = month - i;
+      const {start,end} = getMonthRange(year, targetMonth);
+      // console.log(start);
+      // console.log(end);
+
+      const monthTotal =  transactions.reduce((sum,tran)=>{
+        const tranDate = new Date(tran.date);
+        if(tranDate >= start && tranDate<= end){
+          return sum + Number(tran.amount);
+        }
+        return sum;
+      },0);
+
+      monthlyTotals.push(monthTotal);
+    }
+    categoryChartsData.push({
+      name:catName,
+      data:monthlyTotals
+    });
+    // console.log(monthlyTotals);
+  })
+  
+  for(let i=0; i<timePeriod; i++){
+    const fullDate = new Date(year,month-i,1);
+    const curMonth = fullDate.getMonth();
+    const currYear =  fullDate.getFullYear();
+    monthsArray.unshift({
+      month: curMonth,
+      year: currYear,
+      label: `${fullDate.toLocaleString('en-US', {month:'short'})}-${String(currYear).slice(-2)}`
+    });
+  }
+  console.log(monthsArray);
+  console.log(categoryChartsData);
+
+  categoryChartsData.forEach(data=>{
+    const color = returnColorForChart(data.name);
+    colorsArray.push(color);
+  })
+  // console.log(endDate);
+  console.log(colorsArray);
+
+  return {
+    currencySymbol:state.userDetails.profile.currency,
+    categorySpendTrend: {
+      monthsLabel: monthsArray.map(month=> month.label),
+      chartsData:categoryChartsData,
+      colors:colorsArray
+    }
+  }
+}
+
+const getMonthRange = function (year, month){
+  const start = new Date(year,month,1);
+  const end = new Date (year, month+1, 0);
+  return {start,end};
+}
+const returnColorForChart =  function(categoryName){
+  const catName = state.userDetails.categories.find(cat=> cat.name === categoryName);
+  if(catName){
+    return catName.color;
+  }
+  return '#777';
 }
 
 const init = function () {
