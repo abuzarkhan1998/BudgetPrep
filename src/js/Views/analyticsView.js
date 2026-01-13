@@ -21,6 +21,7 @@ class analyticsView extends View {
 
   _initFields() {
     this._displayCategorySpendingChart();
+    this._displayExpenseCategoriesChart();
   }
 
   _displayCategorySpendingChart() {
@@ -57,8 +58,8 @@ class analyticsView extends View {
           title: {
             formatter: () => "",
           },
-          formatter: (value,{seriesIndex,w}) => {
-           const categoryName = w.globals.seriesNames[seriesIndex];
+          formatter: (value, { seriesIndex, w }) => {
+            const categoryName = w.globals.seriesNames[seriesIndex];
             return `${categoryName}: ${
               this._data.currencySymbol
             }${this._formatCurrencyValue(value)}`;
@@ -71,6 +72,53 @@ class analyticsView extends View {
       document.querySelector(".category-spending-trend"),
       options
     );
+    chart.render();
+  }
+
+  _displayExpenseCategoriesChart() {
+    var options = {
+      series: [
+        {
+          data: this._data.topExpenseCategories.amount,
+        },
+      ],
+      chart: {
+        type: "bar",
+        height: 350,
+         toolbar: {
+          show: false,
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 14,
+          borderRadiusApplication: "end",
+          barHeight: "35%",
+          borderRadiusWhenStacked: "last",
+          horizontal: true,
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories: this._data.topExpenseCategories.categoryName,
+      },
+      tooltip: {
+        y: {
+          title: {
+            formatter: () => "",
+          },
+          formatter: (value) => {
+            return `Expense: ${
+              this._data.currencySymbol
+            }${this._formatCurrencyValue(value)}`;
+          },
+        },
+      },
+    };
+
+    var chart = new ApexCharts(document.querySelector(".expense-categories-chart"), options);
     chart.render();
   }
 
@@ -108,10 +156,11 @@ class analyticsView extends View {
 
             <div class="container analytics-categories-container">
                 <div class="anlytics-categories-chart-container">
-                    <p class="dashboard-summary-heading">Top 3 Expense Categories</p>
+                    <p class="dashboard-summary-heading center-text">Top 3 Expense Categories</p>
+                    <div class="expense-categories-chart"></div>
                 </div>
                 <div class="anlytics-categories-chart-container">
-                    <p class="dashboard-summary-heading">Current vs Previous Month</p>
+                    <p class="dashboard-summary-heading center-text">Current vs Previous Month</p>
                 </div>
             </div>
         </section>`;

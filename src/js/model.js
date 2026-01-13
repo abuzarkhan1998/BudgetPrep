@@ -403,15 +403,28 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
       label: `${fullDate.toLocaleString('en-US', {month:'short'})}-${String(currYear).slice(-2)}`
     });
   }
-  console.log(monthsArray);
-  console.log(categoryChartsData);
+  // console.log(monthsArray);
+  // console.log(categoryWiseTotal);
 
   categoryChartsData.forEach(data=>{
     const color = returnColorForChart(data.name);
     colorsArray.push(color);
   })
-  // console.log(endDate);
-  console.log(colorsArray);
+
+  const categoryWiseTotal = filteredTransactions.reduce((acc,tran)=>{
+      const amount = +tran.amount;
+
+      if(!acc[tran.categoryName]){
+        acc[tran.categoryName] = amount;
+      }
+      else{
+        acc[tran.categoryName] += amount;
+      }
+      return acc;
+    },{});
+
+    const topCategories = Object.entries(categoryWiseTotal).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,amount])=>({name,amount}));
+    // console.log(topCategories);
 
   return {
     currencySymbol:state.userDetails.profile.currency,
@@ -419,6 +432,10 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
       monthsLabel: monthsArray.map(month=> month.label),
       chartsData:categoryChartsData,
       colors:colorsArray
+    },
+    topExpenseCategories:{
+      categoryName:topCategories.map(cat=>cat.name),
+      amount:topCategories.map(cat=>cat.amount)
     }
   }
 }
@@ -433,7 +450,7 @@ const returnColorForChart =  function(categoryName){
   if(catName){
     return catName.color;
   }
-  return '#777';
+  return '#ccc';
 }
 
 const init = function () {

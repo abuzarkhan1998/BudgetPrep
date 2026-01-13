@@ -588,8 +588,7 @@
 .anlytics-categories-chart-container {
     border: 2px solid #eee;
     border-radius: 0.6rem;
-    padding: 1.8rem 2.4rem;
-    height: 30rem;
+    padding: 1.8rem 0.2rem;
     width: 100%;
 }
 
