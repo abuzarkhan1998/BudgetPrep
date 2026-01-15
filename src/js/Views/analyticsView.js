@@ -6,8 +6,9 @@ import { CURRENCYFORMAT } from "../config.js";
 class analyticsView extends View {
   _data;
   _currencyFormatter;
+  _timePeriodSelectEl;
 
-  renderView(data) {
+  renderView(data,timePeriod) {
     this._data = data;
     console.log(this._data);
     this._clearView();
@@ -16,12 +17,15 @@ class analyticsView extends View {
       this._returnMarkup()
     );
     this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
+    this._timePeriodSelectEl = document.getElementById('analytics-select');
+    this._timePeriodSelectEl.value = timePeriod;
     this._initFields();
   }
 
   _initFields() {
     this._displayCategorySpendingChart();
     this._displayExpenseCategoriesChart();
+    this._displayCurrentVsPreviousChart();
   }
 
   _displayCategorySpendingChart() {
@@ -66,6 +70,10 @@ class analyticsView extends View {
           },
         },
       },
+      grid: {
+        borderColor: "#f1f1f1",
+        strokeDashArray: 4,
+      },
     };
 
     var chart = new ApexCharts(
@@ -82,10 +90,11 @@ class analyticsView extends View {
           data: this._data.topExpenseCategories.amount,
         },
       ],
+      colors: this._data.topExpenseCategories.color,
       chart: {
         type: "bar",
         height: 350,
-         toolbar: {
+        toolbar: {
           show: false,
         },
       },
@@ -96,10 +105,14 @@ class analyticsView extends View {
           barHeight: "35%",
           borderRadiusWhenStacked: "last",
           horizontal: true,
+          distributed: true,
         },
       },
       dataLabels: {
-        enabled: false,
+        enabled: true,
+        formatter: (val) =>
+          `${this._data.currencySymbol}${val.toLocaleString()}`,
+        offsetX: 10,
       },
       xaxis: {
         categories: this._data.topExpenseCategories.categoryName,
@@ -116,14 +129,83 @@ class analyticsView extends View {
           },
         },
       },
+      grid: {
+        borderColor: "#f1f1f1",
+        strokeDashArray: 4,
+      },
     };
 
-    var chart = new ApexCharts(document.querySelector(".expense-categories-chart"), options);
+    var chart = new ApexCharts(
+      document.querySelector(".expense-categories-chart"),
+      options
+    );
+    chart.render();
+  }
+
+  _displayCurrentVsPreviousChart() {
+    var options = {
+      series: [
+        {
+          data: this._data.monthComparisonChart.amount,
+        },
+      ],
+      chart: {
+        type: "bar",
+        height: 350,
+        toolbar: {
+          show: false,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "25%",
+          borderRadius: 8,
+          borderRadiusApplication: "end",
+          borderRadiusWhenStacked: "last",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories: this._data.monthComparisonChart.months,
+      },
+      tooltip: {
+        y: {
+          title: {
+            formatter: () => "",
+          },
+          formatter: (value) => {
+            return `Expense: ${
+              this._data.currencySymbol
+            }${this._formatCurrencyValue(value)}`;
+          },
+        },
+      },
+      grid: {
+        borderColor: "#f1f1f1",
+        strokeDashArray: 4,
+      },
+    };
+
+    var chart = new ApexCharts(
+      document.querySelector(".expense-comparison-chart"),
+      options
+    );
     chart.render();
   }
 
   _formatCurrencyValue(val) {
     return this._currencyFormatter.format(val);
+  }
+
+  changeTimePeriod(handler){
+    this._timePeriodSelectEl.addEventListener('change',(e)=>{
+      const timePeriod = e.target.value;
+      if(!timePeriod) return;
+      handler(timePeriod);
+    })
   }
 
   _returnMarkup() {
@@ -142,9 +224,9 @@ class analyticsView extends View {
                 <div class="analytics-select-container trans-input-group">
                     <label for="analytics-select" class="trans-form-label">Time Period</label>
                     <select id="analytics-select" class="trans-input-field">
-                        <option>Last 3 Months</option>
-                        <option>Last 6 Months</option>
-                        <option>Last 12 Months</option>
+                        <option value="3">Last 3 Months</option>
+                        <option value="6">Last 6 Months</option>
+                        <option value="12">Last 12 Months</option>
                     </select>
                 </div>
             </div>
@@ -161,6 +243,7 @@ class analyticsView extends View {
                 </div>
                 <div class="anlytics-categories-chart-container">
                     <p class="dashboard-summary-heading center-text">Current vs Previous Month</p>
+                    <div class="expense-comparison-chart"></div>
                 </div>
             </div>
         </section>`;

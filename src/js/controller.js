@@ -10,7 +10,8 @@ import Papa from "papaparse";
 
 const controlNavigation = async function (
   targetPage,
-  targetTab = "settings-profile-container"
+  targetTab = "settings-profile-container",
+  timePeriod=3
 ) {
   //   console.log(targetPage);
   setUrl(targetPage);
@@ -45,8 +46,10 @@ const controlNavigation = async function (
     dashboardView.openAddTransactionView(openAddTransactionsView);
   }
   if(targetPage == "analytics"){
-    const data = returnDetailsforAnalytics();
-    analyticsView.renderView(data);
+    settingsView.renderSpinner();
+    const data = returnDetailsforAnalytics(timePeriod);
+    analyticsView.renderView(data,timePeriod);
+    analyticsView.changeTimePeriod(changeAnalyticsData);
   }
 };
 
@@ -262,10 +265,15 @@ const returndetailsforDashboard = function (){
   return dashboardData;
 }
 
-//---------Dashboard View--------
-const returnDetailsforAnalytics = function(timePeriod=3){
+//---------Analytics View--------
+const returnDetailsforAnalytics = function(timePeriod){
   const analyticsData =Model.returnDataForAnalytics(new Date().getMonth(),new Date().getFullYear(),timePeriod);
   return analyticsData;
+}
+
+const changeAnalyticsData = function(timePeriod){
+  console.log(timePeriod);
+   controlNavigation("analytics", "settings-categories-container",timePeriod);
 }
 
 const init = function () {

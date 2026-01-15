@@ -233,6 +233,10 @@ class dashboardView extends View {
           },
         },
       },
+      grid: {
+        borderColor: "#f1f1f1",
+        strokeDashArray: 4,
+      },
     };
 
     var chart = new ApexCharts(

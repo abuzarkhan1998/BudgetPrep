@@ -348,7 +348,7 @@ export const dashboardData = function(month,year){
 
 export const returnDataForAnalytics = function(month,year,timePeriod=3){
   if(!timePeriod) return;
-  console.log(month,year);
+  // console.log(month,year);
   const monthsArray = [];
   const categoryChartsData = [];
   const colorsArray = [];
@@ -425,6 +425,51 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
 
     const topCategories = Object.entries(categoryWiseTotal).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([name,amount])=>({name,amount}));
     // console.log(topCategories);
+    // const topCategoriesWithColor = Object.entries(topCategories).forEach(([index,cat])=>{
+    //   const catColor = returnColorForChart(cat.name);
+    //   cat.color = catColor;
+    //   console.log(cat);
+    //   return cat;
+    // }).map(([name,amount,color])=>({name,amount,color}));
+    const topCategoriesWithColor = topCategories.map(cat =>{
+      const catColor = returnColorForChart(cat.name);
+      cat.color = catColor;
+      // console.log(cat);
+      return cat;
+    });
+    // console.log(topCategoriesWithColor);
+    const twoMonthsArray = [];
+    const monthlyExpenseArray = [];
+
+    for (let i = 0; i < 2; i++) {
+      let currYear = year;
+      const curDate = new Date(currYear, month - i, 1);
+
+      const curMonth = curDate.getMonth();
+      const curYear = curDate.getFullYear();
+
+      const curMonthExpense = state.transactions
+        .filter((tran) => {
+          return (
+            new Date(tran.date).getMonth() === curMonth &&
+            new Date(tran.date).getFullYear() === curYear
+          );
+        })
+        .reduce((acc, tran) => acc + +tran.amount, 0);
+
+      monthlyExpenseArray.unshift(curMonthExpense);
+
+      twoMonthsArray.unshift({
+        month: curMonth,
+        year: curYear,
+        label: `${curDate.toLocaleString("en-US", { month: "short" })}-${String(
+          curYear
+        ).slice(-2)}`,
+      });
+    }
+    // console.log(twoMonthsArray);
+    // console.log(monthlyExpenseArray);
+
 
   return {
     currencySymbol:state.userDetails.profile.currency,
@@ -434,8 +479,13 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
       colors:colorsArray
     },
     topExpenseCategories:{
-      categoryName:topCategories.map(cat=>cat.name),
-      amount:topCategories.map(cat=>cat.amount)
+      categoryName:topCategoriesWithColor.map(cat=>cat.name),
+      amount:topCategoriesWithColor.map(cat=>cat.amount),
+      color: topCategoriesWithColor.map(cat=>cat.color)
+    },
+    monthComparisonChart:{
+      months:twoMonthsArray.map(month=>month.label),
+      amount:monthlyExpenseArray
     }
   }
 }
