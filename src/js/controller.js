@@ -41,12 +41,13 @@ const controlNavigation = async function (
     // transactionsView.renderView(Model.state.transactions);
   }
   if(targetPage == "dashboard"){
+    dashboardView.renderSpinner();
     const data = returndetailsforDashboard();
     dashboardView.renderView(data);
     dashboardView.openAddTransactionView(openAddTransactionsView);
   }
   if(targetPage == "analytics"){
-    settingsView.renderSpinner();
+    analyticsView.renderSpinner();
     const data = returnDetailsforAnalytics(timePeriod);
     analyticsView.renderView(data,timePeriod);
     analyticsView.changeTimePeriod(changeAnalyticsData);
@@ -55,7 +56,10 @@ const controlNavigation = async function (
 
 const setUrl = function (targetUrl) {
   const url = new URL(window.location.href);
-  const newUrl = `${url.origin}/${targetUrl}`;
+  let newUrl = `${url.origin}/${targetUrl}`;
+  if(targetUrl === 'dashboard'){
+    newUrl = `${url.origin}`;
+  }
   // console.log(newUrl);
   history.pushState({}, "", newUrl);
 };
@@ -110,8 +114,9 @@ const deleteCategory = async function (categoryId) {
 // }
 
 //---------Transactions View--------
-const displayTransactionswithPagination = function (pageNo, transactions) {
+const   displayTransactionswithPagination = function (pageNo, transactions) {
 
+  transactionsView.renderSpinner();
   let transactionsData;
   const params = new URLSearchParams(window.location.search);
   if (params.toString()) {
@@ -276,9 +281,27 @@ const changeAnalyticsData = function(timePeriod){
    controlNavigation("analytics", "settings-categories-container",timePeriod);
 }
 
+
+const handleRoute = function(){
+  const path = window.location.pathname.replace("/","");
+  const targetPath =  path || "dashboard";
+  // console.log(targetPath);
+  controlNavigation(targetPath);
+}
+
+const pageLoadHandler = function () {
+  window.addEventListener("load", handleRoute);
+};
+
+const arrowNavigationHandler = function(){
+  window.addEventListener("popstate", handleRoute);
+}
+
 const init = function () {
   createIcons({ icons });
   sideBarView.addHandlerNavigatePage(controlNavigation);
+  pageLoadHandler();
+  arrowNavigationHandler();
 };
 
 init();

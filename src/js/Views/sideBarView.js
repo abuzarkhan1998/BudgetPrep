@@ -3,6 +3,7 @@ class sideBarView {
 
   addHandlerNavigatePage(handler){
     this._parentElement.addEventListener('click',function(e){
+      e.preventDefault();
         const navMenu = e.target.closest('.nav-link');
         if(!navMenu) return;
         const childLinks = document.querySelectorAll('.nav-link');
@@ -13,6 +14,7 @@ class sideBarView {
         if(toNavMenu) handler(toNavMenu);
     })
   }
+
 }
 
 export default new sideBarView();
