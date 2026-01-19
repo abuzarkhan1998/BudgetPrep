@@ -33,9 +33,9 @@ class transactionsView extends View {
       categories: this._categoriesData,
       currency: this._currencySymbol
     } = viewData);
-    // console.log(this._sortState);
+    console.log(viewData);
     // this._data = transactions;
-    // console.log(this._data);
+    console.log(this._data);
     this._totalTransactionsPages = Math.ceil(
       this._totalTransactionsNumber / DATAPERPAGE
     );
@@ -312,6 +312,8 @@ class transactionsView extends View {
   }
 
   _returnMarkup() {
+    const hasData = this._data && this._data.length > 0;
+    console.log(hasData);
     return ` <section class="section-transaction main-section">
             <div class="dashboard-content">
                 <div class="dashboard-container">
@@ -365,8 +367,10 @@ class transactionsView extends View {
                 </div>
             </div>
 
-            <div class="container transaction-table-container mb-md-1">
-                <table class="transaction-table">
+            <div class="container transaction-table-container mb-md-1 pos-relative min-height-25">
+              ${
+                hasData ?
+                `<table class="transaction-table">
                     <thead class="trans-head-table-container">
                         <tr class="trans-head-table-row">
                             <th class="trans-head-table"><span
@@ -389,7 +393,13 @@ class transactionsView extends View {
               })
               .join("")}
             </tbody>
-                </table>
+                </table>`
+                 :
+                 `<div class="no-data-found">
+                   <i data-lucide="triangle-alert"></i> 
+                   <p class="no-data-text">No data yet — start by adding expenses.</p>
+                 </div>`
+              }
             </div>
 
             <div class="container pagination-container">

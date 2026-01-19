@@ -322,6 +322,10 @@ margin-bottom: 4.2rem;
     min-height: 40rem;
 }
 
+.min-height-25{
+     min-height: 25rem;
+}
+
 /* define the keyframes */
 @keyframes spin {
   from {

@@ -285,7 +285,14 @@ const changeAnalyticsData = function(timePeriod){
 const handleRoute = function(){
   const path = window.location.pathname.replace("/","");
   const targetPath =  path || "dashboard";
-  // console.log(targetPath);
+  if(!targetPath) return;
+  const ele = document.querySelector(`[data-nav-link="${targetPath}"]`);
+  if(!ele) return;
+  const childLinks = document.querySelectorAll('.nav-link');
+  childLinks.forEach(nav => nav.classList.remove('nav-link-active'));
+  // console.log(navMenu);
+  ele.classList.add('nav-link-active');
+  // console.log(ele);
   controlNavigation(targetPath);
 }
 

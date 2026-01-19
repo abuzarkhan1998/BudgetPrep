@@ -183,6 +183,9 @@ class dashboardView extends View {
       ],
     };
 
+    const element = document.querySelector(".dashboard-category-spending");
+    if (!element) return;
+
     var chart = new ApexCharts(
       document.querySelector(".dashboard-category-spending"),
       options
@@ -240,6 +243,9 @@ class dashboardView extends View {
         strokeDashArray: 4,
       },
     };
+
+    const element = document.querySelector(".dashboard-category-spending");
+    if (!element) return;
 
     var chart = new ApexCharts(
       document.querySelector(".dashboard-monthly-trend"),

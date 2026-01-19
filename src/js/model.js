@@ -481,6 +481,7 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
 
   return {
     currencySymbol:state.userDetails.profile.currency,
+    IsTransactions: state.transactions.length>0,
     categorySpendTrend: {
       monthsLabel: monthsArray.map(month=> month.label),
       chartsData:categoryChartsData,
