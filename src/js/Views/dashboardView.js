@@ -13,7 +13,7 @@ class dashboardView extends View {
   renderView(data) {
     this._data = data;
     this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
-    // console.log(this._data);
+    console.log(this._data);
     this._clearView();
     this._parentContainer.insertAdjacentHTML(
       "afterbegin",
@@ -24,7 +24,9 @@ class dashboardView extends View {
     createIcons({ icons });
     this._addTransactionBtn = document.querySelector(".btn-add-expense");
     this._successModal = document.querySelector(".modal-success");
-    this._toastrModalBtns = document.querySelectorAll(".modal-notification-btn");
+    this._toastrModalBtns = document.querySelectorAll(
+      ".modal-notification-btn"
+    );
     // console.log(this._toastrModalBtns);
     this._initFields();
     this._closeToastrEl();
@@ -246,6 +248,16 @@ class dashboardView extends View {
     chart.render();
   }
 
+  _returnMarkupBasedonDate(ele){
+    if(this._data.IsTransactions){
+      return ele;
+    }
+    return `<div class="no-data-found">
+                   <i data-lucide="triangle-alert"></i> 
+                   <p class="no-data-text">No data yet — start by adding expenses.</p>
+                 </div>`;
+  }
+
   _returnMarkup() {
     return `<section class="section-dashboard main-section">
             <div class="dashboard-content">
@@ -308,13 +320,13 @@ class dashboardView extends View {
              </div>
 
             <div class="container dashboard-chart-container">
-                <div class="dashboard-pie-container border-med">
-                <p class="dashboard-summary-heading center-text">Spending by Category</p>
-                <div class="dashboard-category-spending"></div>
+                <div class="dashboard-pie-container border-med pos-relative min-height-20">
+                 <p class="dashboard-summary-heading center-text">Spending by Category</p>
+                 ${this._returnMarkupBasedonDate('<div class="dashboard-category-spending"></div>')}
                 </div>
-                <div class="dashboard-bar-container border-med">
+                <div class="dashboard-bar-container border-med pos-relative min-height-20">
                 <p class="dashboard-summary-heading center-text">Monthly Trend</p>
-                <div class="dashboard-monthly-trend"></div>
+                ${this._returnMarkupBasedonDate('<div class="dashboard-monthly-trend"></div>')}
                 </div>
             </div>
         </section>

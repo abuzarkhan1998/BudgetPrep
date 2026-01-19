@@ -1,6 +1,7 @@
 import View from "./View";
 import ApexCharts from "apexcharts";
 import { CURRENCYFORMAT } from "../config.js";
+import { createIcons, icons } from "lucide";
 
 
 class analyticsView extends View {
@@ -8,7 +9,7 @@ class analyticsView extends View {
   _currencyFormatter;
   _timePeriodSelectEl;
 
-  renderView(data,timePeriod) {
+  renderView(data, timePeriod) {
     this._data = data;
     console.log(this._data);
     this._clearView();
@@ -17,8 +18,9 @@ class analyticsView extends View {
       this._returnMarkup()
     );
     this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
-    this._timePeriodSelectEl = document.getElementById('analytics-select');
+    this._timePeriodSelectEl = document.getElementById("analytics-select");
     this._timePeriodSelectEl.value = timePeriod;
+    createIcons({ icons });
     this._initFields();
   }
 
@@ -75,6 +77,9 @@ class analyticsView extends View {
         strokeDashArray: 4,
       },
     };
+
+    const element = document.querySelector(".category-spending-trend");
+    if(!element) return;
 
     var chart = new ApexCharts(
       document.querySelector(".category-spending-trend"),
@@ -135,6 +140,9 @@ class analyticsView extends View {
       },
     };
 
+    const element = document.querySelector(".expense-categories-chart");
+    if(!element) return;
+
     var chart = new ApexCharts(
       document.querySelector(".expense-categories-chart"),
       options
@@ -189,6 +197,9 @@ class analyticsView extends View {
       },
     };
 
+    const element = document.querySelector(".expense-comparison-chart");
+    if(!element) return;
+    
     var chart = new ApexCharts(
       document.querySelector(".expense-comparison-chart"),
       options
@@ -200,12 +211,22 @@ class analyticsView extends View {
     return this._currencyFormatter.format(val);
   }
 
-  changeTimePeriod(handler){
-    this._timePeriodSelectEl.addEventListener('change',(e)=>{
+  changeTimePeriod(handler) {
+    this._timePeriodSelectEl.addEventListener("change", (e) => {
       const timePeriod = e.target.value;
-      if(!timePeriod) return;
+      if (!timePeriod) return;
       handler(timePeriod);
-    })
+    });
+  }
+
+  _returnMarkupBasedonDate(ele) {
+    if (this._data.IsTransactions) {
+      return ele;
+    }
+    return `<div class="no-data-found">
+                   <i data-lucide="triangle-alert"></i> 
+                   <p class="no-data-text">No data yet — start by adding expenses.</p>
+                 </div>`;
   }
 
   _returnMarkup() {
@@ -231,19 +252,19 @@ class analyticsView extends View {
                 </div>
             </div>
 
-            <div class="container spending-chart-container mb-md-2">
+            <div class="container spending-chart-container mb-md-2 pos-relative min-height-20">
                 <p class="dashboard-summary-heading">Category Spending Trend</p>
-                <div class="category-spending-trend"></div>
+                ${this._returnMarkupBasedonDate('<div class="category-spending-trend"></div>')}
             </div>
 
             <div class="container analytics-categories-container">
-                <div class="anlytics-categories-chart-container">
+                <div class="anlytics-categories-chart-container pos-relative min-height-20">
                     <p class="dashboard-summary-heading center-text">Top 3 Expense Categories</p>
-                    <div class="expense-categories-chart"></div>
+                    ${this._returnMarkupBasedonDate('<div class="expense-categories-chart"></div>')}
                 </div>
-                <div class="anlytics-categories-chart-container">
+                <div class="anlytics-categories-chart-container pos-relative min-height-20">
                     <p class="dashboard-summary-heading center-text">Current vs Previous Month</p>
-                    <div class="expense-comparison-chart"></div>
+                    ${this._returnMarkupBasedonDate('<div class="expense-comparison-chart"></div>')}
                 </div>
             </div>
         </section>`;

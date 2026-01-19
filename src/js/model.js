@@ -3,7 +3,14 @@ import { COUNTRY_API, COUNTRYAPI_KEY, DATAPERPAGE } from "./config.js";
 export let state = {
   isInitialized: false,
   userDetails: {
-    profile: {},
+    profile: {
+      firstName:'',
+      lastName:'',
+      country:'',
+      currency:'',
+      isProfileInitialized:false,
+      isBudgetInitialized:false
+    },
     budget: 0,
     categories: [
       { id: 1, name: "Food & Groceries", color: "#8dc4ff", isDefault: true },
@@ -325,8 +332,8 @@ export const dashboardData = function(month,year){
       label: `${curDate.toLocaleString('en-US',{month: 'short'})}-${String(curYear).slice(-2)}`
     })
   }
-  console.log(sixMonthsArray);
-  console.log(monthlyExpenseArray);
+  // console.log(sixMonthsArray);
+  // console.log(monthlyExpenseArray);
   // console.log(categoriesDetails);
 
    return {
@@ -334,6 +341,7 @@ export const dashboardData = function(month,year){
     monthExpense: currentMonthExpense,
     currencySymbol:state.userDetails.profile.currency,
     remainingBudget,
+    IsTransactions: state.transactions.length>0,
     categorySpending:{
       categories: categoriesDetails.map(cat=> cat.name),
       amount: categoriesDetails.map(cat=> cat.amount),
