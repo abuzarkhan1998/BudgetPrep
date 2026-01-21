@@ -102,14 +102,24 @@ export const updateCategory = function (ctgr) {
   const category = state.userDetails.categories.find(
     (cat) => cat.id === ctgr.id
   );
+  const OldcatName = category.name;
   if (!category) {
     console.error(`Category with ID ${ctgr.id} not found`);
     return;
   }
+  state.transactions = state.transactions.map((tran) => {
+    if (tran.categoryName === OldcatName) {
+      return {
+        ...tran,
+        categoryName: ctgr.name,
+      };
+    }
+    return tran;
+  });
   category.name = ctgr.name;
   category.color = ctgr.color;
   saveDatatoLocalStorage();
-  console.log(state);
+  // console.log(state);
 };
 
 export const returnUserDetails = function () {
