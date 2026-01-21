@@ -64,7 +64,9 @@ class settingsView extends View {
       ".settings-categories-lists"
     );
     this._confirmationModal = document.querySelector(".confirmation-modal");
-    this._deleteConfirmationBtn = document.querySelector(".modal-confirmation-btn");
+    this._deleteConfirmationBtn = document.querySelector(
+      ".modal-confirmation-btn"
+    );
     // console.log(this._categoryListsEl);
     // console.log(this._toastrModalBtns);
     createIcons({ icons });
@@ -83,13 +85,15 @@ class settingsView extends View {
     this._cancelEdit();
     this._openDeleteConfirmationModal();
     this._handleClickonColorPicker();
+    this._navigateForInitialization();
   }
 
   navigateTabs() {
-    this._tabContainer.addEventListener("click", function (e) {
+    this._tabContainer.addEventListener("click", (e) => {
       // console.log(e);
       const selectedTab = e.target.closest(".settings-tab");
       if (!selectedTab) return;
+      this._checkValuesInit(selectedTab);
       document
         .querySelectorAll(".settings-tab")
         .forEach((tab) => tab.classList.remove("active"));
@@ -105,6 +109,75 @@ class settingsView extends View {
       //   console.log(selectActiveTabDiv);
       if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
     });
+  }
+
+  _checkValuesInit(tab) {
+    // console.log(tab);
+    const dataSet = tab.dataset.settingsTab;
+    // console.log(dataSet);
+    if (dataSet === "settings-profile-container") {
+      this._openInitValidationModals(1);
+    } else if (dataSet === "settings-budget-container") {
+      this._openInitValidationModals(2);
+    } else if (dataSet === "settings-categories-container") {
+      this._openInitValidationModals(3);
+    }
+  }
+
+  _openInitValidationModals(tabNo) {
+    console.log(tabNo);
+    const budgetInitEle = `<div class="modal notification-modal modal-info settings-init-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Add your budget to continue</p>
+            <button class="btn btn-primary settings-init-btn" data-setting-tab="settings-budget-container">Go to Settings</button>
+        </div>`;
+
+    const profileInitEle = `<div class="modal notification-modal modal-info settings-init-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Complete your profile to continue</p>
+            <button class="btn btn-primary settings-init-btn" data-setting-tab="settings-profile-container">Go to Settings</button>
+        </div>`;
+
+    if (tabNo === 1) {
+      if (this._userDetails.isProfileInitialized && !this._userDetails.isBudgetInitialized) {
+        this._parentContainer.insertAdjacentHTML("beforeend", budgetInitEle);
+        const backDrop = `<div class="modal-backdrop"></div>`;
+        this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+        const backDropEl = document.querySelector(".modal-backdrop");
+        backDropEl.classList.add("active");
+        this._budgetInitBtn = document.querySelector(".budget-init-btn");
+      }
+    } else if (tabNo === 2) {
+      if (!this._userDetails.isProfileInitialized) {
+        this._parentContainer.insertAdjacentHTML("beforeend", profileInitEle);
+        const backDrop = `<div class="modal-backdrop"></div>`;
+        this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+        const backDropEl = document.querySelector(".modal-backdrop");
+        backDropEl.classList.add("active");
+        this._profileInitBtn = document.querySelector(".profile-init-btn");
+      }
+    } else if (tabNo === 3) {
+      if (!this._userDetails.isProfileInitialized) {
+         this._parentContainer.insertAdjacentHTML("beforeend", profileInitEle);
+        const backDrop = `<div class="modal-backdrop"></div>`;
+        this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+        const backDropEl = document.querySelector(".modal-backdrop");
+        backDropEl.classList.add("active");
+        this._profileInitBtn = document.querySelector(".profile-init-btn");
+      } else if (this._userDetails.isProfileInitialized && !this._userDetails.isBudgetInitialized) {
+        this._parentContainer.insertAdjacentHTML("beforeend", budgetInitEle);
+        const backDrop = `<div class="modal-backdrop"></div>`;
+        this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+        const backDropEl = document.querySelector(".modal-backdrop");
+        backDropEl.classList.add("active");
+        this._budgetInitBtn = document.querySelector(".budget-init-btn");
+      }
+    }
+    console.log(this._profileInitBtn);
+    console.log(this._budgetInitBtn);
+    createIcons({ icons });
   }
 
   addHandlerShowCurrency() {
@@ -219,6 +292,26 @@ class settingsView extends View {
     }
   }
 
+  _validateBudgetInput(){
+    const budgetInputEl = document.getElementById(
+      "settings-monthly-budget"
+    );
+    const validatorElement = document.querySelector(
+      `[data-validator="monthly-budget"]`
+    );
+    if (budgetInputEl.value.trim() === "") return false;
+    if (budgetInputEl.value.trim() === "" || Number(budgetInputEl.value) === 0) {
+      validatorElement.textContent =
+        "please enter budget greater than 0";
+      validatorElement.classList.remove("hidden");
+      return true;
+    } else {
+      validatorElement.textContent = "";
+      validatorElement.classList.add("hidden");
+      return false;
+    }
+  }
+
   submitBudgetForm(handler) {
     this._budgetForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -226,7 +319,8 @@ class settingsView extends View {
       const budgetFormInput =
         this._budgetForm.querySelectorAll("[data-validate]");
       const requiredValidation = this._inputRequiredValidation(budgetFormInput);
-      if (requiredValidation) return;
+      const budgetValidation = this._validateBudgetInput();
+      if (requiredValidation || budgetValidation) return;
       const data = [...new FormData(e.target)];
       const formData = Object.fromEntries(data);
       formData.budget = +formData.budget;
@@ -344,8 +438,7 @@ class settingsView extends View {
   _initData() {
     if (!this._userDetails) return;
     // console.log(this._userDetails);
-    if(this._userDetails.profile.country){
-
+    if (this._userDetails.profile.country) {
     }
     document.getElementById("settings-first-name").value =
       this._userDetails.profile.firstName;
@@ -494,7 +587,7 @@ class settingsView extends View {
       backDropEl.classList.add("active");
       const listEl = deleteBtn.closest(".settings-categories-lists-item");
       const categoryId = listEl.dataset.categoryId;
-      this._confirmationModal.dataset.categoryId = categoryId
+      this._confirmationModal.dataset.categoryId = categoryId;
     });
   }
 
@@ -552,16 +645,48 @@ class settingsView extends View {
     });
   }
 
-  deleteCategory(handler){
-    this._deleteConfirmationBtn.addEventListener("click",(e)=>{
+  deleteCategory(handler) {
+    this._deleteConfirmationBtn.addEventListener("click", (e) => {
       const categoryId = this._confirmationModal.dataset.categoryId;
       // console.log(categoryId);
-      this._confirmationModal.classList.add('hidden');
+      this._confirmationModal.classList.add("hidden");
       const backDropEl = document.querySelector(".modal-backdrop");
-        if (backDropEl) {
-          backDropEl.remove();
-        }
+      if (backDropEl) {
+        backDropEl.remove();
+      }
       handler(+categoryId);
+    });
+  }
+
+  _navigateForInitialization(){
+    this._parentContainer.addEventListener('click',(e)=>{
+      const initModalBtn = e.target.closest('.settings-init-btn');
+      if(!initModalBtn) return;
+      console.log(initModalBtn);
+      const tab = initModalBtn.dataset.settingTab;
+      if(!tab) return;
+      document
+        .querySelectorAll(".settings-tab")
+        .forEach((tab) => tab.classList.remove("active"));
+      document
+        .querySelectorAll(".settings-tab-div")
+        .forEach((divTab) => divTab.classList.add("hidden"));
+      // console.log(selectedTab);
+      const selectedTab = document.querySelector(`[data-settings-tab="${tab}"]`);
+      selectedTab.classList.add("active");
+      const selectActiveTabDiv = document.querySelector(
+        `.${selectedTab.dataset.settingsTab}`
+      );
+      //   console.log(selectActiveTabDiv);
+      if (selectActiveTabDiv) selectActiveTabDiv.classList.remove("hidden");
+      const backDrop = document.querySelector(".modal-backdrop");
+      const profileModal = document.querySelector(".settings-init-modal");
+      if (profileModal) {
+        profileModal.remove();
+      }
+      if (backDrop) {
+        backDrop.remove();
+      }
     });
   }
 

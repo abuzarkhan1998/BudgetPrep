@@ -247,6 +247,16 @@ margin-bottom: 4.2rem;
     border-radius: 4px;
 }
 
+.profile-init-btn,
+.budget-init-btn,
+.settings-init-btn{
+    padding: 1rem 2.4rem;
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
 .modal-confirmation-btn{
     padding: 1rem 2.4rem;
     font-size: 1.6rem;

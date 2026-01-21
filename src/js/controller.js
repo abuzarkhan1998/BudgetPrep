@@ -26,6 +26,8 @@ const controlNavigation = async function (
     settingsView.addCategoryForm(addCategoryForm);
     settingsView.updateCategory(updateCategory);
     settingsView.deleteCategory(deleteCategory);
+    settingsView.navigateToProfile(navigateToPage);
+    settingsView.navigateToBudget(navigateToPage);
   }
   if (targetPage == "transactions") {
     displayTransactionswithPagination(1);
@@ -45,12 +47,16 @@ const controlNavigation = async function (
     const data = returndetailsforDashboard();
     dashboardView.renderView(data);
     dashboardView.openAddTransactionView(openAddTransactionsView);
+    dashboardView.navigateToProfile(navigateToPage);
+    dashboardView.navigateToBudget(navigateToPage);
   }
   if(targetPage == "analytics"){
     analyticsView.renderSpinner();
     const data = returnDetailsforAnalytics(timePeriod);
     analyticsView.renderView(data,timePeriod);
     analyticsView.changeTimePeriod(changeAnalyticsData);
+    analyticsView.navigateToProfile(navigateToPage);
+    analyticsView.navigateToBudget(navigateToPage);
   }
 };
 
@@ -114,7 +120,7 @@ const deleteCategory = async function (categoryId) {
 // }
 
 //---------Transactions View--------
-const   displayTransactionswithPagination = function (pageNo, transactions) {
+const displayTransactionswithPagination = function (pageNo, transactions) {
 
   transactionsView.renderSpinner();
   let transactionsData;
@@ -146,6 +152,8 @@ const   displayTransactionswithPagination = function (pageNo, transactions) {
   transactionsView.editTransactionsHandler(openAddTransactionsView);
   transactionsView.deleteTransactionsHandler(deleteTransactions);
   transactionsView.exportTransactionsHanlder(exportTransactions);
+  transactionsView.navigateToProfile(navigateToPage);
+  transactionsView.navigateToBudget(navigateToPage);
 };
 
 const sortTransactions = function (obj) {
@@ -302,6 +310,14 @@ const pageLoadHandler = function () {
 
 const arrowNavigationHandler = function(){
   window.addEventListener("popstate", handleRoute);
+}
+
+const navigateToPage = async function(pageName,tabName){
+  const childLinks = document.querySelectorAll('.nav-link');
+  childLinks.forEach(nav => nav.classList.remove('nav-link-active'));
+  const ele = document.querySelector(`[data-nav-link="settings"]`);
+  ele.classList.add('nav-link-active');
+  await controlNavigation(pageName, tabName);
 }
 
 const init = function () {

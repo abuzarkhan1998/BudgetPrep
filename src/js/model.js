@@ -3,13 +3,13 @@ import { COUNTRY_API, COUNTRYAPI_KEY, DATAPERPAGE } from "./config.js";
 export let state = {
   isInitialized: false,
   userDetails: {
+    isProfileInitialized:false,
+    isBudgetInitialized:false,
     profile: {
       firstName:'',
       lastName:'',
       country:'',
       currency:'',
-      isProfileInitialized:false,
-      isBudgetInitialized:false
     },
     budget: 0,
     categories: [
@@ -70,13 +70,16 @@ export const getCountriesFromApi = async function () {
 };
 
 export const updateProfileDetails = function (formData) {
+  if(!formData) return;
   state.userDetails.profile = formData;
+   state.userDetails.isProfileInitialized = true;
   // console.log(state);
   saveDatatoLocalStorage();
 };
 
 export const updateUserBudget = function (formData) {
   state.userDetails.budget = formData.budget;
+   state.userDetails.isBudgetInitialized = true;
   // console.log(state);
   saveDatatoLocalStorage();
 };
@@ -187,7 +190,11 @@ export const displayTransactions = function (pageNo = 1,transactions) {
     totalTransactions: transactions.length,
     transactionSortState: state.transactionSortState,
     categories: state.userDetails.categories,
-    currency : state.userDetails.profile.currency
+    currency : state.userDetails.profile.currency,
+     isInitialized:{
+      isProfile:state.userDetails.isProfileInitialized,
+      isBudget:state.userDetails.isBudgetInitialized,
+    },
   };
 };
 
@@ -342,6 +349,10 @@ export const dashboardData = function(month,year){
     currencySymbol:state.userDetails.profile.currency,
     remainingBudget,
     IsTransactions: state.transactions.length>0,
+    isInitialized:{
+      isProfile:state.userDetails.isProfileInitialized,
+      isBudget:state.userDetails.isBudgetInitialized,
+    },
     categorySpending:{
       categories: categoriesDetails.map(cat=> cat.name),
       amount: categoriesDetails.map(cat=> cat.amount),
@@ -482,6 +493,10 @@ export const returnDataForAnalytics = function(month,year,timePeriod=3){
   return {
     currencySymbol:state.userDetails.profile.currency,
     IsTransactions: state.transactions.length>0,
+     isInitialized:{
+      isProfile:state.userDetails.isProfileInitialized,
+      isBudget:state.userDetails.isBudgetInitialized,
+    },
     categorySpendTrend: {
       monthsLabel: monthsArray.map(month=> month.label),
       chartsData:categoryChartsData,

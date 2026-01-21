@@ -28,6 +28,7 @@ class dashboardView extends View {
       ".modal-notification-btn"
     );
     // console.log(this._toastrModalBtns);
+    this._isUserdetailsInitialized(this._data.isInitialized);
     this._initFields();
     this._closeToastrEl();
   }

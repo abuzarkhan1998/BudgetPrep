@@ -22,6 +22,7 @@ class transactionsView extends View {
   _downloadTransactionBtn;
   _currencyFormatter;
   _currencySymbol;
+  _isInitialized;
 
   renderView(viewData) {
     this._clearView();
@@ -31,7 +32,8 @@ class transactionsView extends View {
       totalTransactions: this._totalTransactionsNumber,
       transactionSortState: this._sortState,
       categories: this._categoriesData,
-      currency: this._currencySymbol
+      currency: this._currencySymbol,
+      isInitialized:this._isInitialized
     } = viewData);
     console.log(viewData);
     // this._data = transactions;
@@ -77,6 +79,7 @@ class transactionsView extends View {
     this._closeToastrEl();
     this._initCategoryDropdown();
     this._openDeleteConfirmationModal();
+    this._isUserdetailsInitialized(this._isInitialized);
     // this.returntransactionMarkup();
   }
 
@@ -123,6 +126,8 @@ class transactionsView extends View {
   }
 
   sortTransactionsHandler(handler) {
+    const theadEl = document.querySelector(".trans-head-table-row");
+    if(!theadEl) return;
     document
       .querySelector(".trans-head-table-row")
       .addEventListener("click", (e) => {
@@ -221,6 +226,7 @@ class transactionsView extends View {
   }
 
   editTransactionsHandler(handler) {
+    if(!this._tableEl) return;
     this._tableEl.addEventListener("click", (e) => {
       const editBtnEl = e.target.closest(".edit-btn");
       if (!editBtnEl) return;
@@ -236,6 +242,7 @@ class transactionsView extends View {
   }
 
   _openDeleteConfirmationModal(){
+    if(!this._tableEl) return;
     this._tableEl.addEventListener("click", (e) => {
       const deleteBtn = e.target.closest(".delete-btn");
       if(!deleteBtn) return;

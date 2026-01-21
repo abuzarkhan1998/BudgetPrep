@@ -21,6 +21,7 @@ class analyticsView extends View {
     this._timePeriodSelectEl = document.getElementById("analytics-select");
     this._timePeriodSelectEl.value = timePeriod;
     createIcons({ icons });
+    this._isUserdetailsInitialized(this._data.isInitialized);
     this._initFields();
   }
 

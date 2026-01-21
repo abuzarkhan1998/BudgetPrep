@@ -1,9 +1,11 @@
 import { createIcons, icons } from "lucide";
 
 export default class View {
-_parentContainer = document.querySelector("main");
-_successModal;
-_toastrModalBtns;
+  _parentContainer = document.querySelector("main");
+  _successModal;
+  _toastrModalBtns;
+  _profileInitBtn;
+  _budgetInitBtn;
 
   _inputRequiredValidation(inputFields) {
     let isValidationError = false;
@@ -72,4 +74,71 @@ _toastrModalBtns;
       });
     });
   }
+
+  _isUserdetailsInitialized(isInitObj) {
+    // console.log(isInitObj);
+    if (!isInitObj.isProfile) {
+      const profileInitEle = `<div class="modal notification-modal modal-info profile-init-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Complete your profile to continue</p>
+            <button class="btn btn-primary profile-init-btn">Go to Settings</button>
+        </div>`;
+      this._parentContainer.insertAdjacentHTML("beforeend", profileInitEle);
+      const backDrop = `<div class="modal-backdrop"></div>`;
+      this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+      const backDropEl = document.querySelector(".modal-backdrop");
+      backDropEl.classList.add("active");
+      this._profileInitBtn = document.querySelector('.profile-init-btn');
+      // console.log(this._profileInitBtn);
+    }
+    else if(isInitObj.isProfile && !isInitObj.isBudget){
+      const budgetInitEle = `<div class="modal notification-modal modal-info budget-init-modal">
+            <div class="modal-notification-icon mb-sm-3"><i data-lucide="circle-alert"></i></div>
+            <p class="modal-notification-title mb-sm-2">Info!</p>
+            <p class="modal-notification-message mb-sm-3">Add your budget to continue</p>
+            <button class="btn btn-primary budget-init-btn">Go to Settings</button>
+        </div>`;
+      this._parentContainer.insertAdjacentHTML("beforeend", budgetInitEle);
+      const backDrop = `<div class="modal-backdrop"></div>`;
+      this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+      const backDropEl = document.querySelector(".modal-backdrop");
+      backDropEl.classList.add("active");
+      this._budgetInitBtn = document.querySelector('.budget-init-btn');
+    }
+    createIcons({ icons });
+  }
+
+  navigateToProfile(handler){
+    if(!this._profileInitBtn) return;
+    this._profileInitBtn.addEventListener('click',(e)=>{
+       const backDrop = document.querySelector('.modal-backdrop');
+      const profileModal = document.querySelector('.profile-init-modal');
+      if(profileModal){
+        profileModal.remove();
+      }
+      if(backDrop){
+        backDrop.remove();
+      }
+      // console.log(profileModal);
+      handler('settings','settings-profile-container');
+    })
+  }
+
+  navigateToBudget(handler){
+     if(!this._budgetInitBtn) return;
+     this._budgetInitBtn.addEventListener('click',(e)=>{
+       const backDrop = document.querySelector('.modal-backdrop');
+      const profileModal = document.querySelector('.budget-init-modal');
+      if(profileModal){
+        profileModal.remove();
+      }
+      if(backDrop){
+        backDrop.remove();
+      }
+      // console.log(profileModal);
+      handler('settings','settings-budget-container');
+     })
+  }
+
 }
