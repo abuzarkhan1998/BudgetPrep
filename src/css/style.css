@@ -698,7 +698,6 @@
     padding: 0.6rem 1rem;
     border: 1.5px solid #ccc;
     font-family: inherit;
-    color: inherit;
     font-size: inherit;
     border-radius: 4px;
     width: 20rem;
@@ -814,6 +813,12 @@
     flex-direction: column;
     gap: 2rem;
     font-size: 1.8rem;
+}
+
+#settings-budget-form,
+#settings-profile-form,
+#settings-add-category-form{
+    font-family: inherit;
 }
 
 .color-picker-container {
