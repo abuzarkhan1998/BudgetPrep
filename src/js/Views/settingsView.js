@@ -747,7 +747,6 @@ class settingsView extends View {
                             <span class="settings-form-label"></span>
                             <div class="profile-settings-button-container">
                                 <button class="btn btn-primary settings-profile-btn">Save Changes</button>
-                                <button class="btn btn-primary settings-profile-btn">Clear All Data</button>
                             </div>
                         </div>
                     </form>

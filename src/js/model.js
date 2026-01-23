@@ -13,8 +13,8 @@ export let state = {
     },
     budget: 0,
     categories: [
-      { id: 1, name: "Food & Groceries", color: "#8dc4ff", isDefault: true },
-      { id: 2, name: "Rent & Utilities", color: "#60d2ca", isDefault: true },
+      { id: 1, name: "Groceries", color: "#8dc4ff", isDefault: true },
+      { id: 2, name: "Rent & Bills", color: "#60d2ca", isDefault: true },
       { id: 3, name: "Transportation", color: "#b089f4", isDefault: true },
     ],
     colors: [
