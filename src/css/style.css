@@ -28,6 +28,10 @@
     padding: 1.2rem 0;
 }
 
+.nav-menu-back-btn{
+    background: none;
+    display: none;
+}
 
 /**************************/
 /* NavBar */
