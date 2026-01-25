@@ -119,3 +119,35 @@
         padding: 3.2rem .8rem;
     }
 }
+
+
+/*---------------------------------*/
+/* Below 1008px */
+
+@media (max-width: 63em) {
+
+    .summary-tab-container{
+        max-width: 24rem;
+        gap: 1.8rem;
+    }
+
+    .dashboard-heading-container{
+        max-width: 80%;
+    }
+
+    .trans-input-field{
+        max-width: 18rem;
+    }
+
+    .section-analytics .dashboard-heading-container{
+        max-width: 100%;
+    }
+
+    .settings-categories-lists-item{
+        gap:10rem;
+    }
+
+    .settings-edit-category-container{
+        min-width: 100%;
+    }
+}

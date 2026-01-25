@@ -152,7 +152,7 @@
     display: flex;
     align-items: center;
     gap: 2.4rem;
-    /* justify-content: center; */
+    justify-content: space-around;
 }
 
 .dashboard-expense-container {
