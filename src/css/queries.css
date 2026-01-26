@@ -118,6 +118,10 @@
     .sb-nav {
         padding: 3.2rem .8rem;
     }
+
+    .summary-tab-container {
+        max-width: 26rem;
+    }
 }
 
 
@@ -126,28 +130,116 @@
 
 @media (max-width: 63em) {
 
-    .summary-tab-container{
+    .summary-tab-container {
         max-width: 24rem;
         gap: 1.8rem;
     }
 
-    .dashboard-heading-container{
+    .dashboard-heading-container {
         max-width: 80%;
     }
 
-    .trans-input-field{
+    .trans-input-field {
         max-width: 18rem;
     }
 
-    .section-analytics .dashboard-heading-container{
+    .section-analytics .dashboard-heading-container,
+    .section-settings .dashboard-heading-container{
         max-width: 100%;
     }
 
-    .settings-categories-lists-item{
-        gap:10rem;
+    .settings-categories-lists-item {
+        gap: 10rem;
     }
 
-    .settings-edit-category-container{
+    .settings-edit-category-container {
         min-width: 100%;
+    }
+}
+
+/*---------------------------------*/
+/* Below 980px */
+
+@media (max-width: 63em) {
+
+    .section-dashboard .dashboard-heading-container {
+        max-width: 78%;
+    }
+
+    .trans-btn-group {
+        margin-left: 1.2rem;
+    }
+}
+
+/*---------------------------------*/
+/* Below 864 */
+
+@media (max-width: 63em) {
+    .dashboard-content {
+        margin-bottom: 3.6rem;
+    }
+
+    .dashboard-expense-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 3.2rem;
+    }
+
+    .summary-tab-container {
+        justify-self: stretch;
+    }
+
+    .summary-tab-container:nth-child(odd) {
+        justify-self: end;
+    }
+
+    .dashboard-summary-heading {
+        text-align: center;
+    }
+
+    .dashboard-chart-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-pie-container,
+    .dashboard-bar-container {
+        width: 100%;
+    }
+
+    .dashboard-chart-container,
+    .analytics-categories-container {
+        gap: 5.2rem;
+    }
+
+    .section-dashboard .dashboard-heading-container,
+    .section-transaction .dashboard-heading-container {
+        max-width: 70%;
+    }
+
+    .trans-filter-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+    }
+
+    .trans-btn-group {
+        margin-left: 0;
+    }
+
+    .trans-input-field {
+        max-width: 20rem;
+    }
+
+    .analytics-categories-container {
+        flex-direction: column;
+    }
+
+    .settings-categories-lists-item {
+        grid-template-columns: 8fr 2fr;
+    }
+
+    .total-records-container {
+        min-width: 20%;
     }
 }

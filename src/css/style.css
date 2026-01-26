@@ -927,7 +927,7 @@
 }
 
 .category-list-name-container .settings-profile-input {
-    width: 40rem;
+    max-width: 40rem;
      padding: 1.8rem 1rem;
 }
 

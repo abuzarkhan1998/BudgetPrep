@@ -454,13 +454,13 @@ class transactionsView extends View {
 
   returnTransactionMarkup(transaction) {
     return `<tr class="trans-table-row" data-transaction-id=${transaction.id}>
-                            <td>${new Intl.DateTimeFormat(
+                            <td class="overflow-ellipsis">${new Intl.DateTimeFormat(
                               "en-US",
                               DATEOPTION
                             ).format(new Date(transaction.date))}</td>
-                            <td>${transaction.categoryName}</td>
-                            <td>${transaction.description}</td>
-                            <td>${this._currencySymbol}${this._currencyFormatter.format(transaction.amount)}</td>
+                            <td class="overflow-ellipsis">${transaction.categoryName}</td>
+                            <td class="overflow-ellipsis">${transaction.description}</td>
+                            <td class="overflow-ellipsis">${this._currencySymbol}${this._currencyFormatter.format(transaction.amount)}</td>
                             <td class="trans-table-button-col">
                                 <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
                                 <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
