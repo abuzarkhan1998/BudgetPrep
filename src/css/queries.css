@@ -144,7 +144,7 @@
     }
 
     .section-analytics .dashboard-heading-container,
-    .section-settings .dashboard-heading-container{
+    .section-settings .dashboard-heading-container {
         max-width: 100%;
     }
 
@@ -227,10 +227,6 @@
         margin-left: 0;
     }
 
-    .trans-input-field {
-        max-width: 20rem;
-    }
-
     .analytics-categories-container {
         flex-direction: column;
     }
@@ -242,4 +238,68 @@
     .total-records-container {
         min-width: 20%;
     }
+}
+
+/*---------------------------------*/
+/* Below 672 */
+
+@media (max-width: 42em) {
+    .trans-filter-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-expense-content {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-tab-container {
+        justify-self: center;
+    }
+
+    .summary-tab-container:nth-child(odd),
+    .summary-tab-container:nth-child(even) {
+        justify-self: center;
+    }
+
+    .summary-tab-container {
+        padding: 1.2rem 2rem;
+        max-width: 28rem;
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-button-container {
+        margin-left: 0;
+    }
+
+    .heading-secondary,
+    .heading-desc {
+        text-align: center;
+    }
+
+    #settings-profile-form {
+        gap: 3rem;
+    }
+
+    .settings-field-container {
+        grid-template-columns: 1fr;
+        row-gap: 1.2rem;
+    }
+
+    .categories-edit-list-field {
+        gap: 3rem;
+        padding: 1rem;
+    }
+
+    .category-list-name-container .color-picker-container {
+        margin-right: 1rem;
+    }
+
+    .edit-category-save-btn {
+        padding: .1rem .2rem;
+    }
+
 }
