@@ -378,6 +378,10 @@
         padding: 2.4rem;
     }
 
+    .sb-nav.nav-hidden{
+        display: none;
+    } 
+
     .sb-nav {
         top: 0;
         left: 0;
@@ -469,5 +473,40 @@
         font-size: 3.2rem;
         font-weight: 500;
         color: #444;
+    }
+
+    .expense-form-header,
+    .expense-form{
+        width: 90vw;
+    }
+}
+
+
+/*---------------------------------*/
+/* Below 432 */
+@media (max-width: 27em) {
+    .notification-modal {
+        width: 95vw;
+        padding: 1.6rem 2rem;
+    }
+}
+
+/*---------------------------------*/
+/* Below 400 */
+@media (max-width: 25em) {
+    .settings-edit-category-container {
+        padding: 1.8rem 1rem;
+    }
+
+    .settings-categories-lists-item {
+        gap: 1.4rem;
+    }
+
+    .spending-chart-container {
+        padding: 1.8rem 0.6rem;
+    }
+
+    .dashboard-summary-container {
+        padding: 1.6rem 1rem;
     }
 }

@@ -750,6 +750,7 @@
 .profile-header-desc {
     color: #444;
     font-size: 1.4rem;
+    line-height: 1.4;
 }
 
 #settings-profile-form {
@@ -988,7 +989,7 @@
 }
 
 .categories-list-name {
-    margin-right: 6rem;
+    /* margin-right: 6rem; */
 }
 
 .category-list-name-container {

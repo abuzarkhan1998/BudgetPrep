@@ -30,6 +30,7 @@ class sideBarView {
     const bodyEl = document.querySelector("body");
     const htmlEl = document.querySelector("html");
     navMenu.classList.toggle("nav-open");
+     navMenu.classList.toggle("nav-hidden");
     menuBtn.classList.toggle("hidden");
     closeBtn.classList.toggle("hidden");
     bodyEl.classList.toggle("disable-y-overflow");
