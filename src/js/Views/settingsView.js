@@ -568,7 +568,7 @@ class settingsView extends View {
                  <span class="categories-list-color" style="background-color:${selectedCategory.color}"></span>
                  <span class="categories-list-name">${selectedCategory.name}</span>
              </div>
-             <div>
+             <div class="settings-categories-btn-container">
                  <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
                  <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
              </div>`;
@@ -864,7 +864,7 @@ class settingsView extends View {
                  }"></span>
                  <span class="categories-list-name">${cat.name}</span>
              </div>
-             <div>
+             <div class="settings-categories-btn-container">
                  <button class="btn edit-btn ${
                    cat.id === 1 || cat.id === 2 || cat.id === 3
                      ? "btn-disabled"

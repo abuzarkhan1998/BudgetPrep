@@ -28,7 +28,7 @@
     padding: 1.2rem 0;
 }
 
-.nav-menu-back-btn{
+.nav-menu-back-btn {
     background: none;
     display: none;
 }
@@ -81,6 +81,12 @@
 
 .nav-link svg {
     width: 2.2rem;
+}
+
+.nav-btn{
+    display: none;
+    background: none;
+    margin-left: auto;
 }
 
 /**************************/
@@ -188,14 +194,14 @@
     background: #fff;
 }
 
-.progress-fill{
+.progress-fill {
     height: 100%;
     background: #fff;
     transition: width 0.4s ease;
     width: 0;
 }
 
-.summary-tab-container{
+.summary-tab-container {
     display: flex;
     gap: 3.4rem;
     padding: 1.2rem 2rem;
@@ -206,32 +212,32 @@
     justify-content: space-between;
 }
 
-.tab-icon-background{
+.tab-icon-background {
     background-color: #badbff;
     padding: 0.2rem 0.4rem;
     border-radius: 0.4rem;
 }
 
-.tab-icon-background svg{
+.tab-icon-background svg {
     stroke: #177ae6;
     width: 4rem;
     height: 4rem;
 }
 
-.summary-details-container{
+.summary-details-container {
     padding-top: 0.2rem;
     display: flex;
     flex-direction: column;
-    gap:1.2rem;
+    gap: 1.2rem;
 }
 
-.summary-details-name{
+.summary-details-name {
     font-size: 1.8rem;
     font-weight: 500;
     color: #6c757d;
 }
 
-.summary-details-amount{
+.summary-details-amount {
     font-size: 2rem;
     font-weight: 600;
     color: #444 !important;
@@ -330,7 +336,7 @@
 .form-btn-container {
     display: flex;
     justify-content: center;
-    width:100%;
+    width: 100%;
     margin-top: 1.8rem;
 }
 
@@ -362,7 +368,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    
+
 }
 
 .trans-input-field {
@@ -442,14 +448,14 @@
 
 .transaction-table th:nth-child(1),
 .transaction-table td:nth-child(1) {
-    width: 20%;
+    width: 15%;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
 
 .transaction-table th:nth-child(2),
 .transaction-table td:nth-child(2) {
-    width: 15%;
+    width: 20%;
 }
 
 .transaction-table th:nth-child(3),
@@ -490,10 +496,74 @@
     stroke: #156dcc;
 }
 
+.mobile-transactions-cards-container {
+    display: none;
+    max-width: 100%;
+}
+
+.transaction-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.6rem;
+    gap: 1.4rem;
+    max-width: 100%;
+    box-shadow: 0 .4rem .4rem #00000012;
+    border: 2px solid #d1e7ff;
+    border-radius: 0.6rem;
+}
+
+.card-details-container{
+    display: flex;
+    gap: 1.4rem;
+    align-items: center;
+    min-width: 0;
+}
+
+.card-category-container{
+    flex: 1;
+    min-width: 0;
+}
+
+.card-date-container {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #777;
+    border-bottom: 1px solid #dedede;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+.card-category-name,
+.card-amount {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.card-amount{
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.card-category-name{
+    margin-bottom: 0.6rem;
+}
+
+.card-description {
+    font-size: 1.4rem;
+    color: #333;
+    max-width: 60%;
+    padding: 0.4rem 0;
+}
+
+.card-buttons-container{
+    margin-left: auto;
+}
+
+
 .btn-disabled svg,
-.btn-disabled svg:hover
-{
-   stroke : #8dc4ff; 
+.btn-disabled svg:hover {
+    stroke: #8dc4ff;
 }
 
 .edit-btn {
@@ -730,35 +800,36 @@
 }
 
 .custom-select-options {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 0.6rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  max-height: 20rem;
-  overflow-y: auto;
-  z-index: 1000;
-  display: none; /* hidden by default */
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.6rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    max-height: 20rem;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    /* hidden by default */
 }
 
 .country-option {
-  padding: 1rem 1.2rem;
-  font-size: 1.4rem;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
 }
 
 .country-option:hover {
-  background-color: #f4f7fb;
+    background-color: #f4f7fb;
 }
 
 /* Show dropdown when active */
 .custom-select.active .custom-select-options {
-  display: block;
+    display: block;
 }
 
 .settings-profile-name-container {
@@ -823,7 +894,7 @@
 
 #settings-budget-form,
 #settings-profile-form,
-#settings-add-category-form{
+#settings-add-category-form {
     font-family: inherit;
 }
 
@@ -893,6 +964,10 @@
     border-radius: 4px;
 }
 
+.settings-categories-btn-container{
+    margin-left: auto;
+}
+
 .categories-list-color {
     background-color: #E57373;
     width: 2rem;
@@ -928,7 +1003,7 @@
 
 .category-list-name-container .settings-profile-input {
     max-width: 40rem;
-     padding: 1.8rem 1rem;
+    padding: 1.8rem 1rem;
 }
 
 .categories-edit-list-field {
@@ -970,7 +1045,7 @@
     gap: 1.4rem;
 }
 
-.color-input{
+.color-input {
     cursor: pointer;
 }
 

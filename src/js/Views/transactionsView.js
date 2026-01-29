@@ -1,6 +1,6 @@
 import { createIcons, icons } from "lucide";
 import View from "./View.js";
-import { DATEOPTION, DATAPERPAGE,CURRENCYFORMAT } from "../config.js";
+import { DATEOPTION, DATAPERPAGE, CURRENCYFORMAT } from "../config.js";
 
 class transactionsView extends View {
   _addTransactionBtn;
@@ -23,6 +23,7 @@ class transactionsView extends View {
   _currencyFormatter;
   _currencySymbol;
   _isInitialized;
+  _mobileTransactionsTableEl;
 
   renderView(viewData) {
     this._clearView();
@@ -33,7 +34,7 @@ class transactionsView extends View {
       transactionSortState: this._sortState,
       categories: this._categoriesData,
       currency: this._currencySymbol,
-      isInitialized:this._isInitialized
+      isInitialized: this._isInitialized,
     } = viewData);
     console.log(viewData);
     // this._data = transactions;
@@ -41,7 +42,7 @@ class transactionsView extends View {
     this._totalTransactionsPages = Math.ceil(
       this._totalTransactionsNumber / DATAPERPAGE
     );
-    this._currencyFormatter = new Intl.NumberFormat('en-US',CURRENCYFORMAT);
+    this._currencyFormatter = new Intl.NumberFormat("en-US", CURRENCYFORMAT);
     // const sortedByDateCategories = this._data.sort((a, b) => new Date(b.date) - new Date(a.date));
     // console.log(this._totalTransactionsPages);
     this._parentContainer.insertAdjacentHTML(
@@ -73,12 +74,16 @@ class transactionsView extends View {
       ".total-records-container"
     );
     this._tableEl = document.querySelector(".trans-table-body");
+    this._mobileTransactionsTableEl = document.querySelector(".mobile-transactions-cards-container");
     this._confirmationModal = document.querySelector(".confirmation-modal");
-    this._deleteConfirmationBtn = document.querySelector(".modal-confirmation-btn");
+    this._deleteConfirmationBtn = document.querySelector(
+      ".modal-confirmation-btn"
+    );
     this._downloadTransactionBtn = document.querySelector(".btn-trans-dwnld");
     this._closeToastrEl();
     this._initCategoryDropdown();
     this._openDeleteConfirmationModal();
+    this._openDeleteConfirmationModalForMobile();
     this._isUserdetailsInitialized(this._isInitialized);
     // this.returntransactionMarkup();
   }
@@ -127,7 +132,7 @@ class transactionsView extends View {
 
   sortTransactionsHandler(handler) {
     const theadEl = document.querySelector(".trans-head-table-row");
-    if(!theadEl) return;
+    if (!theadEl) return;
     document
       .querySelector(".trans-head-table-row")
       .addEventListener("click", (e) => {
@@ -226,7 +231,7 @@ class transactionsView extends View {
   }
 
   editTransactionsHandler(handler) {
-    if(!this._tableEl) return;
+    if (!this._tableEl) return;
     this._tableEl.addEventListener("click", (e) => {
       const editBtnEl = e.target.closest(".edit-btn");
       if (!editBtnEl) return;
@@ -241,12 +246,28 @@ class transactionsView extends View {
     });
   }
 
-  _openDeleteConfirmationModal(){
-    if(!this._tableEl) return;
+   editTransactionsHandlerForMobile(handler) {
+    if (!this._mobileTransactionsTableEl) return;
+    this._mobileTransactionsTableEl.addEventListener("click", (e) => {
+      const editBtnEl = e.target.closest(".edit-btn");
+      if (!editBtnEl) return;
+      // console.log(editBtnEl);
+      const btnRowEl = e.target.closest(".trans-table-row");
+      if (!btnRowEl) return;
+      // console.log(btnRowEl);
+      const transId = btnRowEl.dataset.transactionId;
+      if (!transId) return;
+      // console.log(transId);
+      handler("section-transaction", true, transId);
+    });
+  }
+
+  _openDeleteConfirmationModal() {
+    if (!this._tableEl) return;
     this._tableEl.addEventListener("click", (e) => {
       const deleteBtn = e.target.closest(".delete-btn");
-      if(!deleteBtn) return;
-     const btnRowEl = e.target.closest(".trans-table-row");
+      if (!deleteBtn) return;
+      const btnRowEl = e.target.closest(".trans-table-row");
       if (!btnRowEl) return;
       // console.log(btnRowEl);
       const transId = btnRowEl.dataset.transactionId;
@@ -260,22 +281,41 @@ class transactionsView extends View {
     });
   }
 
-  deleteTransactionsHandler(handler){
+  _openDeleteConfirmationModalForMobile() {
+    if (!this._mobileTransactionsTableEl) return;
+    this._mobileTransactionsTableEl.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest(".delete-btn");
+      if (!deleteBtn) return;
+      const btnRowEl = e.target.closest(".trans-table-row");
+      if (!btnRowEl) return;
+      // console.log(btnRowEl);
+      const transId = btnRowEl.dataset.transactionId;
+      if (!transId) return;
+      this._confirmationModal.classList.remove("hidden");
+      const backDrop = `<div class="modal-backdrop"></div>`;
+      this._parentContainer.insertAdjacentHTML("afterbegin", backDrop);
+      const backDropEl = document.querySelector(".modal-backdrop");
+      backDropEl.classList.add("active");
+      this._confirmationModal.dataset.transactionId = transId;
+    });
+  }
+
+  deleteTransactionsHandler(handler) {
     this._deleteConfirmationBtn.addEventListener("click", (e) => {
       e.preventDefault();
       // console.log(e.target);
       const modalDiv = e.target.closest(".confirmation-modal");
       // console.log(modalDiv);
-      if(!modalDiv) return;
+      if (!modalDiv) return;
       const transId = modalDiv.dataset.transactionId;
-      if(!transId) return;
+      if (!transId) return;
       // console.log(transId);
       handler(transId);
     });
   }
 
-  exportTransactionsHanlder(handler){
-    this._downloadTransactionBtn.addEventListener("click",(e)=>{
+  exportTransactionsHanlder(handler) {
+    this._downloadTransactionBtn.addEventListener("click", (e) => {
       console.log("btn clicked");
       handler();
     });
@@ -376,8 +416,8 @@ class transactionsView extends View {
 
             <div class="container transaction-table-container mb-md-1 pos-relative min-height-25">
               ${
-                hasData ?
-                `<table class="transaction-table">
+                hasData
+                  ? `<table class="transaction-table">
                     <thead class="trans-head-table-container">
                         <tr class="trans-head-table-row">
                             <th class="trans-head-table"><span
@@ -401,12 +441,29 @@ class transactionsView extends View {
               .join("")}
             </tbody>
                 </table>`
-                 :
-                 `<div class="no-data-found">
+                  : `<div class="no-data-found">
                    <i data-lucide="triangle-alert"></i> 
                    <p class="no-data-text">No data yet — start by adding expenses.</p>
                  </div>`
               }
+
+              ${
+                hasData
+                  ? `
+                <div class="mobile-transactions-cards-container">
+                ${this._data
+                  .map((cat) => {
+                    return this.returnTransactionMarkupforMobile(cat);
+                  })
+                  .join("")}
+              </div>
+                `
+                  : `<div class="no-data-found">
+                   <i data-lucide="triangle-alert"></i> 
+                   <p class="no-data-text">No data yet — start by adding expenses.</p>
+                 </div>`
+              }
+
             </div>
 
             <div class="container pagination-container">
@@ -458,14 +515,45 @@ class transactionsView extends View {
                               "en-US",
                               DATEOPTION
                             ).format(new Date(transaction.date))}</td>
-                            <td class="overflow-ellipsis">${transaction.categoryName}</td>
-                            <td class="overflow-ellipsis">${transaction.description}</td>
-                            <td class="overflow-ellipsis">${this._currencySymbol}${this._currencyFormatter.format(transaction.amount)}</td>
+                            <td class="overflow-ellipsis">${
+                              transaction.categoryName
+                            }</td>
+                            <td class="overflow-ellipsis">${
+                              transaction.description
+                            }</td>
+                            <td class="overflow-ellipsis">${
+                              this._currencySymbol
+                            }${this._currencyFormatter.format(
+      transaction.amount
+    )}</td>
                             <td class="trans-table-button-col">
                                 <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
                                 <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
                             </td>
                         </tr>`;
+  }
+
+  returnTransactionMarkupforMobile(transaction) {
+    return `
+     <div class="transaction-card trans-table-row" data-transaction-id=${
+       transaction.id}>
+                <div class="card-date-container">${new Intl.DateTimeFormat(
+                  "en-US",
+                  DATEOPTION
+                ).format(new Date(transaction.date))}</div>
+                <div class="card-details-container">
+                    <div class="card-category-container">
+                        <p class="overflow-ellipsis card-category-name">${transaction.categoryName}</p>
+                        <p class="overflow-ellipsis card-description">${transaction.description}</p>
+                    </div>
+                    <p class="overflow-ellipsis card-amount">${ this._currencySymbol}${this._currencyFormatter.format(transaction.amount)}</p>
+                </div>
+                <div class="card-buttons-container trans-table-button-col">
+                     <button class="btn edit-btn"><i data-lucide="square-pen"></i></button>
+                                <button class="btn delete-btn"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+    `;
   }
 
   returnPageNumberMarkup() {

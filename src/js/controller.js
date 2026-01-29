@@ -150,6 +150,7 @@ const displayTransactionswithPagination = function (pageNo, transactions) {
   transactionsView.openTransactionModal(openAddTransactionsView);
   transactionsView.filterData(filerTransactions);
   transactionsView.editTransactionsHandler(openAddTransactionsView);
+  transactionsView.editTransactionsHandlerForMobile(openAddTransactionsView);
   transactionsView.deleteTransactionsHandler(deleteTransactions);
   transactionsView.exportTransactionsHanlder(exportTransactions);
   transactionsView.navigateToProfile(navigateToPage);
@@ -196,6 +197,7 @@ const filerTransactions = function (category, startDate, endDate) {
   transactionsView.openTransactionModal(openAddTransactionsView);
   transactionsView.filterData(filerTransactions);
   transactionsView.editTransactionsHandler(openAddTransactionsView);
+  transactionsView.editTransactionsHandlerForMobile(openAddTransactionsView);
   transactionsView.deleteTransactionsHandler(deleteTransactions);
   transactionsView.exportTransactionsHanlder(exportTransactions);
 };
@@ -323,6 +325,7 @@ const navigateToPage = async function(pageName,tabName){
 const init = function () {
   createIcons({ icons });
   sideBarView.addHandlerNavigatePage(controlNavigation);
+  sideBarView.toggleNavMenuForMobile();
   pageLoadHandler();
   arrowNavigationHandler();
 };
